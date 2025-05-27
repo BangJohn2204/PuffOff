@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<!-- Konten Utama -->
+<!-- Konten -->
 <div class="ui container" style="margin-top: 80px; max-width: 500px;">
   <h2 class="ui header center aligned">Target & Refleksi</h2>
 
@@ -28,6 +28,10 @@
       <div class="field">
         <label>Target Mingguan</label>
         <input type="number" id="targetHari" placeholder="Contoh: 7 hari" min="1" required>
+      </div>
+      <div class="field">
+        <label>Hari Bebas Rokok Saat Ini</label>
+        <input type="number" id="hariSekarang" placeholder="Contoh: 3 hari" min="0" required>
       </div>
       <div class="field">
         <label>Catatan Refleksi Hari Ini</label>
@@ -41,38 +45,61 @@
     <h4 class="ui header">Targetmu Saat Ini</h4>
     <p><strong id="summaryHari"></strong> hari tanpa rokok.</p>
     <p><em id="summaryRefleksi"></em></p>
+
+    <div class="ui progress" id="targetProgress">
+      <div class="bar" id="progressBar" style="width: 0%;"></div>
+      <div class="label" id="progressLabel">0% dari target tercapai</div>
+    </div>
   </div>
 </div>
 
 <script>
 function saveTarget() {
-  const hari = document.getElementById("targetHari").value;
+  const hariTarget = parseInt(document.getElementById("targetHari").value);
+  const hariSekarang = parseInt(document.getElementById("hariSekarang").value);
   const refleksi = document.getElementById("refleksi").value;
 
-  // Simpan dummy ke localStorage
-  localStorage.setItem("targetHari", hari);
+  // Validasi sederhana
+  if (hariSekarang > hariTarget) {
+    alert("Hari saat ini tidak boleh lebih besar dari target.");
+    return false;
+  }
+
+  // Simpan ke localStorage
+  localStorage.setItem("targetHari", hariTarget);
+  localStorage.setItem("hariSekarang", hariSekarang);
   localStorage.setItem("refleksi", refleksi);
 
   // Tampilkan ringkasan
-  document.getElementById("summaryHari").innerText = hari;
+  document.getElementById("summaryHari").innerText = hariTarget;
   document.getElementById("summaryRefleksi").innerText = refleksi;
+  updateProgress(hariSekarang, hariTarget);
+
   document.getElementById("target-summary").style.display = "block";
 
   // Reset form
   document.getElementById("targetHari").value = "";
+  document.getElementById("hariSekarang").value = "";
   document.getElementById("refleksi").value = "";
 
   return false;
 }
 
-// Tampilkan data sebelumnya saat halaman dibuka
-window.onload = function () {
-  const savedHari = localStorage.getItem("targetHari");
-  const savedRefleksi = localStorage.getItem("refleksi");
+function updateProgress(current, target) {
+  let progress = Math.min((current / target) * 100, 100);
+  document.getElementById("progressBar").style.width = progress + "%";
+  document.getElementById("progressLabel").innerText = `${Math.round(progress)}% dari target tercapai`;
+}
 
-  if (savedHari && savedRefleksi) {
-    document.getElementById("summaryHari").innerText = savedHari;
-    document.getElementById("summaryRefleksi").innerText = savedRefleksi;
+window.onload = function () {
+  const targetHari = parseInt(localStorage.getItem("targetHari"));
+  const hariSekarang = parseInt(localStorage.getItem("hariSekarang"));
+  const refleksi = localStorage.getItem("refleksi");
+
+  if (!isNaN(targetHari) && !isNaN(hariSekarang) && refleksi) {
+    document.getElementById("summaryHari").innerText = targetHari;
+    document.getElementById("summaryRefleksi").innerText = refleksi;
+    updateProgress(hariSekarang, targetHari);
     document.getElementById("target-summary").style.display = "block";
   }
 };
