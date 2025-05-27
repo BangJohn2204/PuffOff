@@ -89,3 +89,17 @@ body, html {
   padding: 0.5em;
   border-radius: 6px;
 }
+
+/* Responsive Menu untuk Navbar PuffOff */
+.ui.top.fixed.menu {
+  overflow-x: auto; /* scroll horizontal jika terlalu panjang */
+  white-space: nowrap; /* cegah wrap ke bawah */
+}
+
+.ui.top.fixed.menu .item {
+  flex-shrink: 0; /* agar tidak mengecil saat kekurangan ruang */
+}
+
+.ui.container {
+  width: 100%;
+}
