@@ -7,7 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadPosts = () => {
     postList.innerHTML = "";
     const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
-    posts.reverse().forEach((post, index) => {
+
+    posts.forEach((post, index) => {
+      const realIndex = posts.length - 1 - index;
       const div = document.createElement("div");
       div.classList.add("comment");
       div.innerHTML = `
@@ -16,22 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="metadata"><span>${new Date(post.date).toLocaleString()}</span></div>
           <div class="text">${post.text}</div>
           <div class="actions">
-            <a class="reply" onclick="toggleCommentForm(${index})">Balas</a>
-            <a class="delete" onclick="deletePost(${index})">Hapus</a>
+            <a class="reply" onclick="toggleCommentForm(${realIndex})">Balas</a>
+            <a class="delete" onclick="deletePost(${realIndex})">Hapus</a>
           </div>
-          <div class="ui form reply-form" id="replyForm${index}" style="display:none; margin-top: 10px;">
+          <div class="ui form reply-form" id="replyForm${realIndex}" style="display:none; margin-top: 10px;">
             <div class="field">
-              <input type="text" placeholder="Tulis komentar..." id="replyInput${index}" />
+              <input type="text" placeholder="Tulis komentar..." id="replyInput${realIndex}" />
             </div>
-            <button class="ui tiny button" onclick="addComment(${index})">Kirim</button>
+            <button class="ui tiny button" onclick="addComment(${realIndex})">Kirim</button>
           </div>
-          <div class="ui comments" id="commentList${index}" style="margin-top:10px;"></div>
+          <div class="ui comments" id="commentList${realIndex}" style="margin-top:10px;"></div>
         </div>
       `;
-      postList.appendChild(div);
+      postList.insertBefore(div, postList.firstChild);
 
-      // Load comments
-      const commentList = document.getElementById(`commentList${index}`);
+      const commentList = document.getElementById(`commentList${realIndex}`);
       (post.comments || []).forEach(comment => {
         const cdiv = document.createElement("div");
         cdiv.classList.add("comment");
@@ -56,10 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const comment = input.value.trim();
     if (!comment) return;
     const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
-    posts.reverse(); // make sure to reverse back to correct order
     posts[index].comments = posts[index].comments || [];
     posts[index].comments.push(comment);
-    posts.reverse();
     localStorage.setItem("communityPosts", JSON.stringify(posts));
     loadPosts();
   };
@@ -67,9 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.deletePost = (index) => {
     if (!confirm("Hapus postingan ini?")) return;
     const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
-    posts.reverse();
     posts.splice(index, 1);
-    posts.reverse();
     localStorage.setItem("communityPosts", JSON.stringify(posts));
     loadPosts();
   };
