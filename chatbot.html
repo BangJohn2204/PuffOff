@@ -38,52 +38,45 @@
 <script>
 const chatArea = document.getElementById("chat-area");
 
-function sendMessage() {
-  const input = document.getElementById("userInput");
-  const text = input.value.trim();
-  if (!text) return false;
-
-  // Tampilkan pesan user
-  appendMessage("user", text);
-
-  // Respons dummy AI
-  setTimeout(() => {
-    const reply = getBotReply(text);
-    appendMessage("bot", reply);
-  }, 600);
-
-  input.value = "";
-  return false;
-}
-
-function appendMessage(sender, message) {
+function appendMessage(sender, text) {
   const msg = document.createElement("div");
-  msg.classList.add("ui", "segment", sender === "user" ? "right aligned teal" : "left aligned olive");
-  msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong> <br> ${message}`;
+  msg.classList.add("ui", "segment");
+  if (sender === "user") {
+    msg.classList.add("right", "aligned", "teal");
+  } else {
+    msg.classList.add("left", "aligned", "olive");
+  }
+  msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong><br>${text}`;
   chatArea.appendChild(msg);
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-function getBotReply(text) {
-  const lower = text.toLowerCase();
+async function sendMessage() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return false;
 
-  if (lower.includes("halo") || lower.includes("hai")) {
-    return "Halo! Aku siap mendukungmu hari ini 💪";
-  }
-  if (lower.includes("ingin merokok")) {
-    return "Ingat alasanmu berhenti. Tarik napas dalam, minum air, dan alihkan perhatianmu!";
-  }
-  if (lower.includes("capek") || lower.includes("lelah")) {
-    return "Kelelahan bisa jadi pemicu. Coba istirahat sebentar dan jaga dirimu baik-baik ya 😊";
-  }
-  if (lower.includes("berapa hari")) {
-    const mulai = localStorage.getItem("tanggalMulai");
-    if (!mulai) return "Kamu belum menetapkan tanggal mulai berhenti rokok 😢";
-    const hari = Math.floor((new Date() - new Date(mulai)) / (1000 * 60 * 60 * 24)) + 1;
-    return `Kamu sudah bebas rokok selama ${hari} hari! Hebat banget! 🎉`;
+  appendMessage("user", text);
+  input.value = "";
+  appendMessage("bot", "Mengetik...");
+
+  try {
+    const res = await fetch("https://7fcc5b59-e834-4965-ab27-5828ac54464d-00-1fi75n8odq3cm.pike.replit.dev/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
+
+    const data = await res.json();
+    chatArea.lastChild.remove();
+    appendMessage("bot", data.reply || "Maaf, AI tidak menjawab.");
+  } catch (err) {
+    console.error("Gagal:", err);
+    chatArea.lastChild.remove();
+    appendMessage("bot", "Terjadi kesalahan. Coba beberapa saat lagi.");
   }
 
-  return "Aku mungkin belum mengerti maksudmu, tapi aku tetap di sini untukmu ❤️";
+  return false;
 }
 </script>
 
