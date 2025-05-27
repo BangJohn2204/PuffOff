@@ -42,11 +42,18 @@ const chatArea = document.getElementById("chat-area");
 function appendMessage(sender, text) {
   const msg = document.createElement("div");
   msg.classList.add("ui", "segment");
-  msg.classList.add(sender === "user" ? "right aligned teal" : "left aligned olive");
+
+  if (sender === "user") {
+    msg.classList.add("right", "aligned", "teal");
+  } else {
+    msg.classList.add("left", "aligned", "olive");
+  }
+
   msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong><br>${text}`;
   chatArea.appendChild(msg);
   chatArea.scrollTop = chatArea.scrollHeight;
 }
+
 
 async function sendMessage(event) {
   event.preventDefault();
