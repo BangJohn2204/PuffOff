@@ -42,3 +42,50 @@ body, html {
 .ui.progress {
   margin-top: 1em;
 }
+
+/* === Komunitas / Forum Styling === */
+.ui.container.komunitas {
+  background: white;
+  padding: 2em;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.ui.header.komunitas {
+  color: #21ba45;
+}
+
+.comment .actions {
+  margin-top: 0.5em;
+}
+
+.comment .actions a {
+  color: #4183c4;
+  cursor: pointer;
+  margin-right: 1em;
+  font-weight: bold;
+}
+
+.ui.form textarea {
+  resize: none;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.ui.comments {
+  margin-top: 1.5em;
+}
+
+.ui.comments .comment {
+  border-left: 3px solid #f0f0f0;
+  margin-bottom: 1em;
+  padding-left: 1em;
+}
+
+.ui.comments .comment .comment {
+  margin-left: 2em;
+  margin-top: 0.5em;
+  background-color: #f7f7f7;
+  padding: 0.5em;
+  border-radius: 6px;
+}
