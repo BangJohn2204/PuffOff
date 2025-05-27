@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const postForm = document.getElementById("postForm");
   const postInput = document.getElementById("postInput");
@@ -6,27 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loadPosts = () => {
     postList.innerHTML = "";
-    
-    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
-    if (posts.length === 0) {
-      posts = [
-        {
-          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
-          date: new Date().toISOString(),
-          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
-        },
-        {
-          text: "Baru mulai hari pertama. Masih berat banget 😓",
-          date: new Date().toISOString(),
-          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
-        }
-      ];
-      localStorage.setItem("communityPosts", JSON.stringify(posts));
-    }
-    
+    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
 
-    posts.forEach((post, index) => {
-      const realIndex = posts.length - 1 - index;
+    for (let i = posts.length - 1; i >= 0; i--) {
+      const post = posts[i];
       const div = document.createElement("div");
       div.classList.add("comment");
       div.innerHTML = `
@@ -35,21 +17,21 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="metadata"><span>${new Date(post.date).toLocaleString()}</span></div>
           <div class="text">${post.text}</div>
           <div class="actions">
-            <a class="reply" onclick="toggleCommentForm(${realIndex})">Balas</a>
-            <a class="delete" onclick="deletePost(${realIndex})">Hapus</a>
+            <a class="reply" onclick="toggleCommentForm(${i})">Balas</a>
+            <a class="delete" onclick="deletePost(${i})">Hapus</a>
           </div>
-          <div class="ui form reply-form" id="replyForm${realIndex}" style="display:none; margin-top: 10px;">
+          <div class="ui form reply-form" id="replyForm${i}" style="display:none; margin-top: 10px;">
             <div class="field">
-              <input type="text" placeholder="Tulis komentar..." id="replyInput${realIndex}" />
+              <input type="text" placeholder="Tulis komentar..." id="replyInput${i}" />
             </div>
-            <button class="ui tiny button" onclick="addComment(${realIndex})">Kirim</button>
+            <button class="ui tiny button" onclick="addComment(${i})">Kirim</button>
           </div>
-          <div class="ui comments" id="commentList${realIndex}" style="margin-top:10px;"></div>
+          <div class="ui comments" id="commentList${i}" style="margin-top:10px;"></div>
         </div>
       `;
-      postList.insertBefore(div, postList.firstChild);
+      postList.appendChild(div);
 
-      const commentList = document.getElementById(`commentList${realIndex}`);
+      const commentList = document.getElementById(`commentList${i}`);
       (post.comments || []).forEach(comment => {
         const cdiv = document.createElement("div");
         cdiv.classList.add("comment");
@@ -61,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         commentList.appendChild(cdiv);
       });
-    });
+    }
   };
 
   window.toggleCommentForm = (index) => {
@@ -73,24 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById(`replyInput${index}`);
     const comment = input.value.trim();
     if (!comment) return;
-    
-    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
-    if (posts.length === 0) {
-      posts = [
-        {
-          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
-          date: new Date().toISOString(),
-          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
-        },
-        {
-          text: "Baru mulai hari pertama. Masih berat banget 😓",
-          date: new Date().toISOString(),
-          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
-        }
-      ];
-      localStorage.setItem("communityPosts", JSON.stringify(posts));
-    }
-    
+    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
     posts[index].comments = posts[index].comments || [];
     posts[index].comments.push(comment);
     localStorage.setItem("communityPosts", JSON.stringify(posts));
@@ -99,24 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.deletePost = (index) => {
     if (!confirm("Hapus postingan ini?")) return;
-    
-    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
-    if (posts.length === 0) {
-      posts = [
-        {
-          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
-          date: new Date().toISOString(),
-          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
-        },
-        {
-          text: "Baru mulai hari pertama. Masih berat banget 😓",
-          date: new Date().toISOString(),
-          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
-        }
-      ];
-      localStorage.setItem("communityPosts", JSON.stringify(posts));
-    }
-    
+    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
     posts.splice(index, 1);
     localStorage.setItem("communityPosts", JSON.stringify(posts));
     loadPosts();
@@ -126,24 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const text = postInput.value.trim();
     if (!text) return;
-    
-    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
-    if (posts.length === 0) {
-      posts = [
-        {
-          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
-          date: new Date().toISOString(),
-          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
-        },
-        {
-          text: "Baru mulai hari pertama. Masih berat banget 😓",
-          date: new Date().toISOString(),
-          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
-        }
-      ];
-      localStorage.setItem("communityPosts", JSON.stringify(posts));
-    }
-    
+    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
     posts.push({ text, date: new Date().toISOString(), comments: [] });
     localStorage.setItem("communityPosts", JSON.stringify(posts));
     postInput.value = "";
