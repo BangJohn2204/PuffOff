@@ -5,7 +5,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loadPosts = () => {
     postList.innerHTML = "";
-    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+
+    if (posts.length === 0) {
+      posts = [
+        {
+          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
+          date: new Date().toISOString(),
+          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
+        },
+        {
+          text: "Baru mulai hari pertama. Masih berat banget 😓",
+          date: new Date().toISOString(),
+          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
+        }
+      ];
+      localStorage.setItem("communityPosts", JSON.stringify(posts));
+    }
 
     for (let i = posts.length - 1; i >= 0; i--) {
       const post = posts[i];
