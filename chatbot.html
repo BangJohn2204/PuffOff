@@ -6,11 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { padding-bottom: 60px; }
+    .ui.bottom.fixed.menu { overflow-x: auto; white-space: nowrap; }
+    .ui.bottom.fixed.menu .item { flex-shrink: 0; }
+  </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<div class="ui top fixed menu green inverted">
+<div class="ui container" style="margin-top: 40px; max-width: 600px;">
+  <h2 class="ui header center aligned">AI Chatbot PuffOff 🤖</h2>
+  <div class="ui segment" id="chat-area" style="height: 400px; overflow-y: auto;"></div>
+  <form class="ui form" id="chatForm">
+    <div class="ui action input fluid">
+      <input type="text" id="userInput" placeholder="Ketik pesan di sini..." autocomplete="off" required />
+      <button class="ui blue button" type="submit">Kirim</button>
+    </div>
+  </form>
+</div>
+
+<div class="ui bottom fixed menu green inverted">
   <div class="ui container">
     <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
     <a class="item" href="progress.html"><i class="chart bar icon"></i>Progres</a>
@@ -21,67 +36,41 @@
   </div>
 </div>
 
-<!-- Konten -->
-<div class="ui container" style="margin-top: 80px; max-width: 600px;">
-  <h2 class="ui header center aligned">AI Chatbot PuffOff 🤖</h2>
-
-  <div class="ui segment" id="chat-area" style="height: 400px; overflow-y: auto;">
-    <!-- Chat akan muncul di sini -->
-  </div>
-
-  <form class="ui form" id="chatForm">
-    <div class="ui action input fluid">
-      <input type="text" id="userInput" placeholder="Ketik pesan di sini..." autocomplete="off" required />
-      <button class="ui blue button" type="submit">Kirim</button>
-    </div>
-  </form>
-</div>
-
 <script>
-  const chatArea = document.getElementById("chat-area");
+const chatArea = document.getElementById("chat-area");
 
-  function appendMessage(sender, text) {
-    const msg = document.createElement("div");
-    msg.classList.add("ui", "segment");
-    if (sender === "user") {
-      msg.classList.add("right", "aligned", "teal");
-    } else {
-      msg.classList.add("left", "aligned", "olive");
-    }
-    msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong><br>${text}`;
-    chatArea.appendChild(msg);
-    chatArea.scrollTop = chatArea.scrollHeight;
+function appendMessage(sender, text) {
+  const msg = document.createElement("div");
+  msg.classList.add("ui", "segment");
+  msg.classList.add(sender === "user" ? "right aligned teal" : "left aligned olive");
+  msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong><br>${text}`;
+  chatArea.appendChild(msg);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+async function sendMessage(event) {
+  event.preventDefault();
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return;
+  appendMessage("user", text);
+  input.value = "";
+  appendMessage("bot", "Mengetik...");
+  try {
+    const res = await fetch("https://puffoff-api.vercel.app/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
+    const data = await res.json();
+    chatArea.lastChild.remove();
+    appendMessage("bot", data.reply || "Maaf, AI tidak memberikan balasan.");
+  } catch (err) {
+    chatArea.lastChild.remove();
+    appendMessage("bot", "Terjadi kesalahan. Coba lagi nanti.");
   }
-
-  async function sendMessage(event) {
-    event.preventDefault();
-
-    const input = document.getElementById("userInput");
-    const text = input.value.trim();
-    if (!text) return;
-
-    appendMessage("user", text);
-    input.value = "";
-    appendMessage("bot", "Mengetik...");
-
-    try {
-      const res = await fetch("https://puffoff-api.vercel.app/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
-      });
-
-      const data = await res.json();
-      chatArea.lastChild.remove();
-      appendMessage("bot", data.reply || "Maaf, AI tidak memberikan balasan.");
-    } catch (err) {
-      console.error("Gagal fetch:", err);
-      chatArea.lastChild.remove();
-      appendMessage("bot", "Terjadi kesalahan. Coba lagi nanti.");
-    }
-  }
-
-  document.getElementById("chatForm").addEventListener("submit", sendMessage);
+}
+document.getElementById("chatForm").addEventListener("submit", sendMessage);
 </script>
 
 </body>

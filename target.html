@@ -7,23 +7,25 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      padding-bottom: 60px; /* agar konten tidak tertutup navbar bawah */
+    }
+
+    .ui.bottom.fixed.menu {
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .ui.bottom.fixed.menu .item {
+      flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<div class="ui top fixed menu green inverted">
-  <div class="ui container">
-    <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
-    <a class="item" href="progress.html"><i class="chart bar icon"></i>Progres</a>
-    <a class="item" href="chatbot.html"><i class="comments icon"></i>Chatbot</a>
-    <a class="item" href="komunitas.html"><i class="users icon"></i>Komunitas</a>
-    <a class="item active" href="target.html"><i class="target icon"></i>Target</a>
-    <a class="item" href="profile.html"><i class="user icon"></i>Profil</a>
-  </div>
-</div>
-
 <!-- Konten -->
-<div class="ui container" style="margin-top: 80px; max-width: 500px;">
+<div class="ui container" style="margin-top: 40px; max-width: 500px;">
   <h2 class="ui header center aligned">Target & Refleksi</h2>
 
   <div class="ui segment">
@@ -51,19 +53,16 @@
     <p>Sudah berjalan: <strong id="summaryBerjalan"></strong> hari</p>
     <p><em id="summaryRefleksi"></em></p>
 
-    <!-- Grafik Lingkaran -->
     <div class="ui center aligned segment">
       <canvas id="progressChart" width="200" height="200"></canvas>
     </div>
 
-    <!-- Progress Bar -->
     <div class="ui progress" id="targetProgress">
       <div class="bar" id="progressBar" style="width: 0%;"></div>
       <div class="label" id="progressLabel">0% dari target tercapai</div>
     </div>
   </div>
 
-  <!-- Refleksi Mingguan Otomatis -->
   <div class="ui segment" id="weekly-reflection-form" style="display: none;">
     <h4 class="ui header">Refleksi Mingguan</h4>
     <p>Bagaimana pengalamanmu selama minggu ke-<strong id="mingguKe"></strong> ini?</p>
@@ -75,10 +74,21 @@
     </form>
   </div>
 
-  <!-- Daftar Refleksi Mingguan -->
   <div class="ui segment" id="daftar-refleksi-mingguan" style="display: none;">
     <h4 class="ui header">Refleksi Mingguan Sebelumnya</h4>
     <div id="list-refleksi"></div>
+  </div>
+</div>
+
+<!-- Navbar bawah -->
+<div class="ui bottom fixed menu green inverted">
+  <div class="ui container">
+    <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
+    <a class="item" href="progress.html"><i class="chart bar icon"></i>Progres</a>
+    <a class="item" href="chatbot.html"><i class="comments icon"></i>Chatbot</a>
+    <a class="item" href="komunitas.html"><i class="users icon"></i>Komunitas</a>
+    <a class="item active" href="target.html"><i class="target icon"></i>Target</a>
+    <a class="item" href="profile.html"><i class="user icon"></i>Profil</a>
   </div>
 </div>
 
