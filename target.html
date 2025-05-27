@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Target & Refleksi - PuffOff</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="ui top fixed menu green inverted">
+  <div class="ui container">
+    <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
+    <a class="item" href="progress.html"><i class="chart bar icon"></i>Progres</a>
+    <a class="item active" href="target.html"><i class="target icon"></i>Target</a>
+    <a class="item" href="profile.html"><i class="user icon"></i>Profil</a>
+  </div>
+</div>
+
+<!-- Konten Utama -->
+<div class="ui container" style="margin-top: 80px; max-width: 500px;">
+  <h2 class="ui header center aligned">Target & Refleksi</h2>
+
+  <div class="ui segment">
+    <form class="ui form" onsubmit="return saveTarget()">
+      <div class="field">
+        <label>Target Mingguan</label>
+        <input type="number" id="targetHari" placeholder="Contoh: 7 hari" min="1" required>
+      </div>
+      <div class="field">
+        <label>Catatan Refleksi Hari Ini</label>
+        <textarea id="refleksi" rows="3" placeholder="Apa tantangan atau keberhasilanmu hari ini?" required></textarea>
+      </div>
+      <button class="ui blue button fluid" type="submit">Simpan Target & Refleksi</button>
+    </form>
+  </div>
+
+  <div class="ui segment" id="target-summary" style="display: none;">
+    <h4 class="ui header">Targetmu Saat Ini</h4>
+    <p><strong id="summaryHari"></strong> hari tanpa rokok.</p>
+    <p><em id="summaryRefleksi"></em></p>
+  </div>
+</div>
+
+<script>
+function saveTarget() {
+  const hari = document.getElementById("targetHari").value;
+  const refleksi = document.getElementById("refleksi").value;
+
+  // Simpan dummy ke localStorage
+  localStorage.setItem("targetHari", hari);
+  localStorage.setItem("refleksi", refleksi);
+
+  // Tampilkan ringkasan
+  document.getElementById("summaryHari").innerText = hari;
+  document.getElementById("summaryRefleksi").innerText = refleksi;
+  document.getElementById("target-summary").style.display = "block";
+
+  // Reset form
+  document.getElementById("targetHari").value = "";
+  document.getElementById("refleksi").value = "";
+
+  return false;
+}
+
+// Tampilkan data sebelumnya saat halaman dibuka
+window.onload = function () {
+  const savedHari = localStorage.getItem("targetHari");
+  const savedRefleksi = localStorage.getItem("refleksi");
+
+  if (savedHari && savedRefleksi) {
+    document.getElementById("summaryHari").innerText = savedHari;
+    document.getElementById("summaryRefleksi").innerText = savedRefleksi;
+    document.getElementById("target-summary").style.display = "block";
+  }
+};
+</script>
+
+</body>
+</html>
