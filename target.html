@@ -36,7 +36,7 @@
       </div>
       <div class="field">
         <label>Catatan Refleksi Hari Ini</label>
-        <textarea id="refleksi" rows="3" placeholder="Tantangan / keberhasilanmu hari ini?" required></textarea>
+        <textarea id="refleksi" rows="3" placeholder="Tantangan atau keberhasilanmu hari ini?" required></textarea>
       </div>
       <button class="ui blue button fluid" type="submit">Simpan Target & Refleksi</button>
     </form>
@@ -60,6 +60,24 @@
       <div class="label" id="progressLabel">0% dari target tercapai</div>
     </div>
   </div>
+
+  <!-- Refleksi Mingguan Otomatis -->
+  <div class="ui segment" id="weekly-reflection-form" style="display: none;">
+    <h4 class="ui header">Refleksi Mingguan</h4>
+    <p>Bagaimana pengalamanmu selama minggu ke-<strong id="mingguKe"></strong> ini?</p>
+    <form class="ui form" onsubmit="return simpanRefleksiMingguan()">
+      <div class="field">
+        <textarea id="refleksiMingguan" rows="3" placeholder="Tulis refleksi minggu ini..." required></textarea>
+      </div>
+      <button class="ui green button" type="submit">Simpan Refleksi Mingguan</button>
+    </form>
+  </div>
+
+  <!-- Daftar Refleksi Mingguan -->
+  <div class="ui segment" id="daftar-refleksi-mingguan" style="display: none;">
+    <h4 class="ui header">Refleksi Mingguan Sebelumnya</h4>
+    <div id="list-refleksi"></div>
+  </div>
 </div>
 
 <script>
@@ -81,7 +99,6 @@ function saveTarget() {
 
   tampilkanRingkasan();
 
-  // Reset Form
   document.getElementById("targetHari").value = "";
   document.getElementById("tanggalMulai").value = "";
   document.getElementById("refleksi").value = "";
@@ -102,20 +119,10 @@ function tampilkanRingkasan() {
   document.getElementById("summaryRefleksi").innerText = refleksi;
 
   updateProgress(hariBerjalan, hariTarget);
+  cekRefleksiMingguan(hariBerjalan);
+  tampilkanDaftarRefleksi();
+
   document.getElementById("target-summary").style.display = "block";
-}
-
-function hitungHariBerjalan(tanggalMulai) {
-  const mulai = new Date(tanggalMulai);
-  const hariIni = new Date();
-  const selisihMs = hariIni - mulai;
-  const selisihHari = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
-  return selisihHari >= 0 ? selisihHari + 1 : 0; // +1 biar hari pertama dihitung
-}
-
-function formatTanggal(input) {
-  const d = new Date(input);
-  return d.toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function updateProgress(current, target) {
@@ -156,6 +163,62 @@ function renderChart(percentage) {
       }
     }
   });
+}
+
+function hitungHariBerjalan(tanggalMulai) {
+  const mulai = new Date(tanggalMulai);
+  const hariIni = new Date();
+  const selisihMs = hariIni - mulai;
+  const selisihHari = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
+  return selisihHari >= 0 ? selisihHari + 1 : 0;
+}
+
+function formatTanggal(input) {
+  const d = new Date(input);
+  return d.toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function cekRefleksiMingguan(hariBerjalan) {
+  const mingguKe = Math.floor(hariBerjalan / 7);
+  if (mingguKe === 0) return;
+
+  const key = `minggu${mingguKe}`;
+  const sudahAda = localStorage.getItem(key);
+
+  if (!sudahAda) {
+    document.getElementById("weekly-reflection-form").style.display = "block";
+    document.getElementById("mingguKe").innerText = mingguKe;
+    document.getElementById("weekly-reflection-form").dataset.minggu = mingguKe;
+  }
+}
+
+function simpanRefleksiMingguan() {
+  const minggu = document.getElementById("weekly-reflection-form").dataset.minggu;
+  const isi = document.getElementById("refleksiMingguan").value;
+
+  localStorage.setItem(`minggu${minggu}`, isi);
+  document.getElementById("weekly-reflection-form").style.display = "none";
+  tampilkanDaftarRefleksi();
+
+  return false;
+}
+
+function tampilkanDaftarRefleksi() {
+  let output = "";
+  let ada = false;
+
+  for (let i = 1; i <= 52; i++) {
+    const data = localStorage.getItem(`minggu${i}`);
+    if (data) {
+      ada = true;
+      output += `<div class="ui segment"><strong>Minggu ${i}:</strong><br><em>${data}</em></div>`;
+    }
+  }
+
+  if (ada) {
+    document.getElementById("daftar-refleksi-mingguan").style.display = "block";
+    document.getElementById("list-refleksi").innerHTML = output;
+  }
 }
 
 window.onload = function () {
