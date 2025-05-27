@@ -6,7 +6,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loadPosts = () => {
     postList.innerHTML = "";
-    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    
+    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    if (posts.length === 0) {
+      posts = [
+        {
+          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
+          date: new Date().toISOString(),
+          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
+        },
+        {
+          text: "Baru mulai hari pertama. Masih berat banget 😓",
+          date: new Date().toISOString(),
+          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
+        }
+      ];
+      localStorage.setItem("communityPosts", JSON.stringify(posts));
+    }
+    
 
     posts.forEach((post, index) => {
       const realIndex = posts.length - 1 - index;
@@ -56,7 +73,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById(`replyInput${index}`);
     const comment = input.value.trim();
     if (!comment) return;
-    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    
+    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    if (posts.length === 0) {
+      posts = [
+        {
+          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
+          date: new Date().toISOString(),
+          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
+        },
+        {
+          text: "Baru mulai hari pertama. Masih berat banget 😓",
+          date: new Date().toISOString(),
+          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
+        }
+      ];
+      localStorage.setItem("communityPosts", JSON.stringify(posts));
+    }
+    
     posts[index].comments = posts[index].comments || [];
     posts[index].comments.push(comment);
     localStorage.setItem("communityPosts", JSON.stringify(posts));
@@ -65,7 +99,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.deletePost = (index) => {
     if (!confirm("Hapus postingan ini?")) return;
-    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    
+    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    if (posts.length === 0) {
+      posts = [
+        {
+          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
+          date: new Date().toISOString(),
+          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
+        },
+        {
+          text: "Baru mulai hari pertama. Masih berat banget 😓",
+          date: new Date().toISOString(),
+          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
+        }
+      ];
+      localStorage.setItem("communityPosts", JSON.stringify(posts));
+    }
+    
     posts.splice(index, 1);
     localStorage.setItem("communityPosts", JSON.stringify(posts));
     loadPosts();
@@ -75,7 +126,24 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const text = postInput.value.trim();
     if (!text) return;
-    const posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    
+    let posts = JSON.parse(localStorage.getItem("communityPosts") || "[]");
+    if (posts.length === 0) {
+      posts = [
+        {
+          text: "Hari ini aku berhasil menahan diri untuk tidak merokok! 💪",
+          date: new Date().toISOString(),
+          comments: ["Keren! Semangat terus ya!", "Aku juga sudah 3 hari bebas rokok!"]
+        },
+        {
+          text: "Baru mulai hari pertama. Masih berat banget 😓",
+          date: new Date().toISOString(),
+          comments: ["Semangat, hari pertama itu paling berat!", "Minum air putih bantu loh."]
+        }
+      ];
+      localStorage.setItem("communityPosts", JSON.stringify(posts));
+    }
+    
     posts.push({ text, date: new Date().toISOString(), comments: [] });
     localStorage.setItem("communityPosts", JSON.stringify(posts));
     postInput.value = "";
