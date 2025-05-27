@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot - PuffOff</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="ui top fixed menu green inverted">
+  <div class="ui container">
+    <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
+    <a class="item active" href="chatbot.html"><i class="comments icon"></i>Chatbot</a>
+    <a class="item" href="target.html"><i class="target icon"></i>Target</a>
+    <a class="item" href="profile.html"><i class="user icon"></i>Profil</a>
+  </div>
+</div>
+
+<!-- Konten -->
+<div class="ui container" style="margin-top: 80px; max-width: 600px;">
+  <h2 class="ui header center aligned">AI Chatbot PuffOff 🤖</h2>
+
+  <div class="ui segment" id="chat-area" style="height: 400px; overflow-y: auto;">
+    <!-- Chat akan muncul di sini -->
+  </div>
+
+  <form class="ui form" onsubmit="return sendMessage()">
+    <div class="ui action input fluid">
+      <input type="text" id="userInput" placeholder="Ketik pesan di sini..." autocomplete="off" required />
+      <button class="ui blue button" type="submit">Kirim</button>
+    </div>
+  </form>
+</div>
+
+<script>
+const chatArea = document.getElementById("chat-area");
+
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return false;
+
+  // Tampilkan pesan user
+  appendMessage("user", text);
+
+  // Respons dummy AI
+  setTimeout(() => {
+    const reply = getBotReply(text);
+    appendMessage("bot", reply);
+  }, 600);
+
+  input.value = "";
+  return false;
+}
+
+function appendMessage(sender, message) {
+  const msg = document.createElement("div");
+  msg.classList.add("ui", "segment", sender === "user" ? "right aligned teal" : "left aligned olive");
+  msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong> <br> ${message}`;
+  chatArea.appendChild(msg);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function getBotReply(text) {
+  const lower = text.toLowerCase();
+
+  if (lower.includes("halo") || lower.includes("hai")) {
+    return "Halo! Aku siap mendukungmu hari ini 💪";
+  }
+  if (lower.includes("ingin merokok")) {
+    return "Ingat alasanmu berhenti. Tarik napas dalam, minum air, dan alihkan perhatianmu!";
+  }
+  if (lower.includes("capek") || lower.includes("lelah")) {
+    return "Kelelahan bisa jadi pemicu. Coba istirahat sebentar dan jaga dirimu baik-baik ya 😊";
+  }
+  if (lower.includes("berapa hari")) {
+    const mulai = localStorage.getItem("tanggalMulai");
+    if (!mulai) return "Kamu belum menetapkan tanggal mulai berhenti rokok 😢";
+    const hari = Math.floor((new Date() - new Date(mulai)) / (1000 * 60 * 60 * 24)) + 1;
+    return `Kamu sudah bebas rokok selama ${hari} hari! Hebat banget! 🎉`;
+  }
+
+  return "Aku mungkin belum mengerti maksudmu, tapi aku tetap di sini untukmu ❤️";
+}
+</script>
+
+</body>
+</html>
