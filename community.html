@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Komunitas - PuffOff</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
+</head>
+<body>
+  <div class="ui container" style="margin-top: 60px; max-width: 600px;">
+    <h2 class="ui header center aligned">Forum Komunitas PuffOff 💬</h2>
+
+    <form class="ui form" id="postForm">
+      <div class="field">
+        <textarea id="postInput" rows="3" placeholder="Tulis pesan atau curhat kamu..."></textarea>
+      </div>
+      <button class="ui blue button" type="submit">Kirim</button>
+    </form>
+
+    <h4 class="ui dividing header">Postingan Terbaru</h4>
+    <div class="ui comments" id="postList"></div>
+  </div>
+
+  <script src="community.js"></script>
+</body>
+</html>
