@@ -27,7 +27,7 @@
     <!-- Chat akan muncul di sini -->
   </div>
 
-  <form class="ui form" onsubmit="return sendMessage()">
+  <form class="ui form" id="chatForm">
     <div class="ui action input fluid">
       <input type="text" id="userInput" placeholder="Ketik pesan di sini..." autocomplete="off" required />
       <button class="ui blue button" type="submit">Kirim</button>
@@ -36,48 +36,50 @@
 </div>
 
 <script>
-const chatArea = document.getElementById("chat-area");
+  const chatArea = document.getElementById("chat-area");
 
-function appendMessage(sender, text) {
-  const msg = document.createElement("div");
-  msg.classList.add("ui", "segment");
-  if (sender === "user") {
-    msg.classList.add("right", "aligned", "teal");
-  } else {
-    msg.classList.add("left", "aligned", "olive");
-  }
-  msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong><br>${text}`;
-  chatArea.appendChild(msg);
-  chatArea.scrollTop = chatArea.scrollHeight;
-}
-
-async function sendMessage() {
-  const input = document.getElementById("userInput");
-  const text = input.value.trim();
-  if (!text) return false;
-
-  appendMessage("user", text);
-  input.value = "";
-  appendMessage("bot", "Mengetik...");
-
-  try {
-    const res = await fetch("https://7fcc5b59-e834-4965-ab27-5828ac54464d-00-1fi75n8odq3cm.pike.replit.dev/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text })
-    });
-
-    const data = await res.json();
-    chatArea.lastChild.remove();
-    appendMessage("bot", data.reply || "Maaf, AI tidak menjawab.");
-  } catch (err) {
-    console.error("Gagal:", err);
-    chatArea.lastChild.remove();
-    appendMessage("bot", "Terjadi kesalahan. Coba beberapa saat lagi.");
+  function appendMessage(sender, text) {
+    const msg = document.createElement("div");
+    msg.classList.add("ui", "segment");
+    if (sender === "user") {
+      msg.classList.add("right", "aligned", "teal");
+    } else {
+      msg.classList.add("left", "aligned", "olive");
+    }
+    msg.innerHTML = `<strong>${sender === "user" ? "Kamu" : "PuffBot"}:</strong><br>${text}`;
+    chatArea.appendChild(msg);
+    chatArea.scrollTop = chatArea.scrollHeight;
   }
 
-  return false;
-}
+  async function sendMessage(event) {
+    event.preventDefault();
+
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendMessage("user", text);
+    input.value = "";
+    appendMessage("bot", "Mengetik...");
+
+    try {
+      const res = await fetch("https://7fcc5b59-e834-4965-ab27-5828ac54464d-00-1fi75n8odq3cm.pike.replit.dev/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+
+      const data = await res.json();
+      chatArea.lastChild.remove();
+      appendMessage("bot", data.reply || "Maaf, AI tidak memberikan balasan.");
+    } catch (err) {
+      console.error("Gagal fetch:", err);
+      chatArea.lastChild.remove();
+      appendMessage("bot", "Terjadi kesalahan. Coba lagi nanti.");
+    }
+  }
+
+  document.getElementById("chatForm").addEventListener("submit", sendMessage);
 </script>
 
 </body>
