@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -46,6 +47,12 @@
     <p><strong id="summaryHari"></strong> hari tanpa rokok.</p>
     <p><em id="summaryRefleksi"></em></p>
 
+    <!-- Grafik Lingkaran -->
+    <div class="ui center aligned segment">
+      <canvas id="progressChart" width="200" height="200"></canvas>
+    </div>
+
+    <!-- Progress Bar Biasa -->
     <div class="ui progress" id="targetProgress">
       <div class="bar" id="progressBar" style="width: 0%;"></div>
       <div class="label" id="progressLabel">0% dari target tercapai</div>
@@ -54,12 +61,13 @@
 </div>
 
 <script>
+let chartInstance = null;
+
 function saveTarget() {
   const hariTarget = parseInt(document.getElementById("targetHari").value);
   const hariSekarang = parseInt(document.getElementById("hariSekarang").value);
   const refleksi = document.getElementById("refleksi").value;
 
-  // Validasi sederhana
   if (hariSekarang > hariTarget) {
     alert("Hari saat ini tidak boleh lebih besar dari target.");
     return false;
@@ -89,6 +97,43 @@ function updateProgress(current, target) {
   let progress = Math.min((current / target) * 100, 100);
   document.getElementById("progressBar").style.width = progress + "%";
   document.getElementById("progressLabel").innerText = `${Math.round(progress)}% dari target tercapai`;
+  renderChart(progress);
+}
+
+function renderChart(percentage) {
+  const ctx = document.getElementById('progressChart').getContext('2d');
+
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
+  chartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [percentage, 100 - percentage],
+        backgroundColor: ['#21ba45', '#f0f0f0'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: '70%',
+      responsive: false,
+      plugins: {
+        tooltip: { enabled: false },
+        legend: { display: false },
+        title: {
+          display: true,
+          text: `${Math.round(percentage)}%`,
+          position: 'center',
+          font: {
+            size: 18,
+            weight: 'bold'
+          }
+        }
+      }
+    }
+  });
 }
 
 window.onload = function () {
