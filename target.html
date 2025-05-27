@@ -27,16 +27,16 @@
   <div class="ui segment">
     <form class="ui form" onsubmit="return saveTarget()">
       <div class="field">
-        <label>Target Mingguan</label>
-        <input type="number" id="targetHari" placeholder="Contoh: 7 hari" min="1" required>
+        <label>Target Mingguan (jumlah hari bebas rokok)</label>
+        <input type="number" id="targetHari" placeholder="Contoh: 7" min="1" required>
       </div>
       <div class="field">
-        <label>Hari Bebas Rokok Saat Ini</label>
-        <input type="number" id="hariSekarang" placeholder="Contoh: 3 hari" min="0" required>
+        <label>Tanggal Mulai Berhenti Merokok</label>
+        <input type="date" id="tanggalMulai" required>
       </div>
       <div class="field">
         <label>Catatan Refleksi Hari Ini</label>
-        <textarea id="refleksi" rows="3" placeholder="Apa tantangan atau keberhasilanmu hari ini?" required></textarea>
+        <textarea id="refleksi" rows="3" placeholder="Tantangan / keberhasilanmu hari ini?" required></textarea>
       </div>
       <button class="ui blue button fluid" type="submit">Simpan Target & Refleksi</button>
     </form>
@@ -44,7 +44,9 @@
 
   <div class="ui segment" id="target-summary" style="display: none;">
     <h4 class="ui header">Targetmu Saat Ini</h4>
-    <p><strong id="summaryHari"></strong> hari tanpa rokok.</p>
+    <p>Target: <strong id="summaryTarget"></strong> hari</p>
+    <p>Mulai sejak: <strong id="summaryTanggal"></strong></p>
+    <p>Sudah berjalan: <strong id="summaryBerjalan"></strong> hari</p>
     <p><em id="summaryRefleksi"></em></p>
 
     <!-- Grafik Lingkaran -->
@@ -52,7 +54,7 @@
       <canvas id="progressChart" width="200" height="200"></canvas>
     </div>
 
-    <!-- Progress Bar Biasa -->
+    <!-- Progress Bar -->
     <div class="ui progress" id="targetProgress">
       <div class="bar" id="progressBar" style="width: 0%;"></div>
       <div class="label" id="progressLabel">0% dari target tercapai</div>
@@ -65,32 +67,55 @@ let chartInstance = null;
 
 function saveTarget() {
   const hariTarget = parseInt(document.getElementById("targetHari").value);
-  const hariSekarang = parseInt(document.getElementById("hariSekarang").value);
+  const tanggalMulai = document.getElementById("tanggalMulai").value;
   const refleksi = document.getElementById("refleksi").value;
 
-  if (hariSekarang > hariTarget) {
-    alert("Hari saat ini tidak boleh lebih besar dari target.");
+  if (!tanggalMulai || hariTarget <= 0) {
+    alert("Mohon isi data dengan benar.");
     return false;
   }
 
-  // Simpan ke localStorage
   localStorage.setItem("targetHari", hariTarget);
-  localStorage.setItem("hariSekarang", hariSekarang);
+  localStorage.setItem("tanggalMulai", tanggalMulai);
   localStorage.setItem("refleksi", refleksi);
 
-  // Tampilkan ringkasan
-  document.getElementById("summaryHari").innerText = hariTarget;
-  document.getElementById("summaryRefleksi").innerText = refleksi;
-  updateProgress(hariSekarang, hariTarget);
+  tampilkanRingkasan();
 
-  document.getElementById("target-summary").style.display = "block";
-
-  // Reset form
+  // Reset Form
   document.getElementById("targetHari").value = "";
-  document.getElementById("hariSekarang").value = "";
+  document.getElementById("tanggalMulai").value = "";
   document.getElementById("refleksi").value = "";
 
   return false;
+}
+
+function tampilkanRingkasan() {
+  const hariTarget = parseInt(localStorage.getItem("targetHari"));
+  const tanggalMulai = localStorage.getItem("tanggalMulai");
+  const refleksi = localStorage.getItem("refleksi");
+
+  const hariBerjalan = hitungHariBerjalan(tanggalMulai);
+
+  document.getElementById("summaryTarget").innerText = hariTarget;
+  document.getElementById("summaryTanggal").innerText = formatTanggal(tanggalMulai);
+  document.getElementById("summaryBerjalan").innerText = hariBerjalan;
+  document.getElementById("summaryRefleksi").innerText = refleksi;
+
+  updateProgress(hariBerjalan, hariTarget);
+  document.getElementById("target-summary").style.display = "block";
+}
+
+function hitungHariBerjalan(tanggalMulai) {
+  const mulai = new Date(tanggalMulai);
+  const hariIni = new Date();
+  const selisihMs = hariIni - mulai;
+  const selisihHari = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
+  return selisihHari >= 0 ? selisihHari + 1 : 0; // +1 biar hari pertama dihitung
+}
+
+function formatTanggal(input) {
+  const d = new Date(input);
+  return d.toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function updateProgress(current, target) {
@@ -102,10 +127,7 @@ function updateProgress(current, target) {
 
 function renderChart(percentage) {
   const ctx = document.getElementById('progressChart').getContext('2d');
-
-  if (chartInstance) {
-    chartInstance.destroy();
-  }
+  if (chartInstance) chartInstance.destroy();
 
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
@@ -137,15 +159,8 @@ function renderChart(percentage) {
 }
 
 window.onload = function () {
-  const targetHari = parseInt(localStorage.getItem("targetHari"));
-  const hariSekarang = parseInt(localStorage.getItem("hariSekarang"));
-  const refleksi = localStorage.getItem("refleksi");
-
-  if (!isNaN(targetHari) && !isNaN(hariSekarang) && refleksi) {
-    document.getElementById("summaryHari").innerText = targetHari;
-    document.getElementById("summaryRefleksi").innerText = refleksi;
-    updateProgress(hariSekarang, targetHari);
-    document.getElementById("target-summary").style.display = "block";
+  if (localStorage.getItem("targetHari") && localStorage.getItem("tanggalMulai")) {
+    tampilkanRingkasan();
   }
 };
 </script>
