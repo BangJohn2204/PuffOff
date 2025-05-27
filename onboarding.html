@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PuffOff - Onboarding</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="ui container" id="onboarding">
+
+  <!-- Slide 1 -->
+  <div class="onboarding-slide active" id="slide-1">
+    <img src="assets/img/logo.png" class="ui small centered image" alt="logo">
+    <h2 class="ui header center aligned">Selamat Datang di PuffOff</h2>
+    <p class="center aligned">Aplikasi untuk membantumu berhenti merokok secara bertahap dan sehat.</p>
+    <button class="ui green button fluid" onclick="nextSlide(1)">Lanjut</button>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="onboarding-slide" id="slide-2">
+    <img src="https://img.icons8.com/ios/100/health-graph.png" class="ui centered small image" alt="tracker">
+    <h2 class="ui header center aligned">Pantau Progresmu</h2>
+    <p class="center aligned">Lihat berapa hari kamu bebas rokok, uang yang kamu hemat, dan rokok yang kamu hindari.</p>
+    <button class="ui green button fluid" onclick="nextSlide(2)">Lanjut</button>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="onboarding-slide" id="slide-3">
+    <img src="https://img.icons8.com/ios/100/community-grants.png" class="ui centered small image" alt="community">
+    <h2 class="ui header center aligned">Komunitas Pendukung</h2>
+    <p class="center aligned">Dapatkan semangat dari sesama pejuang berhenti merokok. Kamu tidak sendiri!</p>
+    <button class="ui green button fluid" onclick="nextSlide(3)">Lanjut</button>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="onboarding-slide" id="slide-4">
+    <img src="https://img.icons8.com/ios/100/artificial-intelligence.png" class="ui centered small image" alt="ai">
+    <h2 class="ui header center aligned">Dibantu AI Chatbot</h2>
+    <p class="center aligned">Saat kamu ingin merokok, chatbot kami siap menemani dan mendukungmu.</p>
+    <a href="login.html" class="ui blue button fluid">Mulai Aplikasi</a>
+  </div>
+
+</div>
+
+<script src="js/onboarding.js"></script>
+</body>
+</html>
