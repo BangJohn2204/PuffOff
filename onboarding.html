@@ -1,50 +1,661 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>PuffOff - Onboarding</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Datang - PuffOff</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background animations */
+        .bg-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 8s ease-in-out infinite;
+            color: white;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+            font-size: 40px;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 25%;
+            right: 15%;
+            animation-delay: 2s;
+            font-size: 32px;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+            font-size: 36px;
+        }
+
+        .floating-element:nth-child(4) {
+            bottom: 20%;
+            right: 10%;
+            animation-delay: 6s;
+            font-size: 28px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(90deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+            75% { transform: translateY(-15px) rotate(270deg); }
+        }
+
+        .onboarding-container {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide-wrapper {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .onboarding-slide {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .onboarding-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            position: relative;
+        }
+
+        .onboarding-slide.prev {
+            opacity: 0;
+            transform: translateX(-100px);
+        }
+
+        .slide-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+            position: relative;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        .slide-icon::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 21px;
+        }
+
+        .slide-icon i {
+            font-size: 48px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .slide-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .slide-description {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .slide-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .slide-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .slide-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .slide-button:hover::before {
+            left: 100%;
+        }
+
+        .slide-button.secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-top: 12px;
+        }
+
+        .slide-button.secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .progress-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .progress-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .skip-button {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .skip-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Slide specific styling */
+        .slide-1 .slide-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .slide-2 .slide-icon {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .slide-3 .slide-icon {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .slide-4 .slide-icon {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+
+        /* Welcome animation for first slide */
+        .slide-1.active .slide-icon {
+            animation: welcome 1s ease-out;
+        }
+
+        @keyframes welcome {
+            0% { transform: scale(0) rotate(180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(0deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .slide-1.active .slide-title {
+            animation: slideInUp 0.6s ease-out 0.3s both;
+        }
+
+        .slide-1.active .slide-description {
+            animation: slideInUp 0.6s ease-out 0.5s both;
+        }
+
+        .slide-1.active .slide-button {
+            animation: slideInUp 0.6s ease-out 0.7s both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .onboarding-slide {
+                padding: 40px 30px;
+            }
+            
+            .slide-icon {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 25px;
+            }
+            
+            .slide-icon i {
+                font-size: 40px;
+            }
+            
+            .slide-title {
+                font-size: 24px;
+            }
+            
+            .slide-description {
+                font-size: 14px;
+            }
+            
+            .skip-button {
+                top: 20px;
+                right: 20px;
+            }
+        }
+
+        /* Logo styling for first slide */
+        .logo-section {
+            margin-bottom: 30px;
+        }
+
+        .app-logo {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Particles effect */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: particleFloat 10s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Background Decorations -->
+    <div class="bg-decoration">
+        <div class="floating-element">
+            <i class="fas fa-smoking-ban"></i>
+        </div>
+        <div class="floating-element">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="floating-element">
+            <i class="fas fa-leaf"></i>
+        </div>
+        <div class="floating-element">
+            <i class="fas fa-trophy"></i>
+        </div>
+    </div>
 
-<div class="ui container" id="onboarding">
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
 
-  <!-- Slide 1 -->
-  <div class="onboarding-slide active" id="slide-1">
-    <img src="assets/img/logo.png" class="ui small centered image" alt="logo">
-    <h2 class="ui header center aligned">Selamat Datang di PuffOff</h2>
-    <p class="center aligned">Aplikasi untuk membantumu berhenti merokok secara bertahap dan sehat.</p>
-    <button class="ui green button fluid" onclick="nextSlide(1)">Lanjut</button>
-  </div>
+    <!-- Skip Button -->
+    <button class="skip-button" onclick="skipOnboarding()">
+        Lewati <i class="fas fa-arrow-right"></i>
+    </button>
 
-  <!-- Slide 2 -->
-  <div class="onboarding-slide" id="slide-2">
-    <img src="https://img.icons8.com/ios/100/health-graph.png" class="ui centered small image" alt="tracker">
-    <h2 class="ui header center aligned">Pantau Progresmu</h2>
-    <p class="center aligned">Lihat berapa hari kamu bebas rokok, uang yang kamu hemat, dan rokok yang kamu hindari.</p>
-    <button class="ui green button fluid" onclick="nextSlide(2)">Lanjut</button>
-  </div>
+    <!-- Progress Indicators -->
+    <div class="progress-indicators">
+        <div class="progress-dot active" onclick="goToSlide(1)"></div>
+        <div class="progress-dot" onclick="goToSlide(2)"></div>
+        <div class="progress-dot" onclick="goToSlide(3)"></div>
+        <div class="progress-dot" onclick="goToSlide(4)"></div>
+    </div>
 
-  <!-- Slide 3 -->
-  <div class="onboarding-slide" id="slide-3">
-    <img src="https://img.icons8.com/ios/100/community-grants.png" class="ui centered small image" alt="community">
-    <h2 class="ui header center aligned">Komunitas Pendukung</h2>
-    <p class="center aligned">Dapatkan semangat dari sesama pejuang berhenti merokok. Kamu tidak sendiri!</p>
-    <button class="ui green button fluid" onclick="nextSlide(3)">Lanjut</button>
-  </div>
+    <div class="onboarding-container">
+        <div class="slide-wrapper">
+            <!-- Slide 1: Welcome -->
+            <div class="onboarding-slide slide-1 active" id="slide-1">
+                <div class="logo-section">
+                    <div class="app-logo">PuffOff</div>
+                    <div class="tagline">Perjalanan Hidup Sehat Dimulai Dari Sini</div>
+                </div>
+                
+                <div class="slide-icon">
+                    <i class="fas fa-smoking-ban"></i>
+                </div>
+                
+                <h2 class="slide-title">Selamat Datang di PuffOff</h2>
+                <p class="slide-description">
+                    Aplikasi revolusioner yang akan membantumu berhenti merokok secara bertahap dan sehat. 
+                    Mari mulai perjalanan menuju hidup yang lebih baik!
+                </p>
+                <button class="slide-button" onclick="nextSlide()">
+                    Mulai Perjalanan <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+            </div>
 
-  <!-- Slide 4 -->
-  <div class="onboarding-slide" id="slide-4">
-    <img src="https://img.icons8.com/ios/100/artificial-intelligence.png" class="ui centered small image" alt="ai">
-    <h2 class="ui header center aligned">Dibantu AI Chatbot</h2>
-    <p class="center aligned">Saat kamu ingin merokok, chatbot kami siap menemani dan mendukungmu.</p>
-    <a href="login.html" class="ui blue button fluid">Mulai Aplikasi</a>
-  </div>
+            <!-- Slide 2: Progress Tracking -->
+            <div class="onboarding-slide slide-2" id="slide-2">
+                <div class="slide-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                
+                <h2 class="slide-title">Pantau Progresmu</h2>
+                <p class="slide-description">
+                    Lihat dengan jelas berapa hari kamu telah bebas rokok, berapa uang yang berhasil kamu hemat, 
+                    dan berapa batang rokok yang berhasil kamu hindari setiap harinya.
+                </p>
+                <button class="slide-button" onclick="nextSlide()">
+                    Lanjutkan <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+                <button class="slide-button secondary" onclick="prevSlide()">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
+                </button>
+            </div>
 
-</div>
+            <!-- Slide 3: Community -->
+            <div class="onboarding-slide slide-3" id="slide-3">
+                <div class="slide-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                
+                <h2 class="slide-title">Komunitas Pendukung</h2>
+                <p class="slide-description">
+                    Bergabung dengan komunitas orang-orang yang memiliki tujuan sama. 
+                    Dapatkan dukungan, berbagi pengalaman, dan saling memotivasi. Kamu tidak sendirian!
+                </p>
+                <button class="slide-button" onclick="nextSlide()">
+                    Bergabung <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+                <button class="slide-button secondary" onclick="prevSlide()">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
+                </button>
+            </div>
 
-<script src="js/onboarding.js"></script>
+            <!-- Slide 4: AI Chatbot -->
+            <div class="onboarding-slide slide-4" id="slide-4">
+                <div class="slide-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                
+                <h2 class="slide-title">AI Assistant 24/7</h2>
+                <p class="slide-description">
+                    Saat keinginan untuk merokok muncul, chatbot AI kami siap membantu 24/7. 
+                    Dapatkan tips, motivasi, dan dukungan instant kapan saja kamu membutuhkannya.
+                </p>
+                <a href="login.html" class="slide-button">
+                    Mulai Sekarang <i class="fas fa-rocket" style="margin-left: 8px;"></i>
+                </a>
+                <button class="slide-button secondary" onclick="prevSlide()">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 4;
+
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                const current = document.getElementById(`slide-${currentSlide}`);
+                const next = document.getElementById(`slide-${currentSlide + 1}`);
+                
+                current.classList.remove('active');
+                current.classList.add('prev');
+                
+                setTimeout(() => {
+                    next.classList.add('active');
+                    updateProgressIndicators();
+                }, 300);
+                
+                currentSlide++;
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                const current = document.getElementById(`slide-${currentSlide}`);
+                const prev = document.getElementById(`slide-${currentSlide - 1}`);
+                
+                current.classList.remove('active');
+                
+                setTimeout(() => {
+                    prev.classList.remove('prev');
+                    prev.classList.add('active');
+                    updateProgressIndicators();
+                }, 300);
+                
+                currentSlide--;
+            }
+        }
+
+        function goToSlide(slideNumber) {
+            if (slideNumber !== currentSlide) {
+                const current = document.getElementById(`slide-${currentSlide}`);
+                const target = document.getElementById(`slide-${slideNumber}`);
+                
+                current.classList.remove('active');
+                if (slideNumber < currentSlide) {
+                    current.classList.add('prev');
+                }
+                
+                setTimeout(() => {
+                    if (slideNumber < currentSlide) {
+                        target.classList.remove('prev');
+                    }
+                    target.classList.add('active');
+                    updateProgressIndicators();
+                }, 300);
+                
+                currentSlide = slideNumber;
+            }
+        }
+
+        function updateProgressIndicators() {
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                if (index + 1 === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function skipOnboarding() {
+            window.location.href = 'login.html';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Escape') {
+                skipOnboarding();
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    nextSlide();
+                } else {
+                    // Swipe right - previous slide
+                    prevSlide();
+                }
+            }
+        }
+
+        // Initialize particles on load
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Auto-advance slides demo (optional)
+            // setTimeout(() => {
+            //     if (currentSlide === 1) nextSlide();
+            // }, 5000);
+        });
+
+        // Add some interactive feedback
+        document.querySelectorAll('.slide-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
 </body>
 </html>
