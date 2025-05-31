@@ -774,7 +774,7 @@
             </div>
 
             <!-- Terms and Conditions -->
-            <div class="terms-checkbox">
+            <div class="terms-checkbox" onclick="toggleTerms()">
                 <div class="custom-checkbox" id="termsCheckbox">
                     <i class="fas fa-check"></i>
                 </div>
@@ -859,22 +859,31 @@
             }
         }
 
-        // Toggle terms checkbox
+        // Toggle terms checkbox - SIMPLIFIED VERSION
         function toggleTerms() {
+            console.log('🔥 TOGGLE TERMS FUNCTION CALLED!');
+            
             const checkbox = document.getElementById('termsCheckbox');
             
+            // Toggle the state
             termsAccepted = !termsAccepted;
             
+            console.log('📋 TERMS TOGGLED TO:', termsAccepted ? 'ACCEPTED ✅' : 'NOT ACCEPTED ❌');
+            
+            // Update visual state
             if (termsAccepted) {
                 checkbox.classList.add('checked');
+                console.log('✅ Added "checked" class to checkbox');
             } else {
                 checkbox.classList.remove('checked');
+                console.log('❌ Removed "checked" class from checkbox');
             }
             
-            console.log('📋 TERMS TOGGLED:', termsAccepted ? 'ACCEPTED ✅' : 'NOT ACCEPTED ❌');
-            
-            // Update button immediately when terms state changes
+            // Update button immediately
+            console.log('🔄 Calling updateRegisterButton...');
             updateRegisterButton();
+            
+            return false; // Prevent any default behavior
         }
 
 
@@ -1338,11 +1347,8 @@
                 });
             });
 
-            // Initial button state check
-            console.log('🔄 INITIAL BUTTON STATE CHECK');
-            updateRegisterButton();
-            
-            console.log('✅ FORM INITIALIZATION COMPLETE');
+            // DON'T run initial button check - let user start fresh
+            console.log('✅ FORM INITIALIZATION COMPLETE - Ready for user input');
         });
     </script>
 </body>
