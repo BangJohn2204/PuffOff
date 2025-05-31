@@ -304,8 +304,22 @@
             transform: translateY(0);
         }
 
+        .register-btn.disabled-form {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .register-btn.disabled-terms {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .register-btn:disabled {
-            opacity: 0.6;
+            opacity: 0.8;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -827,7 +841,6 @@
         // Toggle terms checkbox
         function toggleTerms() {
             const checkbox = document.getElementById('termsCheckbox');
-            const registerBtn = document.getElementById('registerBtn');
             
             termsAccepted = !termsAccepted;
             
@@ -838,6 +851,8 @@
             }
             
             console.log('Terms accepted:', termsAccepted); // Debug log
+            
+            // Update button immediately when terms state changes
             updateRegisterButton();
         }
 
@@ -984,15 +999,37 @@
                 confirmPasswordValidation.className = 'validation-message success';
             }
             
-            return isValid && termsAccepted;
+            return isValid;
         }
 
         // Update register button state
         function updateRegisterButton() {
             const registerBtn = document.getElementById('registerBtn');
-            const isValid = validateForm();
+            const btnText = document.getElementById('btnText');
+            const isFormValid = validateForm();
+            const isComplete = isFormValid && termsAccepted;
             
-            registerBtn.disabled = !isValid;
+            console.log('Form valid:', isFormValid, 'Terms accepted:', termsAccepted, 'Button enabled:', isComplete);
+            
+            // Remove all custom classes first
+            registerBtn.classList.remove('disabled-form', 'disabled-terms');
+            
+            registerBtn.disabled = !isComplete;
+            
+            // Update button appearance and text based on state
+            if (!isFormValid && !termsAccepted) {
+                btnText.textContent = 'Lengkapi form dan setujui syarat';
+                registerBtn.classList.add('disabled-form');
+            } else if (!isFormValid) {
+                btnText.textContent = 'Lengkapi form terlebih dahulu';
+                registerBtn.classList.add('disabled-form');
+            } else if (!termsAccepted) {
+                btnText.textContent = 'Setujui syarat & ketentuan';
+                registerBtn.classList.add('disabled-terms');
+            } else {
+                btnText.textContent = 'Buat Akun';
+                // Button is enabled, no special class needed
+            }
         }
 
         // Handle registration
@@ -1176,14 +1213,30 @@
         }
             const inputs = ['fullName', 'email', 'password', 'confirmPassword'];
             
+            // Real-time validation for all inputs
             inputs.forEach(inputId => {
-                document.getElementById(inputId).addEventListener('input', updateRegisterButton);
+                const input = document.getElementById(inputId);
+                input.addEventListener('input', function() {
+                    // Small delay to allow typing to complete
+                    clearTimeout(this.validationTimeout);
+                    this.validationTimeout = setTimeout(() => {
+                        updateRegisterButton();
+                    }, 300);
+                });
+                
+                // Also update on blur for immediate feedback
+                input.addEventListener('blur', updateRegisterButton);
             });
 
             // Real-time password strength checking
             document.getElementById('password').addEventListener('input', function() {
                 checkPasswordStrength(this.value);
-                updateRegisterButton();
+                
+                // Update button after password check
+                clearTimeout(this.validationTimeout);
+                this.validationTimeout = setTimeout(() => {
+                    updateRegisterButton();
+                }, 300);
             });
 
             // Add focus effects
