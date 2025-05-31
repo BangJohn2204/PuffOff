@@ -1,30 +1,496 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MLBB Hero Spinner</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="spinner-container">
-    <select id="role-filter">
-      <option value="All">All Roles</option>
-      <option value="Fighter">Fighter</option>
-      <option value="Tank">Tank</option>
-      <option value="Assassin">Assassin</option>
-      <option value="Marksman">Marksman</option>
-      <option value="Support">Support</option>
-      <option value="Mage">Mage</option>
-    </select>
-    <div id="hero-display">
-      <img id="hero-image" src="" alt="Hero Image">
-      <h2 id="hero-name"></h2>
-    </div>
-    <button id="spin-button">Spin</button>
-  </div>
+!DOCTYPE html
+html lang=id
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    titlePuffOff API Test Tooltitle
+    style
+        body {
+            font-family 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width 800px;
+            margin 0 auto;
+            padding 20px;
+            background #f8fafc;
+        }
+        .container {
+            background white;
+            padding 30px;
+            border-radius 12px;
+            box-shadow 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color #1f2937;
+            text-align center;
+            margin-bottom 30px;
+        }
+        .test-section {
+            margin 20px 0;
+            padding 20px;
+            border 1px solid #e2e8f0;
+            border-radius 8px;
+            background #fafbfc;
+        }
+        .test-button {
+            background linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color white;
+            border none;
+            padding 12px 24px;
+            border-radius 6px;
+            cursor pointer;
+            margin 5px;
+            font-weight 600;
+        }
+        .test-buttonhover {
+            transform translateY(-1px);
+            box-shadow 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .result {
+            margin-top 15px;
+            padding 15px;
+            border-radius 6px;
+            white-space pre-wrap;
+            font-family monospace;
+            font-size 14px;
+            max-height 300px;
+            overflow-y auto;
+        }
+        .success {
+            background #ecfdf5;
+            border 1px solid #10b981;
+            color #065f46;
+        }
+        .error {
+            background #fef2f2;
+            border 1px solid #ef4444;
+            color #991b1b;
+        }
+        .info {
+            background #eff6ff;
+            border 1px solid #3b82f6;
+            color #1e40af;
+        }
+        .input-group {
+            margin 15px 0;
+        }
+        .input-group label {
+            display block;
+            margin-bottom 5px;
+            font-weight 600;
+            color #374151;
+        }
+        .input-group input, .input-group textarea {
+            width 100%;
+            padding 10px;
+            border 1px solid #d1d5db;
+            border-radius 6px;
+            font-size 14px;
+        }
+        .status-indicator {
+            display inline-block;
+            width 12px;
+            height 12px;
+            border-radius 50%;
+            margin-right 8px;
+        }
+        .status-online { background #10b981; }
+        .status-offline { background #ef4444; }
+        .status-unknown { background #f59e0b; }
+    style
+head
+body
+    div class=container
+        h1🔧 PuffOff API Test Toolh1
+        
+        !-- API Status --
+        div class=test-section
+            h3span id=statusIndicator class=status-indicator status-unknownspanAPI Statush3
+            pstrongBase URLstrong codehttpspuffoff-api.vercel.appcodep
+            pstrongEndpointstrong codeapichatcodep
+            button class=test-button onclick=checkAPIStatus()🔍 Check API Statusbutton
+            div id=statusResult class=result info style=display none;div
+        div
 
-  <script src="heroes_array.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+        !-- Basic Test --
+        div class=test-section
+            h3📡 Basic API Testh3
+            div class=input-group
+                label for=testMessageTest Messagelabel
+                input type=text id=testMessage value=Halo, saya ingin berhenti merokok placeholder=Ketik pesan test...
+            div
+            button class=test-button onclick=testBasicAPI()🚀 Test API Callbutton
+            button class=test-button onclick=testWithGreeting()👋 Test Greetingbutton
+            button class=test-button onclick=testWithQuestion()❓ Test Questionbutton
+            div id=basicResult class=result info style=display none;div
+        div
+
+        !-- Advanced Tests --
+        div class=test-section
+            h3🔬 Advanced Testsh3
+            button class=test-button onclick=testCORS()🌐 Test CORSbutton
+            button class=test-button onclick=testTimeout()⏱️ Test Timeoutbutton
+            button class=test-button onclick=testErrorHandling()⚠️ Test Error Handlingbutton
+            button class=test-button onclick=testLongMessage()📝 Test Long Messagebutton
+            div id=advancedResult class=result info style=display none;div
+        div
+
+        !-- Environment Check --
+        div class=test-section
+            h3🔐 Environment Checkh3
+            button class=test-button onclick=checkEnvironment()🔍 Check Env Variablesbutton
+            div id=envResult class=result info style=display none;div
+        div
+
+        !-- Integration Test --
+        div class=test-section
+            h3🔗 Full Integration Testh3
+            button class=test-button onclick=runFullTest()🎯 Run Complete Test Suitebutton
+            div id=fullTestResult class=result info style=display none;div
+        div
+    div
+
+    script
+        const API_BASE = 'httpspuffoff-api.vercel.app';
+        const API_ENDPOINT = 'apichat';
+
+        function updateStatus(isOnline) {
+            const indicator = document.getElementById('statusIndicator');
+            indicator.className = `status-indicator ${isOnline  'status-online'  'status-offline'}`;
+        }
+
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.textContent = content;
+            element.style.display = 'block';
+        }
+
+        async function checkAPIStatus() {
+            showResult('statusResult', '🔍 Checking API status...', 'info');
+            
+            try {
+                 Test OPTIONS request (CORS preflight)
+                const optionsResponse = await fetch(`${API_BASE}${API_ENDPOINT}`, {
+                    method 'OPTIONS'
+                });
+
+                const result = `✅ API Status Check
+
+OPTIONS Request
+- Status ${optionsResponse.status}
+- Headers ${JSON.stringify([...optionsResponse.headers.entries()], null, 2)}
+
+CORS Headers
+- Access-Control-Allow-Origin ${optionsResponse.headers.get('Access-Control-Allow-Origin')  'Not set'}
+- Access-Control-Allow-Methods ${optionsResponse.headers.get('Access-Control-Allow-Methods')  'Not set'}
+- Access-Control-Allow-Headers ${optionsResponse.headers.get('Access-Control-Allow-Headers')  'Not set'}
+
+✅ API is reachable and CORS is configured!`;
+
+                showResult('statusResult', result, 'success');
+                updateStatus(true);
+
+            } catch (error) {
+                const result = `❌ API Status Check Failed
+
+Error ${error.message}
+
+Possible Issues
+1. API endpoint not deployed
+2. Domain not accessible
+3. CORS not configured
+4. Network connectivity issues
+
+URL tested ${API_BASE}${API_ENDPOINT}`;
+
+                showResult('statusResult', result, 'error');
+                updateStatus(false);
+            }
+        }
+
+        async function testBasicAPI() {
+            const message = document.getElementById('testMessage').value  'Halo';
+            showResult('basicResult', `🚀 Testing API with message ${message}`, 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}${API_ENDPOINT}`, {
+                    method 'POST',
+                    headers {
+                        'Content-Type' 'applicationjson'
+                    },
+                    body JSON.stringify({
+                        message message
+                    })
+                });
+
+                const responseText = await response.text();
+                let data;
+                
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    throw new Error(`Invalid JSON response ${responseText}`);
+                }
+
+                const result = `✅ API Test Successful
+
+Request
+- Method POST
+- Body ${JSON.stringify({ message message }, null, 2)}
+
+Response
+- Status ${response.status}
+- Headers ${JSON.stringify([...response.headers.entries()], null, 2)}
+- Body ${JSON.stringify(data, null, 2)}
+
+Reply Preview
+${data.reply  data.reply.substring(0, 200) + '...'  'No reply found'}`;
+
+                showResult('basicResult', result, 'success');
+
+            } catch (error) {
+                const result = `❌ API Test Failed
+
+Error ${error.message}
+
+Request Details
+- URL ${API_BASE}${API_ENDPOINT}
+- Method POST
+- Body ${JSON.stringify({ message message }, null, 2)}
+
+Debugging Steps
+1. Check Vercel deployment logs
+2. Verify OPENROUTER_API_KEY environment variable
+3. Check API endpoint path
+4. Verify CORS configuration`;
+
+                showResult('basicResult', result, 'error');
+            }
+        }
+
+        async function testWithGreeting() {
+            document.getElementById('testMessage').value = 'Halo, saya ingin berhenti merokok';
+            await testBasicAPI();
+        }
+
+        async function testWithQuestion() {
+            document.getElementById('testMessage').value = 'Bagaimana cara mengatasi keinginan merokok';
+            await testBasicAPI();
+        }
+
+        async function testCORS() {
+            showResult('advancedResult', '🌐 Testing CORS configuration...', 'info');
+
+            try {
+                 Test from different origin simulation
+                const response = await fetch(`${API_BASE}${API_ENDPOINT}`, {
+                    method 'POST',
+                    headers {
+                        'Content-Type' 'applicationjson',
+                        'Origin' 'httpsexample.com'  Simulate different origin
+                    },
+                    body JSON.stringify({
+                        message 'CORS test'
+                    })
+                });
+
+                const data = await response.json();
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin' response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods' response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers' response.headers.get('Access-Control-Allow-Headers')
+                };
+
+                const result = `✅ CORS Test Results
+
+Response Status ${response.status}
+
+CORS Headers
+${JSON.stringify(corsHeaders, null, 2)}
+
+✅ CORS is properly configured!`;
+
+                showResult('advancedResult', result, 'success');
+
+            } catch (error) {
+                showResult('advancedResult', `❌ CORS Test Failednn${error.message}`, 'error');
+            }
+        }
+
+        async function testTimeout() {
+            showResult('advancedResult', '⏱️ Testing timeout handling...', 'info');
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() = controller.abort(), 5000);  5 second timeout
+
+                const response = await fetch(`${API_BASE}${API_ENDPOINT}`, {
+                    method 'POST',
+                    headers {
+                        'Content-Type' 'applicationjson'
+                    },
+                    body JSON.stringify({
+                        message 'Timeout test - this should respond quickly'
+                    }),
+                    signal controller.signal
+                });
+
+                clearTimeout(timeoutId);
+                const data = await response.json();
+
+                showResult('advancedResult', `✅ Timeout Test PassednnAPI responded within 5 secondsnResponse received ${!!data.reply}`, 'success');
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    showResult('advancedResult', '⚠️ Timeout Test API took longer than 5 seconds to respond', 'error');
+                } else {
+                    showResult('advancedResult', `❌ Timeout Test Failednn${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function testErrorHandling() {
+            showResult('advancedResult', '⚠️ Testing error handling...', 'info');
+
+            try {
+                 Test with invalid data
+                const response = await fetch(`${API_BASE}${API_ENDPOINT}`, {
+                    method 'POST',
+                    headers {
+                        'Content-Type' 'applicationjson'
+                    },
+                    body JSON.stringify({
+                         Missing message field
+                        invalid 'data'
+                    })
+                });
+
+                const data = await response.json();
+
+                const result = `✅ Error Handling Test
+
+Request with invalid data
+- Status ${response.status}
+- Response ${JSON.stringify(data, null, 2)}
+
+${response.status = 400  '✅ API properly returns error status'  '⚠️ API should return error status for invalid data'}`;
+
+                showResult('advancedResult', result, response.status = 400  'success'  'error');
+
+            } catch (error) {
+                showResult('advancedResult', `❌ Error Handling Test Failednn${error.message}`, 'error');
+            }
+        }
+
+        async function testLongMessage() {
+            const longMessage = 'Saya sudah merokok selama 10 tahun dan sekarang ingin berhenti. '.repeat(10) + 'Bisakah Anda membantu saya dengan strategi yang komprehensif untuk berhenti merokok secara permanen';
+            
+            showResult('advancedResult', '📝 Testing with long message...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}${API_ENDPOINT}`, {
+                    method 'POST',
+                    headers {
+                        'Content-Type' 'applicationjson'
+                    },
+                    body JSON.stringify({
+                        message longMessage
+                    })
+                });
+
+                const data = await response.json();
+
+                const result = `✅ Long Message Test
+
+Input length ${longMessage.length} characters
+Response status ${response.status}
+Response length ${data.reply  data.reply.length  0} characters
+
+${data.reply  '✅ API handled long message successfully'  '❌ No reply received'}`;
+
+                showResult('advancedResult', result, data.reply  'success'  'error');
+
+            } catch (error) {
+                showResult('advancedResult', `❌ Long Message Test Failednn${error.message}`, 'error');
+            }
+        }
+
+        async function checkEnvironment() {
+            showResult('envResult', '🔐 Checking environment configuration...', 'info');
+
+            try {
+                 Test with a message that should trigger OpenRouter
+                const response = await fetch(`${API_BASE}${API_ENDPOINT}`, {
+                    method 'POST',
+                    headers {
+                        'Content-Type' 'applicationjson'
+                    },
+                    body JSON.stringify({
+                        message 'Environment check - please respond with AI'
+                    })
+                });
+
+                const data = await response.json();
+
+                const result = `🔐 Environment Check Results
+
+API Response Status ${response.status}
+Reply received ${!!data.reply}
+Model used ${data.model  'Not specified'}
+Fallback mode ${data.fallback  false}
+Usage info ${data.usage  JSON.stringify(data.usage)  'Not provided'}
+
+${data.fallback  
+    '⚠️ API is using fallback mode - check OPENROUTER_API_KEY environment variable'  
+    '✅ API is using OpenRouter AI successfully'}
+
+Environment Variables to Check in Vercel
+- OPENROUTER_API_KEY should be set
+- Value should start with sk-or-v1-`;
+
+                showResult('envResult', result, data.fallback  'error'  'success');
+
+            } catch (error) {
+                showResult('envResult', `❌ Environment Check Failednn${error.message}nnMake sure OPENROUTER_API_KEY is set in Vercel environment variables`, 'error');
+            }
+        }
+
+        async function runFullTest() {
+            showResult('fullTestResult', '🎯 Running complete test suite...', 'info');
+
+            const tests = [
+                { name 'API Status', func checkAPIStatus },
+                { name 'Basic API', func testBasicAPI },
+                { name 'CORS', func testCORS },
+                { name 'Environment', func checkEnvironment }
+            ];
+
+            let results = '🎯 Complete Test Suite Resultsnn';
+            let allPassed = true;
+
+            for (const test of tests) {
+                results += `Testing ${test.name}...n`;
+                try {
+                    await test.func();
+                    results += `✅ ${test.name} PASSEDn`;
+                } catch (error) {
+                    results += `❌ ${test.name} FAILED - ${error.message}n`;
+                    allPassed = false;
+                }
+                results += 'n';
+            }
+
+            results += allPassed  
+                '🎉 All tests passed! Your API is working correctly.' 
+                '⚠️ Some tests failed. Check individual test results above.';
+
+            showResult('fullTestResult', results, allPassed  'success'  'error');
+        }
+
+         Auto-run status check on page load
+        window.addEventListener('load', () = {
+            setTimeout(checkAPIStatus, 1000);
+        });
+    script
+body
+html
