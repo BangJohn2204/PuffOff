@@ -14,22 +14,26 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8fafc;
             min-height: 100vh;
             padding-bottom: 80px;
+            color: #1f2937;
         }
 
         .container {
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 16px;
         }
 
         .header {
-            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            margin-bottom: 30px;
-            padding-top: 20px;
+            padding: 24px 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
         }
 
         .greeting {
@@ -67,15 +71,16 @@
             border-radius: 16px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
+            border: 1px solid #e5e7eb;
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
         }
 
         .stat-card::before {
@@ -112,10 +117,11 @@
 
         .section {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
         }
 
         .section-title {
@@ -139,7 +145,7 @@
             color: white;
             border: none;
             border-radius: 16px;
-            padding: 20px;
+            padding: 18px 24px;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
@@ -208,6 +214,7 @@
             justify-content: center;
             gap: 12px;
             margin: 16px 0;
+            flex-wrap: wrap;
         }
 
         .mood-btn {
@@ -299,6 +306,7 @@
             margin-bottom: 24px;
             border: 2px solid #f59e0b;
             text-align: center;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
         }
 
         .milestone-icon {
@@ -311,11 +319,13 @@
             font-weight: 700;
             color: #92400e;
             margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
         .milestone-desc {
             color: #b45309;
             margin-bottom: 12px;
+            font-size: 0.9rem;
         }
 
         .milestone-progress {
@@ -377,11 +387,16 @@
 
         @media (max-width: 480px) {
             .container {
-                padding: 16px;
+                padding: 16px 12px;
+            }
+            
+            .header {
+                padding: 20px 16px;
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 12px;
             }
             
             .main-title {
@@ -390,6 +405,29 @@
             
             .quick-actions {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .mood-buttons {
+                gap: 8px;
+            }
+            
+            .mood-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .mood-buttons {
+                gap: 6px;
+            }
+            
+            .mood-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -505,7 +543,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation - SAMA DENGAN PROGRESS PAGE -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <div class="nav-container">
             <a href="home.html" class="nav-item active">
