@@ -1,11 +1,187 @@
-// Simplified message sending function
+// Global variables
+let conversationHistory = [];
+let isTyping = false;
+let chatMessages, chatInput, sendBtn, scrollBtn;
+let isVoiceRecording = false;
+let hasUserInteracted = false;
+let audioContext = null;
+let settings = {
+    autoScroll: true,
+    soundEnabled: true,
+    showTimestamps: true,
+    chatTheme: 'light'
+};
+
+// Initialize marked for markdown parsing
+if (typeof marked !== 'undefined') {
+    marked.setOptions({
+        breaks: true,
+        gfm: true,
+        sanitize: false
+    });
+}
+
+// Initialize app when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Content Loaded - Starting initialization');
+    initializeApp();
+});
+
+function initializeApp() {
+    console.log('⚙️ Initializing app...');
+    
+    // Get DOM elements
+    chatMessages = document.getElementById('chatMessages');
+    chatInput = document.getElementById('chatInput');
+    sendBtn = document.getElementById('sendBtn');
+    scrollBtn = document.getElementById('scrollToBottom');
+    
+    // Debug: Check if elements exist
+    console.log('🔍 Element check:');
+    console.log('  - chatMessages:', !!chatMessages);
+    console.log('  - chatInput:', !!chatInput);
+    console.log('  - sendBtn:', !!sendBtn);
+    console.log('  - scrollBtn:', !!scrollBtn);
+    
+    if (!chatMessages || !chatInput || !sendBtn) {
+        console.error('❌ Critical elements missing!');
+        showToast('Error: Chat elements not found. Please refresh the page.', 'error');
+        return;
+    }
+    
+    // Load settings and conversation history
+    loadSettings();
+    loadConversationHistory();
+    
+    // Setup event listeners
+    console.log('⚙️ Setting up event listeners...');
+    setupEventListeners();
+    
+    // Focus on input
+    if (chatInput) {
+        chatInput.focus();
+        console.log('🎯 Input focused');
+        chatInput.placeholder = 'Ketik pesan dan tekan Enter atau klik kirim...';
+    }
+    
+    // Show welcome message if no conversation history
+    if (conversationHistory.length === 0) {
+        setTimeout(() => {
+            console.log('👋 Showing welcome message');
+            showWelcomeMessage();
+        }, 800);
+    }
+    
+    console.log('✅ Initialization complete!');
+}
+
+function setupEventListeners() {
+    // Send button click handler
+    if (sendBtn) {
+        sendBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🔥 Send button clicked!');
+            markUserInteraction();
+            handleSendMessage();
+        });
+        console.log('✅ Send button event listener added');
+    }
+    
+    // Input event handlers
+    if (chatInput) {
+        // Input change handler
+        chatInput.addEventListener('input', function() {
+            markUserInteraction();
+            autoResizeTextarea();
+            updateSendButtonState();
+        });
+        
+        // Enter key handler
+        chatInput.addEventListener('keypress', function(e) {
+            markUserInteraction();
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                console.log('🚀 Enter key pressed - calling handleSendMessage()');
+                handleSendMessage();
+            }
+        });
+        
+        // Focus and click handlers
+        chatInput.addEventListener('focus', markUserInteraction);
+        chatInput.addEventListener('click', markUserInteraction);
+        
+        console.log('✅ Input event listeners added');
+    }
+    
+    // Prompt chip handlers
+    setupPromptChips();
+    
+    // Scroll detection
+    setupScrollDetection();
+    
+    // Keyboard shortcuts
+    setupKeyboardShortcuts();
+    
+    // Settings handlers
+    setupSettingsHandlers();
+}
+
+function setupPromptChips() {
+    const promptChips = document.querySelectorAll('.prompt-chip');
+    console.log('🔘 Setting up', promptChips.length, 'prompt chips');
+    
+    promptChips.forEach((chip, index) => {
+        chip.addEventListener('click', function() {
+            const message = this.getAttribute('data-message');
+            console.log('🔥 Prompt chip', index, 'clicked:', message);
+            markUserInteraction();
+            
+            if (chatInput && message) {
+                chatInput.value = message;
+                autoResizeTextarea();
+                updateSendButtonState();
+                handleSendMessage();
+            }
+        });
+    });
+    
+    console.log('✅ Prompt chip handlers added');
+}
+
+function markUserInteraction() {
+    if (!hasUserInteracted) {
+        hasUserInteracted = true;
+        initAudioContext();
+        console.log('👤 User interaction detected - audio enabled');
+    }
+}
+
+function initAudioContext() {
+    if (!audioContext && hasUserInteracted) {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            console.log('🔊 Audio context initialized');
+        } catch (error) {
+            console.log('Could not initialize audio context:', error);
+        }
+    }
+}
+
+function updateSendButtonState() {
+    if (sendBtn && chatInput) {
+        const hasValue = chatInput.value.trim().length > 0;
+        sendBtn.disabled = !hasValue || isTyping;
+    }
+}
+
+// Main message sending function
 async function handleSendMessage() {
     console.log('🚀 [SEND] START handleSendMessage');
     
     // Basic validation
     if (!chatInput || !chatMessages || !sendBtn) {
         console.error('❌ [SEND] Missing DOM elements');
-        alert('Error: Halaman tidak lengkap. Silakan refresh.');
+        showToast('Error: Halaman tidak lengkap. Silakan refresh.', 'error');
         return;
     }
     
@@ -35,6 +211,7 @@ async function handleSendMessage() {
         // Clear input
         chatInput.value = '';
         autoResizeTextarea();
+        updateSendButtonState();
         
         console.log('⏳ [SEND] Showing typing indicator');
         showTypingIndicator();
@@ -56,6 +233,9 @@ async function handleSendMessage() {
         
         console.log('✅ [SEND] SUCCESS!');
         showToast('Pesan terkirim!', 'success');
+        
+        // Save conversation
+        saveConversationHistory();
         
     } catch (error) {
         console.error('❌ [SEND] Error:', error);
@@ -80,197 +260,205 @@ Coba kirim pesan lagi! 💪`;
     // Reset state
     isTyping = false;
     sendBtn.disabled = false;
+    updateSendButtonState();
     chatInput.focus();
     
     console.log('🏁 [SEND] END handleSendMessage');
 }
-        // Initialize marked for markdown parsing
-if (typeof marked !== 'undefined') {
-    marked.setOptions({
-        breaks: true,
-        gfm: true,
-        sanitize: false
-    });
-}
 
-// Global variables
-let conversationHistory = [];
-let isTyping = false;
-let chatMessages, chatInput, sendBtn, scrollBtn;
-let isVoiceRecording = false;
-let settings = {
-    autoScroll: true,
-    soundEnabled: true,
-    showTimestamps: true,
-    chatTheme: 'light'
-};
-
-// Initialize app
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM Content Loaded - Starting initialization');
-    initializeApp();
-});
-
-function initializeApp() {
-    // Get DOM elements
-    chatMessages = document.getElementById('chatMessages');
-    chatInput = document.getElementById('chatInput');
-    sendBtn = document.getElementById('sendBtn');
-    scrollBtn = document.getElementById('scrollToBottom');
+// Bot response function
+async function getBotResponse(userMessage) {
+    console.log('🤖 [getBotResponse] START with:', userMessage);
     
-    // Debug: Check if elements exist
-    console.log('🔍 Element check:');
-    console.log('  - chatMessages:', !!chatMessages);
-    console.log('  - chatInput:', !!chatInput);
-    console.log('  - sendBtn:', !!sendBtn);
-    console.log('  - scrollBtn:', !!scrollBtn);
+    // Simple delay to simulate thinking
+    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
     
-    if (!chatMessages || !chatInput || !sendBtn) {
-        console.error('❌ Critical elements missing!');
-        showToast('Error: Chat elements not found. Please refresh the page.', 'error');
-        return;
-    }
-    
-    // Load settings
-    loadSettings();
-    
-    // Setup event listeners
-    console.log('⚙️ Setting up event listeners...');
-    setupInputListeners();
-    setupScrollDetection();
-    setupKeyboardShortcuts();
-    setupClickListeners(); // Add click listeners for user interaction
-    
-    // Focus on input
-    if (chatInput) {
-        chatInput.focus();
-        console.log('🎯 Input focused');
-        chatInput.placeholder = 'Ketik pesan dan tekan Enter atau klik kirim...';
-    }
-    
-    // Show welcome message
-    setTimeout(() => {
-        console.log('👋 Showing welcome message');
-        showWelcomeMessage();
-    }, 800);
-    
-    console.log('✅ Initialization complete!');
-}
-
-function setupClickListeners() {
-    // Add click listeners to mark user interaction
-    document.addEventListener('click', function() {
-        if (!hasUserInteracted) {
-            hasUserInteracted = true;
-            initAudioContext();
-            console.log('👤 User interaction detected via click - audio enabled');
-        }
-    }, { once: true });
-    
-    // Also listen for send button clicks
-    if (sendBtn) {
-        sendBtn.addEventListener('click', function() {
-            if (!hasUserInteracted) {
-                hasUserInteracted = true;
-                initAudioContext();
-            }
+    try {
+        // Try API call first (uncomment when API is ready)
+        /*
+        console.log('📡 [API] Calling PuffOff API...');
+        
+        const response = await fetch('https://puffoff-api.vercel.app/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userMessage }),
+            signal: AbortSignal.timeout(8000)
         });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const botResponse = data.reply || data.response || data.message;
+            if (botResponse && botResponse.trim()) {
+                console.log('✅ [API] SUCCESS');
+                return botResponse;
+            }
+        }
+        throw new Error('API response invalid');
+        */
+        
+        // For now, use fallback
+        console.log('🔄 [FALLBACK] Using local response');
+        return getFallbackResponse(userMessage);
+        
+    } catch (error) {
+        console.log('❌ [API] Failed:', error.message);
+        return getFallbackResponse(userMessage);
     }
 }
 
-// Settings Management
-function loadSettings() {
-    const savedSettings = localStorage.getItem('puffoff_chat_settings');
-    if (savedSettings) {
-        settings = { ...settings, ...JSON.parse(savedSettings) };
+// Enhanced fallback responses
+function getFallbackResponse(userMessage) {
+    console.log('🔄 [FALLBACK] Processing:', userMessage);
+    
+    if (!userMessage || typeof userMessage !== 'string') {
+        userMessage = 'halo';
     }
-    applySettings();
-}
-
-function saveSettings() {
-    localStorage.setItem('puffoff_chat_settings', JSON.stringify(settings));
-}
-
-function applySettings() {
-    // Apply theme
-    document.body.className = settings.chatTheme === 'dark' ? 'dark-theme' : '';
     
-    // Update settings panel
-    const autoScrollCheckbox = document.getElementById('autoScroll');
-    const soundEnabledCheckbox = document.getElementById('soundEnabled');
-    const showTimestampsCheckbox = document.getElementById('showTimestamps');
-    const chatThemeSelect = document.getElementById('chatTheme');
+    const message = userMessage.toLowerCase().trim();
     
-    if (autoScrollCheckbox) autoScrollCheckbox.checked = settings.autoScroll;
-    if (soundEnabledCheckbox) soundEnabledCheckbox.checked = settings.soundEnabled;
-    if (showTimestampsCheckbox) showTimestampsCheckbox.checked = settings.showTimestamps;
-    if (chatThemeSelect) chatThemeSelect.value = settings.chatTheme;
-}
+    // Greeting responses
+    if (message.includes('halo') || message.includes('hai') || message.includes('hello') || message.includes('hi')) {
+        return `# Halo! Selamat datang di PuffBot! 👋
 
-function toggleSettings() {
-    const settingsPanel = document.getElementById('settingsPanel');
-    const overlay = document.getElementById('overlay');
-    
-    if (settingsPanel.classList.contains('show')) {
-        settingsPanel.classList.remove('show');
-        overlay.classList.remove('show');
-    } else {
-        settingsPanel.classList.add('show');
-        overlay.classList.add('show');
-        setupSettingsListeners();
+Senang bertemu denganmu! Saya di sini untuk membantu perjalanan bebas rokok kamu.
+
+## Apa yang bisa saya bantu hari ini?
+- 🚫 Tips mengatasi keinginan merokok
+- ❤️ Informasi kesehatan
+- 💪 Motivasi harian
+- 💰 Perhitungan penghematan
+
+[TIP]Coba tanyakan "Bagaimana cara berhenti merokok?" atau pilih salah satu prompt di bawah![/TIP]`;
     }
+    
+    // Smoking craving responses
+    if (message.includes('keinginan merokok') || message.includes('ingin merokok') || message.includes('craving') || message.includes('ngidam')) {
+        return `# Tips Mengatasi Keinginan Merokok 🚫
+
+[TIP]Keinginan merokok biasanya hanya berlangsung 3-5 menit. Kamu bisa mengatasinya![/TIP]
+
+## Teknik Segera (1-5 menit):
+- **Teknik 4-7-8**: Tarik napas 4 detik, tahan 7 detik, hembuskan 8 detik
+- **Minum air putih**: Hidrasi membantu mengurangi craving
+- **Gigit sesuatu**: Wortel, apel, atau permen bebas gula
+- **Ubah posisi**: Berdiri, jalan-jalan, atau stretch
+
+## Pengalihan Jangka Pendek (5-15 menit):
+- 🎵 Dengarkan musik favorit
+- 📱 Chat dengan teman atau keluarga
+- 🎮 Main game ringan di HP
+- 🧘 Meditasi atau mindfulness 2 menit
+- 🚶‍♂️ Jalan-jalan ke luar ruangan
+
+[MOTIVATION]Ingat, setiap kali kamu berhasil mengatasi keinginan merokok, kamu semakin kuat! 💪[/MOTIVATION]`;
+    }
+    
+    // Stress management
+    if (message.includes('stress') || message.includes('cemas') || message.includes('tegang')) {
+        return `# Mengelola Stress Tanpa Rokok 🧘
+
+[HEALTH]Stress adalah trigger utama keinginan merokok. Mari kelola dengan cara sehat![/HEALTH]
+
+## Teknik Relaksasi Cepat:
+- **Deep Breathing**: Napas dalam selama 5 menit
+- **Progressive Muscle Relaxation**: Tegang-rileks otot secara bertahap
+- **Mindfulness**: Fokus pada saat ini, bukan kekhawatiran
+
+## Aktivitas Anti-Stress:
+- 🚶‍♂️ **Jalan kaki**: 10-15 menit di luar ruangan
+- 🎵 **Musik**: Dengarkan musik yang menenangkan
+- ✍️ **Journaling**: Tulis perasaan dan pikiran
+- 🛁 **Mandi hangat**: Relaksasi untuk tubuh dan pikiran
+
+[TIP]Stress adalah normal, yang penting adalah cara kita mengatasinya dengan sehat![/TIP]`;
+    }
+    
+    // Health benefits
+    if (message.includes('manfaat') && (message.includes('berhenti') || message.includes('kesehatan'))) {
+        return `# Manfaat Luar Biasa Berhenti Merokok ❤️
+
+[HEALTH]Tubuhmu mulai membaik dalam hitungan menit setelah rokok terakhir![/HEALTH]
+
+## Timeline Pemulihan:
+- **20 menit**: Detak jantung dan tekanan darah turun
+- **12 jam**: Kadar karbon monoksida dalam darah normal
+- **2 minggu**: Sirkulasi membaik, fungsi paru meningkat
+- **1 tahun**: Risiko penyakit jantung turun 50%
+
+## Manfaat yang Langsung Terasa:
+- 💰 **Finansial**: Hemat jutaan rupiah per tahun
+- 👃 **Penciuman**: Kembali normal dalam 2 minggu
+- 🦷 **Gigi**: Lebih putih dan nafas lebih segar
+- 🏃 **Stamina**: Energi dan daya tahan meningkat
+
+[SUCCESS]Kamu sudah membuat keputusan terbaik untuk hidupmu! 🌟[/SUCCESS]`;
+    }
+    
+    // Motivation
+    if (message.includes('motivasi') || message.includes('semangat') || message.includes('inspirasi')) {
+        return `# Motivasi Harian Bebas Rokok 💪
+
+[MOTIVATION]Kamu lebih kuat dari kebiasaan lama! Setiap hari tanpa rokok adalah kemenangan besar.[/MOTIVATION]
+
+## Quotes Inspiratif:
+> "Kekuatan tidak berasal dari kemampuan fisik. Kekuatan berasal dari tekad yang tidak dapat dikalahkan."
+
+> "Perubahan dimulai dari ujung zona nyaman kamu."
+
+## Ingat Alasan Kuat Kamu:
+- ❤️ **Kesehatan**: Hidup lebih lama dan berkualitas
+- 👨‍👩‍👧‍👦 **Keluarga**: Menjadi role model yang baik
+- 💰 **Finansial**: Uang untuk investasi masa depan
+- 🌱 **Prestasi Pribadi**: Membuktikan kamu bisa berubah
+
+[TIP]Buat reminder di HP kamu dengan quotes motivasi ini![/TIP]`;
+    }
+    
+    // Money calculation
+    if (message.includes('uang') || message.includes('hemat') || message.includes('penghematan') || message.includes('hitung')) {
+        return `# Kalkulator Penghematan PuffOff 💰
+
+[SUCCESS]Mari hitung berapa banyak uang yang sudah dan akan kamu hemat![/SUCCESS]
+
+## Perhitungan Penghematan:
+- **1 hari**: Rp 25.000
+- **1 minggu**: Rp 175.000
+- **1 bulan**: Rp 750.000
+- **3 bulan**: Rp 2.250.000
+- **6 bulan**: Rp 4.500.000
+- **1 tahun**: Rp 9.125.000
+
+## Investasi Alternatif dengan Rp 750.000/bulan:
+- 🏠 **DP Rumah**: Dalam 5 tahun bisa terkumpul Rp 45 juta
+- 📚 **Pendidikan**: Kursus bahasa asing atau sertifikasi
+- 💎 **Emas**: Investasi yang nilainya cenderung naik
+- 📈 **Reksadana**: Investasi untuk masa depan
+
+[TIP]Buat rekening khusus "tabungan rokok" dan transfer Rp 25.000 setiap hari![/TIP]`;
+    }
+    
+    // Default response
+    return `# Halo! Saya PuffBot 🤖
+
+Terima kasih sudah bertanya! Saya siap membantu perjalanan bebas rokok kamu.
+
+## Yang bisa saya bantu:
+- 🚫 **Tips mengatasi keinginan merokok**
+- ❤️ **Informasi manfaat kesehatan**  
+- 💪 **Motivasi dan dukungan harian**
+- 💰 **Perhitungan penghematan uang**
+- 🎯 **Strategi berhenti merokok**
+
+[TIP]Coba tanyakan sesuatu seperti "Bagaimana cara mengatasi stress?" atau "Apa manfaat berhenti merokok?"[/TIP]
+
+**Apa yang ingin kamu ketahui?** 😊`;
 }
 
-function setupSettingsListeners() {
-    const autoScrollCheckbox = document.getElementById('autoScroll');
-    const soundEnabledCheckbox = document.getElementById('soundEnabled');
-    const showTimestampsCheckbox = document.getElementById('showTimestamps');
-    const chatThemeSelect = document.getElementById('chatTheme');
-    
-    autoScrollCheckbox?.addEventListener('change', function() {
-        settings.autoScroll = this.checked;
-        saveSettings();
-    });
-    
-    soundEnabledCheckbox?.addEventListener('change', function() {
-        settings.soundEnabled = this.checked;
-        saveSettings();
-    });
-    
-    showTimestampsCheckbox?.addEventListener('change', function() {
-        settings.showTimestamps = this.checked;
-        saveSettings();
-        // Refresh messages to show/hide timestamps
-        refreshMessageTimestamps();
-    });
-    
-    chatThemeSelect?.addEventListener('change', function() {
-        settings.chatTheme = this.value;
-        saveSettings();
-        applySettings();
-    });
-}
-
-function refreshMessageTimestamps() {
-    const timeElements = document.querySelectorAll('.message-time');
-    timeElements.forEach(element => {
-        element.style.display = settings.showTimestamps ? 'block' : 'none';
-    });
-}
-
-function closeAllModals() {
-    const settingsPanel = document.getElementById('settingsPanel');
-    const overlay = document.getElementById('overlay');
-    
-    settingsPanel?.classList.remove('show');
-    overlay?.classList.remove('show');
-}
-
-// Message Formatting
+// Message formatting
 function formatMessage(text) {
     let formattedText = text;
     
-    // Convert markdown to HTML
+    // Convert markdown to HTML if marked is available
     if (typeof marked !== 'undefined') {
         formattedText = marked.parse(formattedText);
     }
@@ -280,38 +468,13 @@ function formatMessage(text) {
     formattedText = formattedText.replace(/\[WARNING\](.*?)\[\/WARNING\]/gs, '<div class="warning-box"><strong>⚠️ Peringatan:</strong><br>$1</div>');
     formattedText = formattedText.replace(/\[SUCCESS\](.*?)\[\/SUCCESS\]/gs, '<div class="success-box"><strong>✅ Berhasil:</strong><br>$1</div>');
     formattedText = formattedText.replace(/\[TIP\](.*?)\[\/TIP\]/gs, '<div class="tip-box"><strong>💡 Tips:</strong><br>$1</div>');
-    
-    // Format special PuffOff content
     formattedText = formattedText.replace(/\[MOTIVATION\](.*?)\[\/MOTIVATION\]/gs, '<div class="success-box"><strong>💪 Motivasi:</strong><br>$1</div>');
     formattedText = formattedText.replace(/\[HEALTH\](.*?)\[\/HEALTH\]/gs, '<div class="info-box"><strong>❤️ Kesehatan:</strong><br>$1</div>');
     
     return formattedText;
 }
 
-// Time and Date Functions
-function getCurrentTime() {
-    return new Date().toLocaleTimeString('id-ID', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-}
-
-function getRelativeTime(timestamp) {
-    const now = new Date();
-    const messageTime = new Date(timestamp);
-    const diffInMinutes = Math.floor((now - messageTime) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'Baru saja';
-    if (diffInMinutes < 60) return `${diffInMinutes} menit lalu`;
-    
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours} jam lalu`;
-    
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays} hari lalu`;
-}
-
-// Message Management
+// Add message to chat
 function addMessage(content, isUser = false, showQuickReplies = false) {
     console.log('📝 Adding message:', isUser ? 'User' : 'Bot', content.substring(0, 50) + '...');
     
@@ -337,13 +500,6 @@ function addMessage(content, isUser = false, showQuickReplies = false) {
     
     bubbleDiv.appendChild(contentDiv);
     bubbleDiv.appendChild(timeDiv);
-    
-    // Add message status for user messages
-    if (isUser) {
-        const statusDiv = document.createElement('div');
-        statusDiv.className = 'message-status status-sent';
-        bubbleDiv.appendChild(statusDiv);
-    }
     
     // Add quick replies for bot messages
     if (!isUser && showQuickReplies) {
@@ -390,56 +546,43 @@ function addMessage(content, isUser = false, showQuickReplies = false) {
     }, 400);
 }
 
-let audioContext = null;
-let hasUserInteracted = false;
-
-function initAudioContext() {
-    if (!audioContext && hasUserInteracted) {
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            console.log('🔊 Audio context initialized');
-        } catch (error) {
-            console.log('Could not initialize audio context:', error);
-        }
-    }
-}
-
-function playNotificationSound() {
-    if (!settings.soundEnabled || !hasUserInteracted) return;
+// Quick replies
+function getQuickReplies(botMessage) {
+    const message = botMessage.toLowerCase();
     
-    try {
-        if (!audioContext) {
-            initAudioContext();
-        }
-        
-        if (!audioContext) return;
-        
-        // Resume audio context if suspended
-        if (audioContext.state === 'suspended') {
-            audioContext.resume();
-        }
-        
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-        
-        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
-    } catch (error) {
-        console.log('Could not play notification sound:', error);
+    if (message.includes('keinginan merokok') || message.includes('craving')) {
+        return ['Latihan pernapasan', 'Aktivitas pengalih', 'Minta dukungan'];
+    }
+    
+    if (message.includes('manfaat') || message.includes('kesehatan')) {
+        return ['Manfaat lainnya?', 'Timeline pemulihan', 'Tips kesehatan'];
+    }
+    
+    if (message.includes('motivasi') || message.includes('semangat')) {
+        return ['Cerita sukses', 'Reminder harian', 'Komunitas support'];
+    }
+    
+    if (message.includes('penghematan') || message.includes('uang')) {
+        return ['Hitung detail', 'Investasi sehat', 'Target tabungan'];
+    }
+    
+    return ['Terima kasih', 'Tanya lagi', 'Bantuan lain'];
+}
+
+// Quick message sender
+function sendQuickMessage(message) {
+    console.log('⚡ Quick message:', message);
+    markUserInteraction();
+    
+    if (chatInput) {
+        chatInput.value = message;
+        autoResizeTextarea();
+        updateSendButtonState();
+        handleSendMessage();
     }
 }
 
-// Typing Indicator
+// Typing indicator
 function showTypingIndicator() {
     console.log('⏳ Showing typing indicator');
     const typingDiv = document.createElement('div');
@@ -473,489 +616,14 @@ function hideTypingIndicator() {
     }
 }
 
-// Quick Replies
-function getQuickReplies(botMessage) {
-    const message = botMessage.toLowerCase();
-    
-    if (message.includes('keinginan merokok') || message.includes('craving')) {
-        return ['Latihan pernapasan', 'Aktivitas pengalih', 'Minta dukungan'];
-    }
-    
-    if (message.includes('manfaat') || message.includes('kesehatan')) {
-        return ['Manfaat lainnya?', 'Timeline pemulihan', 'Tips kesehatan'];
-    }
-    
-    if (message.includes('motivasi') || message.includes('semangat')) {
-        return ['Cerita sukses', 'Reminder harian', 'Komunitas support'];
-    }
-    
-    if (message.includes('penghematan') || message.includes('uang')) {
-        return ['Hitung detail', 'Investasi sehat', 'Target tabungan'];
-    }
-    
-    if (message.includes('stress') || message.includes('cemas')) {
-        return ['Teknik relaksasi', 'Olahraga ringan', 'Musik tenang'];
-    }
-    
-    return ['Terima kasih', 'Tanya lagi', 'Bantuan lain'];
+// Utility functions
+function getCurrentTime() {
+    return new Date().toLocaleTimeString('id-ID', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
 }
 
-// Simplified API Communication - ALWAYS return response
-async function getBotResponse(userMessage) {
-    console.log('🤖 [getBotResponse] START with:', userMessage);
-    
-    // For now, ALWAYS use fallback to ensure response
-    console.log('🔄 [DIRECT FALLBACK] Using fallback response immediately');
-    return getSimpleFallbackResponse(userMessage);
-    
-    /* API code disabled for debugging - uncomment when working
-    try {
-        console.log('📡 [API] Calling PuffOff API...');
-        
-        const response = await fetch('https://puffoff-api.vercel.app/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userMessage }),
-            signal: AbortSignal.timeout(5000)
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            const botResponse = data.reply || data.response || data.message;
-            if (botResponse) {
-                console.log('✅ [API] SUCCESS');
-                return botResponse;
-            }
-        }
-        throw new Error('API failed');
-    } catch (error) {
-        console.log('❌ [API] Failed:', error.message);
-        return getSimpleFallbackResponse(userMessage);
-    }
-    */
-}
-
-// Simple fallback that ALWAYS works
-function getSimpleFallbackResponse(userMessage) {
-    console.log('🔄 [SIMPLE FALLBACK] Processing:', userMessage);
-    
-    const msg = (userMessage || '').toLowerCase();
-    
-    if (msg.includes('halo') || msg.includes('hai') || msg.includes('hello')) {
-        return "# Halo! Selamat datang di PuffBot! 👋\n\nSaya siap membantu perjalanan bebas rokok kamu.\n\n**Yang bisa saya bantu:**\n- Tips mengatasi keinginan merokok\n- Motivasi harian\n- Informasi kesehatan\n- Perhitungan penghematan\n\nApa yang ingin kamu tanyakan? 😊";
-    }
-    
-    if (msg.includes('rokok') || msg.includes('merokok') || msg.includes('craving')) {
-        return "# Tips Mengatasi Keinginan Merokok 🚫\n\n**Teknik Cepat:**\n- Tarik napas dalam 10 kali\n- Minum segelas air putih\n- Berdiri dan jalan-jalan 2 menit\n- Alihkan pikiran dengan aktivitas lain\n\n**Ingat:** Keinginan merokok hanya berlangsung 3-5 menit. Kamu pasti bisa mengatasinya! 💪";
-    }
-    
-    if (msg.includes('motivasi') || msg.includes('semangat')) {
-        return "# Motivasi Bebas Rokok 💪\n\n**Quotes Hari Ini:**\n> \"Kamu lebih kuat dari keinginan merokok\"\n\n**Ingat Alasanmu:**\n- Kesehatan yang lebih baik\n- Hemat uang untuk masa depan\n- Menjadi role model keluarga\n- Napas lebih lega dan segar\n\nSetiap hari tanpa rokok adalah kemenangan! 🌟";
-    }
-    
-    // Default response
-    return "# PuffBot Siap Membantu! 🤖\n\nHalo! Saya di sini untuk membantu perjalanan bebas rokok kamu.\n\n**Coba tanyakan:**\n- \"Bagaimana mengatasi keinginan merokok?\"\n- \"Butuh motivasi\"\n- \"Apa manfaat berhenti merokok?\"\n\nAda yang bisa saya bantu? 😊";
-}
-
-// Fallback Responses yang PASTI selalu return response
-function getFallbackResponse(userMessage) {
-    console.log('🔄 [FALLBACK] getFallbackResponse called with:', userMessage);
-    
-    if (!userMessage || typeof userMessage !== 'string') {
-        console.warn('⚠️ [FALLBACK] Invalid userMessage, using default');
-        userMessage = 'halo';
-    }
-    
-    const message = userMessage.toLowerCase().trim();
-    console.log('🔍 [FALLBACK] Processing message:', message);
-    
-    let response = null;
-    
-    // Greeting responses
-    if (message.includes('halo') || message.includes('hai') || message.includes('hello') || message.includes('hi')) {
-        console.log('💡 [FALLBACK] Using greeting response');
-        response = `# Halo! Selamat datang di PuffBot! 👋
-
-Senang bertemu denganmu! Saya di sini untuk membantu perjalanan bebas rokok kamu.
-
-## Apa yang bisa saya bantu hari ini?
-- 🚫 Tips mengatasi keinginan merokok
-- ❤️ Informasi kesehatan
-- 💪 Motivasi harian
-- 💰 Perhitungan penghematan
-
-[TIP]Coba tanyakan "Bagaimana cara berhenti merokok?" atau pilih salah satu prompt di bawah![/TIP]`;
-    }
-    
-    // Smoking craving responses
-    else if (message.includes('keinginan merokok') || message.includes('ingin merokok') || message.includes('craving') || message.includes('ngidam rokok')) {
-        console.log('💡 [FALLBACK] Using smoking craving response');
-        response = `# Tips Mengatasi Keinginan Merokok 🚫
-
-[TIP]Keinginan merokok biasanya hanya berlangsung 3-5 menit. Kamu bisa mengatasinya![/TIP]
-
-## Teknik Segera (1-5 menit):
-- **Teknik 4-7-8**: Tarik napas 4 detik, tahan 7 detik, hembuskan 8 detik
-- **Minum air putih**: Hidrasi membantu mengurangi craving
-- **Gigit sesuatu**: Wortel, apel, atau permen bebas gula
-- **Ubah posisi**: Berdiri, jalan-jalan, atau stretch
-
-## Pengalihan Jangka Pendek (5-15 menit):
-- 🎵 Dengarkan musik favorit
-- 📱 Chat dengan teman atau keluarga
-- 🎮 Main game ringan di HP
-- 🧘 Meditasi atau mindfulness 2 menit
-- 🚶‍♂️ Jalan-jalan ke luar ruangan
-
-[MOTIVATION]Ingat, setiap kali kamu berhasil mengatasi keinginan merokok, kamu semakin kuat! 💪[/MOTIVATION]`;
-    }
-    
-    // Stress management
-    else if (message.includes('stress') || message.includes('cemas') || message.includes('tegang') || message.includes('gelisah')) {
-        console.log('💡 [FALLBACK] Using stress management response');
-        response = `# Mengelola Stress Tanpa Rokok 🧘
-
-[HEALTH]Stress adalah trigger utama keinginan merokok. Mari kelola dengan cara sehat![/HEALTH]
-
-## Teknik Relaksasi Cepat:
-- **Deep Breathing**: Napas dalam selama 5 menit
-- **Progressive Muscle Relaxation**: Tegang-rileks otot secara bertahap
-- **Mindfulness**: Fokus pada saat ini, bukan kekhawatiran
-
-## Aktivitas Anti-Stress:
-- 🚶‍♂️ **Jalan kaki**: 10-15 menit di luar ruangan
-- 🎵 **Musik**: Dengarkan musik yang menenangkan
-- ✍️ **Journaling**: Tulis perasaan dan pikiran
-- 🛁 **Mandi hangat**: Relaksasi untuk tubuh dan pikiran
-
-[TIP]Stress adalah normal, yang penting adalah cara kita mengatasinya dengan sehat![/TIP]`;
-    }
-    
-    // Health benefits
-    else if (message.includes('manfaat') && (message.includes('berhenti') || message.includes('quit') || message.includes('kesehatan'))) {
-        console.log('💡 [FALLBACK] Using health benefits response');
-        response = `# Manfaat Luar Biasa Berhenti Merokok ❤️
-
-[HEALTH]Tubuhmu mulai membaik dalam hitungan menit setelah rokok terakhir![/HEALTH]
-
-## Timeline Pemulihan:
-- **20 menit**: Detak jantung dan tekanan darah turun
-- **12 jam**: Kadar karbon monoksida dalam darah normal
-- **2 minggu**: Sirkulasi membaik, fungsi paru meningkat
-- **1 tahun**: Risiko penyakit jantung turun 50%
-
-## Manfaat yang Langsung Terasa:
-- 💰 **Finansial**: Hemat jutaan rupiah per tahun
-- 👃 **Penciuman**: Kembali normal dalam 2 minggu
-- 🦷 **Gigi**: Lebih putih dan nafas lebih segar
-- 🏃 **Stamina**: Energi dan daya tahan meningkat
-
-[SUCCESS]Kamu sudah membuat keputusan terbaik untuk hidupmu! 🌟[/SUCCESS]`;
-    }
-    
-    // Default response (ALWAYS return something)
-    else {
-        console.log('💡 [FALLBACK] Using default response');
-        response = `# Halo! Saya PuffBot 🤖
-
-Terima kasih sudah bertanya! Saya siap membantu perjalanan bebas rokok kamu.
-
-## Yang bisa saya bantu:
-- 🚫 **Tips mengatasi keinginan merokok**
-- ❤️ **Informasi manfaat kesehatan**  
-- 💪 **Motivasi dan dukungan harian**
-- 💰 **Perhitungan penghematan uang**
-- 🎯 **Strategi berhenti merokok**
-
-[TIP]Coba tanyakan sesuatu seperti "Bagaimana cara mengatasi stress?" atau "Apa manfaat berhenti merokok?"[/TIP]
-
-**Apa yang ingin kamu ketahui?** 😊`;
-    }
-    
-    // VALIDATION - pastikan response tidak null/empty
-    if (!response || typeof response !== 'string' || response.trim().length === 0) {
-        console.error('❌ [FALLBACK] Generated empty response! Using emergency fallback');
-        response = `# PuffBot Siap Membantu! 🤖
-
-Halo! Saya di sini untuk mendukung perjalanan bebas rokok kamu.
-
-## Tips Cepat:
-- 🚫 Tarik napas dalam jika ingin merokok
-- 💧 Minum air putih untuk mengurangi craving
-- 🚶‍♂️ Berjalan-jalan sebentar
-- 💪 Ingat alasan kenapa ingin berhenti merokok
-
-[INFO]Coba tanyakan hal yang lebih spesifik tentang berhenti merokok![/INFO]`;
-    }
-    
-    console.log('✅ [FALLBACK] Response generated successfully, length:', response.length);
-    return response;
-}
-
-// Quick message sender
-function sendQuickMessage(message) {
-    console.log('⚡ Quick message:', message);
-    
-    if (!hasUserInteracted) {
-        hasUserInteracted = true;
-        initAudioContext();
-    }
-    
-    chatInput.value = message;
-    handleSendMessage();
-} sekunder
-- 🏃 **Stamina**: Energi dan daya tahan meningkat drastis
-- 😴 **Tidur**: Kualitas tidur lebih baik
-
-[SUCCESS]Kamu sudah membuat keputusan terbaik untuk hidupmu! Setiap hari bebas rokok adalah investasi kesehatan! 🌟[/SUCCESS]`;
-    }
-    
-    // Motivation
-    if (message.includes('motivasi') || message.includes('semangat') || message.includes('inspirasi')) {
-        console.log('💡 Using motivation response');
-        return `# Motivasi Harian Bebas Rokok 💪
-
-[MOTIVATION]Kamu lebih kuat dari kebiasaan lama! Setiap hari tanpa rokok adalah kemenangan besar.[/MOTIVATION]
-
-## Quotes Inspiratif:
-> "Kekuatan tidak berasal dari kemampuan fisik. Kekuatan berasal dari tekad yang tidak dapat dikalahkan." - Mahatma Gandhi
-
-> "Perubahan dimulai dari ujung zona nyaman kamu."
-
-> "Kamu tidak bisa mengubah masa lalu, tapi kamu bisa mengubah masa depan."
-
-## Ingat Alasan Kuat Kamu:
-- ❤️ **Kesehatan**: Hidup lebih lama dan berkualitas
-- 👨‍👩‍👧‍👦 **Keluarga**: Menjadi role model yang baik untuk anak
-- 💰 **Finansial**: Uang untuk investasi masa depan
-- 🌱 **Prestasi Pribadi**: Membuktikan kamu bisa berubah
-- 🌍 **Lingkungan**: Turut menjaga bumi dari polusi
-
-## Afirmasi Positif Harian:
-- "Saya memilih kesehatan daripada rokok"
-- "Setiap napas bebas rokok membuat saya lebih kuat"
-- "Saya layak mendapat hidup yang sehat dan bahagia"
-- "Saya bangga dengan keputusan berhenti merokok"
-
-[TIP]Buat reminder di HP kamu dengan quotes motivasi ini! Set alarm harian dengan pesan positif![/TIP]`;
-    }
-    
-    // Money savings calculation
-    if (message.includes('uang') || message.includes('hemat') || message.includes('penghematan') || message.includes('hitung') || message.includes('biaya')) {
-        console.log('💡 Using money savings response');
-        return `# Kalkulator Penghematan PuffOff 💰
-
-[SUCCESS]Mari hitung berapa banyak uang yang sudah dan akan kamu hemat![/SUCCESS]
-
-## Asumsi Perhitungan:
-- **Harga rokok**: Rp 25.000 per bungkus (rata-rata)
-- **Konsumsi**: 1 bungkus per hari
-- **Biaya harian**: Rp 25.000
-
-## Perhitungan Penghematan:
-- **1 hari**: Rp 25.000
-- **1 minggu**: Rp 175.000
-- **1 bulan**: Rp 750.000
-- **3 bulan**: Rp 2.250.000
-- **6 bulan**: Rp 4.500.000
-- **1 tahun**: Rp 9.125.000
-- **5 tahun**: Rp 45.625.000
-
-## Investasi Alternatif dengan Rp 750.000/bulan:
-- 🏠 **DP Rumah**: Dalam 5 tahun bisa terkumpul Rp 45 juta
-- 📚 **Pendidikan**: Kursus bahasa asing atau sertifikasi
-- 🏥 **Asuransi Kesehatan**: Proteksi keluarga yang lengkap
-- 🚗 **Kendaraan**: Cicilan motor atau mobil bekas
-- 💎 **Emas**: Investasi yang nilainya cenderung naik
-- 📈 **Reksadana**: Investasi untuk masa depan
-
-[TIP]Buat rekening khusus "tabungan rokok" dan transfer Rp 25.000 setiap hari! Lihat hasilnya dalam 1 bulan![/TIP]`;
-    }
-    
-    // How to quit smoking
-    if (message.includes('cara berhenti') || message.includes('bagaimana berhenti') || message.includes('tips berhenti') || message.includes('quit smoking')) {
-        console.log('💡 Using how to quit response');
-        return `# Panduan Lengkap Berhenti Merokok 🎯
-
-[INFO]Berhenti merokok adalah proses, bukan event satu kali. Setiap orang punya cara yang berbeda![/INFO]
-
-## Langkah Persiapan:
-1. **Tentukan tanggal quit**: Pilih hari yang tidak stressful
-2. **Beritahu orang terdekat**: Minta dukungan keluarga/teman
-3. **Buang semua rokok**: Termasuk asbak dan korek api
-4. **Identifikasi trigger**: Kapan biasanya kamu merokok?
-5. **Siapkan alternatif**: Permen, snack sehat, atau fidget toy
-
-## Metode Berhenti:
-- **Cold Turkey**: Berhenti total sekaligus (paling efektif)
-- **Gradual**: Kurangi bertahap (lebih mudah tapi kurang efektif)
-- **Nicotine Replacement**: Patch, gum, atau vape (konsultasi dokter)
-
-## Strategi Mengatasi Withdrawal:
-- Hari 1-3: Yang paling berat, minum banyak air
-- Minggu 1: Hindari tempat yang biasa merokok
-- Minggu 2-4: Cari hobi baru, olahraga rutin
-- Bulan 2-3: Tetap waspada, jangan lengah
-
-## Tips Sukses:
-- 🏃‍♂️ Olahraga teratur untuk mengurangi stress
-- 🥗 Makan makanan sehat, hindari alkohol
-- 😴 Tidur cukup untuk recovery tubuh
-- 🧘 Meditasi atau yoga untuk ketenangan pikiran
-- 👥 Bergabung dengan support group
-
-[MOTIVATION]Jutaan orang sudah berhasil berhenti merokok. Kamu pasti bisa! 💪[/MOTIVATION]`;
-    }
-    
-    // Default responses with more variety
-    console.log('💡 Using default response');
-    const defaultResponses = [
-        `# Halo! Selamat datang di PuffBot! 👋
-
-Saya **PuffBot**, asisten AI yang siap membantu perjalanan bebas rokok kamu.
-
-## Yang bisa saya bantu:
-- 🚫 **Tips mengatasi keinginan merokok**
-- ❤️ **Informasi manfaat kesehatan**  
-- 💪 **Motivasi dan dukungan harian**
-- 💰 **Perhitungan penghematan uang**
-- 🎯 **Strategi berhenti merokok**
-- 🧘 **Teknik mengelola stress**
-
-[TIP]Coba tanyakan sesuatu seperti "Bagaimana cara mengatasi keinginan merokok?" atau pilih prompt cepat di bawah![/TIP]
-
-**Apa yang ingin kamu ketahui hari ini?** 😊`,
-
-        `# Terima kasih sudah bertanya! 💭
-
-Setiap pertanyaan adalah langkah menuju hidup bebas rokok yang lebih sehat.
-
-## Topik Populer:
-- Tips mengatasi craving rokok
-- Manfaat kesehatan berhenti merokok  
-- Cara mengelola stress tanpa rokok
-- Motivasi untuk tetap konsisten
-- Penghematan uang dari berhenti merokok
-
-[INFO]Saya siap membantu dengan informasi praktis dan dukungan yang kamu butuhkan![/INFO]
-
-**Ada hal spesifik yang ingin kamu tanyakan?**`,
-
-        `# Bagus sekali kamu bertanya! 🌟
-
-Mencari informasi adalah tanda kamu serius ingin berubah ke hidup yang lebih sehat.
-
-## Saya bisa membantu dengan:
-- Strategi praktis berhenti merokok
-- Tips mengatasi tantangan withdrawal
-- Informasi kesehatan yang akurat
-- Motivasi ketika kamu merasa down
-- Perhitungan manfaat finansial
-
-[MOTIVATION]Ingat, kamu tidak sendirian dalam perjalanan ini. Jutaan orang sudah berhasil, dan kamu juga pasti bisa! 💪[/MOTIVATION]
-
-**Ceritakan, apa yang paling kamu butuhkan sekarang?**`
-    ];
-    
-    const selectedResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-    console.log('🎲 Selected default response:', selectedResponse.substring(0, 50) + '...');
-    
-    return selectedResponse;
-}
-
-// Message Sending
-async function handleSendMessage() {
-    console.log('🚀 handleSendMessage function called');
-    
-    if (!hasUserInteracted) {
-        hasUserInteracted = true;
-        initAudioContext();
-    }
-    
-    if (!chatInput) {
-        console.error('❌ Chat input not found!');
-        return;
-    }
-    
-    const message = chatInput.value.trim();
-    console.log('📝 Message to send:', `"${message}"`);
-    
-    if (!message) {
-        console.warn('⚠️ Empty message, not sending');
-        return;
-    }
-    
-    if (isTyping) {
-        console.warn('⚠️ Bot is typing, please wait');
-        showToast('Tunggu sebentar, bot sedang mengetik...', 'warning');
-        return;
-    }
-    
-    console.log('✅ Message validation passed, proceeding...');
-    
-    try {
-        // Add user message
-        console.log('👤 Adding user message to chat');
-        addMessage(message, true);
-        
-        // Clear input and set typing state
-        chatInput.value = '';
-        autoResizeTextarea();
-        sendBtn.disabled = true;
-        isTyping = true;
-        
-        console.log('🔄 Input cleared, showing typing indicator');
-        
-        // Show typing indicator IMMEDIATELY
-        showTypingIndicator();
-        
-        // Get bot response
-        console.log('🤖 Calling API...');
-        const response = await getBotResponse(message);
-        console.log('💬 Bot response received:', response.substring(0, 100) + '...');
-        
-        // Hide typing indicator
-        console.log('⏹️ Hiding typing indicator');
-        hideTypingIndicator();
-        
-        // Add bot response
-        addMessage(response, false, true);
-        console.log('✅ Bot message added to chat');
-        
-    } catch (error) {
-        console.error('❌ Error in handleSendMessage:', error);
-        hideTypingIndicator();
-        addMessage('[WARNING]Maaf, terjadi kesalahan sistem. Silakan coba lagi dalam beberapa saat.[/WARNING]', false);
-        showToast('Terjadi kesalahan, silakan coba lagi', 'error');
-    }
-    
-    isTyping = false;
-    sendBtn.disabled = false;
-    chatInput.focus();
-    console.log('🏁 handleSendMessage completed');
-}
-
-function sendQuickMessage(message) {
-    console.log('⚡ Quick message:', message);
-    
-    if (!hasUserInteracted) {
-        hasUserInteracted = true;
-        initAudioContext();
-    }
-    
-    chatInput.value = message;
-    handleSendMessage();
-}
-
-// Scroll Management
-function scrollToBottom() {
-    if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        scrollBtn?.classList.remove('show');
-    }
-}
-
-// Input Management
 function autoResizeTextarea() {
     if (chatInput) {
         chatInput.style.height = 'auto';
@@ -963,54 +631,13 @@ function autoResizeTextarea() {
     }
 }
 
-function setupInputListeners() {
-    if (!chatInput) return;
-    
-    // Mark user interaction for audio context
-    const markUserInteraction = () => {
-        if (!hasUserInteracted) {
-            hasUserInteracted = true;
-            initAudioContext();
-            console.log('👤 User interaction detected - audio enabled');
+function scrollToBottom() {
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (scrollBtn) {
+            scrollBtn.classList.remove('show');
         }
-    };
-    
-    // Auto-resize textarea and enable/disable send button
-    chatInput.addEventListener('input', function() {
-        markUserInteraction();
-        console.log('📝 Input event triggered:', this.value.length, 'characters');
-        
-        autoResizeTextarea();
-        
-        const hasValue = this.value.trim().length > 0;
-        if (sendBtn) {
-            sendBtn.disabled = !hasValue || isTyping;
-            console.log('🔘 Send button state:', hasValue && !isTyping ? 'enabled' : 'disabled');
-        }
-    });
-
-    // Send message on Enter (but not Shift+Enter)
-    chatInput.addEventListener('keypress', function(e) {
-        markUserInteraction();
-        console.log('⌨️ Keypress:', e.key, 'Shift held:', e.shiftKey);
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            console.log('🚀 Enter key - calling handleSendMessage()');
-            handleSendMessage();
-        }
-    });
-
-    // Handle paste events
-    chatInput.addEventListener('paste', function(e) {
-        markUserInteraction();
-        setTimeout(() => {
-            autoResizeTextarea();
-        }, 10);
-    });
-    
-    // Mark interaction on focus
-    chatInput.addEventListener('focus', markUserInteraction);
-    chatInput.addEventListener('click', markUserInteraction);
+    }
 }
 
 function setupScrollDetection() {
@@ -1036,34 +663,78 @@ function setupKeyboardShortcuts() {
         if (e.key === 'Escape') {
             closeAllModals();
         }
-        
-        // Ctrl/Cmd + / to show shortcuts help
-        if ((e.ctrlKey || e.metaKey) && e.key === '/') {
-            e.preventDefault();
-            showShortcutsHelp();
-        }
     });
 }
 
-function showShortcutsHelp() {
-    const shortcuts = [
-        'Ctrl+K - Focus pada input chat',
-        'Enter - Kirim pesan',
-        'Shift+Enter - Baris baru',
-        'Escape - Tutup modal',
-        'Ctrl+/ - Tampilkan bantuan shortcut'
-    ];
-    
-    const helpMessage = `# Keyboard Shortcuts ⌨️
-
-${shortcuts.map(shortcut => `- **${shortcut}**`).join('\n')}
-
-[TIP]Gunakan shortcut ini untuk navigasi yang lebih cepat![/TIP]`;
-    
-    addMessage(helpMessage, false);
+// Settings functions
+function loadSettings() {
+    try {
+        const savedSettings = localStorage.getItem('puffoff_chat_settings');
+        if (savedSettings) {
+            settings = { ...settings, ...JSON.parse(savedSettings) };
+        }
+        applySettings();
+    } catch (error) {
+        console.warn('Could not load settings:', error);
+    }
 }
 
-// Welcome Message
+function saveSettings() {
+    try {
+        localStorage.setItem('puffoff_chat_settings', JSON.stringify(settings));
+    } catch (error) {
+        console.warn('Could not save settings:', error);
+    }
+}
+
+function applySettings() {
+    // Apply theme
+    document.body.className = settings.chatTheme === 'dark' ? 'dark-theme' : '';
+    
+    // Update settings panel
+    const autoScrollCheckbox = document.getElementById('autoScroll');
+    const soundEnabledCheckbox = document.getElementById('soundEnabled');
+    const showTimestampsCheckbox = document.getElementById('showTimestamps');
+    const chatThemeSelect = document.getElementById('chatTheme');
+    
+    if (autoScrollCheckbox) autoScrollCheckbox.checked = settings.autoScroll;
+    if (soundEnabledCheckbox) soundEnabledCheckbox.checked = settings.soundEnabled;
+    if (showTimestampsCheckbox) showTimestampsCheckbox.checked = settings.showTimestamps;
+    if (chatThemeSelect) chatThemeSelect.value = settings.chatTheme;
+}
+
+function setupSettingsHandlers() {
+    // Settings will be handled by the existing functions in HTML
+}
+
+// Data persistence
+function saveConversationHistory() {
+    try {
+        localStorage.setItem('puffoff_conversation_history', JSON.stringify(conversationHistory));
+    } catch (error) {
+        console.warn('Could not save conversation history:', error);
+    }
+}
+
+function loadConversationHistory() {
+    try {
+        const saved = localStorage.getItem('puffoff_conversation_history');
+        if (saved) {
+            const history = JSON.parse(saved);
+            // Only load recent messages (last 50)
+            conversationHistory = history.slice(-50);
+            
+            // Restore messages to chat
+            conversationHistory.forEach(msg => {
+                addMessage(msg.content, msg.isUser, false);
+            });
+        }
+    } catch (error) {
+        console.warn('Could not load conversation history:', error);
+    }
+}
+
+// Welcome message
 function showWelcomeMessage() {
     const welcomeMessage = `# Selamat datang di PuffBot! 👋
 
@@ -1077,9 +748,6 @@ Halo! Saya **PuffBot**, asisten AI khusus untuk mendampingi perjalanan bebas rok
 - 💰 **Perhitungan penghematan uang**
 - 🎯 **Bantuan setting target dan goal**
 - 🧘 **Teknik mengelola stress**
-- 👥 **Info komunitas dan support group**
-
----
 
 [TIP]Cobalah mengetik pertanyaan seperti "Bagaimana cara mengatasi keinginan merokok?" atau pilih prompt cepat di bawah![/TIP]
 
@@ -1090,16 +758,130 @@ Halo! Saya **PuffBot**, asisten AI khusus untuk mendampingi perjalanan bebas rok
     }, 500);
 }
 
-// Chat Management
+// Notification sound
+function playNotificationSound() {
+    if (!settings.soundEnabled || !hasUserInteracted) return;
+    
+    try {
+        if (!audioContext) {
+            initAudioContext();
+        }
+        
+        if (!audioContext) return;
+        
+        // Resume audio context if suspended
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2);
+    } catch (error) {
+        console.log('Could not play notification sound:', error);
+    }
+}
+
+// Toast notifications
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// Settings modal functions
+function toggleSettings() {
+    const settingsPanel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('overlay');
+    
+    if (settingsPanel && overlay) {
+        if (settingsPanel.classList.contains('show')) {
+            settingsPanel.classList.remove('show');
+            overlay.classList.remove('show');
+        } else {
+            settingsPanel.classList.add('show');
+            overlay.classList.add('show');
+            setupSettingsListeners();
+        }
+    }
+}
+
+function setupSettingsListeners() {
+    const autoScrollCheckbox = document.getElementById('autoScroll');
+    const soundEnabledCheckbox = document.getElementById('soundEnabled');
+    const showTimestampsCheckbox = document.getElementById('showTimestamps');
+    const chatThemeSelect = document.getElementById('chatTheme');
+    
+    if (autoScrollCheckbox) {
+        autoScrollCheckbox.addEventListener('change', function() {
+            settings.autoScroll = this.checked;
+            saveSettings();
+        });
+    }
+    
+    if (soundEnabledCheckbox) {
+        soundEnabledCheckbox.addEventListener('change', function() {
+            settings.soundEnabled = this.checked;
+            saveSettings();
+        });
+    }
+    
+    if (showTimestampsCheckbox) {
+        showTimestampsCheckbox.addEventListener('change', function() {
+            settings.showTimestamps = this.checked;
+            saveSettings();
+            refreshMessageTimestamps();
+        });
+    }
+    
+    if (chatThemeSelect) {
+        chatThemeSelect.addEventListener('change', function() {
+            settings.chatTheme = this.value;
+            saveSettings();
+            applySettings();
+        });
+    }
+}
+
+function refreshMessageTimestamps() {
+    const timeElements = document.querySelectorAll('.message-time');
+    timeElements.forEach(element => {
+        element.style.display = settings.showTimestamps ? 'block' : 'none';
+    });
+}
+
+function closeAllModals() {
+    const settingsPanel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('overlay');
+    
+    if (settingsPanel) settingsPanel.classList.remove('show');
+    if (overlay) overlay.classList.remove('show');
+}
+
+// Chat management functions
 function clearChat() {
     if (confirm('Hapus semua percakapan? Data tidak dapat dikembalikan.')) {
-        chatMessages.innerHTML = '';
+        if (chatMessages) {
+            chatMessages.innerHTML = '';
+        }
         conversationHistory = [];
+        localStorage.removeItem('puffoff_conversation_history');
         showWelcomeMessage();
         showToast('Chat berhasil dibersihkan', 'info');
-        
-        // Save cleared state
-        localStorage.removeItem('puffoff_conversation_history');
     }
 }
 
@@ -1109,161 +891,12 @@ function exportChat() {
         return;
     }
     
-    showExportModal();
-}
-
-// Export Functionality
-function showExportModal() {
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10001;
-        backdrop-filter: blur(5px);
-    `;
-    
-    const modalContent = document.createElement('div');
-    modalContent.style.cssText = `
-        background: white;
-        border-radius: 20px;
-        padding: 30px;
-        max-width: 400px;
-        width: 90%;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        animation: modalSlideUp 0.3s ease;
-    `;
-    
-    // Add animation keyframes
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes modalSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    modalContent.innerHTML = `
-        <div style="text-align: center; margin-bottom: 25px;">
-            <h3 style="color: #1f2937; margin-bottom: 8px; font-size: 1.3rem;">📤 Export Chat</h3>
-            <p style="color: #6b7280; font-size: 0.9rem;">Pilih format file yang diinginkan</p>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-            <button onclick="exportAsText()" style="
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border: none;
-                padding: 16px 20px;
-                border-radius: 12px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                📄 Export sebagai Text (.txt)
-            </button>
-            
-            <button onclick="exportAsHTML()" style="
-                background: white;
-                color: #667eea;
-                border: 2px solid #667eea;
-                padding: 16px 20px;
-                border-radius: 12px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-            " onmouseover="this.style.background='#667eea'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#667eea'">
-                🌐 Export sebagai HTML
-            </button>
-            
-            <button onclick="exportAsJSON()" style="
-                background: #f8fafc;
-                color: #374151;
-                border: 1px solid #e2e8f0;
-                padding: 16px 20px;
-                border-radius: 12px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-            " onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f8fafc'">
-                ⚙️ Export sebagai JSON (Advanced)
-            </button>
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px;">
-            <button onclick="closeExportModal()" style="
-                background: transparent;
-                color: #6b7280;
-                border: none;
-                padding: 8px 16px;
-                cursor: pointer;
-                font-size: 0.9rem;
-            ">
-                ✕ Batal
-            </button>
-        </div>
-    `;
-    
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-    
-    // Store modal reference globally
-    window.currentExportModal = modal;
-    
-    // Close on backdrop click
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeExportModal();
-        }
-    });
-}
-
-function closeExportModal() {
-    if (window.currentExportModal) {
-        window.currentExportModal.style.opacity = '0';
-        window.currentExportModal.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            if (window.currentExportModal) {
-                document.body.removeChild(window.currentExportModal);
-                window.currentExportModal = null;
-            }
-        }, 200);
-    }
-}
-
-function exportAsText() {
+    // Simple text export
     const timestamp = new Date().toLocaleString('id-ID');
-    let textContent = `PERCAKAPAN PUFFOFF AI HELPER
-=================================
-Diekspor pada: ${timestamp}
-Total pesan: ${conversationHistory.length}
-
-`;
+    let textContent = `PERCAKAPAN PUFFOFF AI HELPER\n`;
+    textContent += `=================================\n`;
+    textContent += `Diekspor pada: ${timestamp}\n`;
+    textContent += `Total pesan: ${conversationHistory.length}\n\n`;
 
     conversationHistory.forEach((msg, index) => {
         const time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
@@ -1274,179 +907,40 @@ Total pesan: ${conversationHistory.length}
         const sender = msg.isUser ? 'ANDA' : 'PUFFBOT';
         const content = msg.content.replace(/\[.*?\]/g, '').replace(/#{1,6}\s*/g, '').replace(/\*\*(.*?)\*\*/g, '$1');
         
-        textContent += `[${time}] ${sender}:
-${content}
-
-`;
+        textContent += `[${time}] ${sender}:\n${content}\n\n`;
     });
 
-    textContent += `
-=================================
-Diekspor dari PuffOff AI Helper
-https://puffoff.app
-`;
-
-    downloadFile(textContent, `puffoff_chat_${new Date().toISOString().split('T')[0]}.txt`, 'text/plain');
-    closeExportModal();
-    showToast('Chat berhasil diekspor sebagai file teks!', 'success');
-}
-
-function exportAsHTML() {
-    const timestamp = new Date().toLocaleString('id-ID');
-    let htmlContent = `<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percakapan PuffOff AI Helper</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f8fafc;
-        }
-        .header {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px;
-            margin-bottom: 30px;
-        }
-        .message {
-            margin: 15px 0;
-            display: flex;
-        }
-        .message-user {
-            justify-content: flex-end;
-        }
-        .message-bot {
-            justify-content: flex-start;
-        }
-        .message-bubble {
-            max-width: 70%;
-            padding: 15px 20px;
-            border-radius: 18px;
-            position: relative;
-        }
-        .message-user .message-bubble {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 6px;
-        }
-        .message-bot .message-bubble {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-bottom-left-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .timestamp {
-            font-size: 0.8em;
-            opacity: 0.7;
-            margin-top: 8px;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 15px;
-            color: #6b7280;
-            font-size: 0.9em;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>🤖 Percakapan PuffOff AI Helper</h1>
-        <p>Diekspor pada: ${timestamp}</p>
-        <p>Total pesan: ${conversationHistory.length}</p>
-    </div>
+    textContent += `=================================\n`;
+    textContent += `Diekspor dari PuffOff AI Helper\n`;
     
-    <div class="conversation">`;
-
-    conversationHistory.forEach((msg, index) => {
-        const time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        const messageClass = msg.isUser ? 'message-user' : 'message-bot';
-        const cleanContent = msg.content
-            .replace(/\[INFO\](.*?)\[\/INFO\]/gs, '<div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>ℹ️ Informasi:</strong><br>$1</div>')
-            .replace(/\[TIP\](.*?)\[\/TIP\]/gs, '<div style="background: #faf5ff; border-left: 4px solid #8b5cf6; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>💡 Tips:</strong><br>$1</div>')
-            .replace(/\[SUCCESS\](.*?)\[\/SUCCESS\]/gs, '<div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>✅ Berhasil:</strong><br>$1</div>')
-            .replace(/\[WARNING\](.*?)\[\/WARNING\]/gs, '<div style="background: #fefce8; border-left: 4px solid #f59e0b; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>⚠️ Peringatan:</strong><br>$1</div>')
-            .replace(/\[MOTIVATION\](.*?)\[\/MOTIVATION\]/gs, '<div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>💪 Motivasi:</strong><br>$1</div>')
-            .replace(/\[HEALTH\](.*?)\[\/HEALTH\]/gs, '<div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>❤️ Kesehatan:</strong><br>$1</div>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/#{1,6}\s*(.*?)$/gm, '<h3>$1</h3>')
-            .replace(/\n/g, '<br>');
-        
-        htmlContent += `
-        <div class="message ${messageClass}">
-            <div class="message-bubble">
-                <div class="message-content">${cleanContent}</div>
-                <div class="timestamp">${time}</div>
-            </div>
-        </div>`;
-    });
-
-    htmlContent += `
-    </div>
-    
-    <div class="footer">
-        Diekspor dari PuffOff AI Helper<br>
-        <a href="https://puffoff.app" style="color: #667eea;">https://puffoff.app</a>
-    </div>
-</body>
-</html>`;
-
-    downloadFile(htmlContent, `puffoff_chat_${new Date().toISOString().split('T')[0]}.html`, 'text/html');
-    closeExportModal();
-    showToast('Chat berhasil diekspor sebagai file HTML!', 'success');
-}
-
-function exportAsJSON() {
-    const chatData = {
-        exported_at: new Date().toISOString(),
-        app: 'PuffOff AI Helper',
-        version: '2.0',
-        conversation_count: conversationHistory.length,
-        settings: settings,
-        conversations: conversationHistory
-    };
-    
-    const dataStr = JSON.stringify(chatData, null, 2);
-    downloadFile(dataStr, `puffoff_chat_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
-    closeExportModal();
-    showToast('Chat berhasil diekspor sebagai file JSON!', 'success');
-}
-
-function downloadFile(content, filename, mimeType) {
-    const dataBlob = new Blob([content], { type: mimeType });
+    // Create download
+    const dataBlob = new Blob([textContent], { type: 'text/plain' });
     const url = URL.createObjectURL(dataBlob);
     
     const link = document.createElement('a');
     link.href = url;
-    link.download = filename;
+    link.download = `puffoff_chat_${new Date().toISOString().split('T')[0]}.txt`;
     link.click();
     
     URL.revokeObjectURL(url);
+    showToast('Chat berhasil diekspor!', 'success');
 }
 
-// Voice Input (placeholder for future implementation)
+// Voice input functions (basic implementation)
 function toggleVoiceInput() {
-    const voiceBtn = document.querySelector('.input-btn i.fa-microphone').parentElement;
+    const voiceBtn = document.querySelector('.input-btn i.fa-microphone');
+    if (!voiceBtn) return;
+    
+    const button = voiceBtn.parentElement;
     
     if (!isVoiceRecording) {
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            startVoiceRecognition(voiceBtn);
+            startVoiceRecognition(button);
         } else {
             showToast('Browser tidak mendukung voice recognition', 'warning');
         }
     } else {
-        stopVoiceRecognition(voiceBtn);
+        stopVoiceRecognition(button);
     }
 }
 
@@ -1467,9 +961,11 @@ function startVoiceRecognition(button) {
     
     recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
-        chatInput.value = transcript;
-        autoResizeTextarea();
-        sendBtn.disabled = false;
+        if (chatInput) {
+            chatInput.value = transcript;
+            autoResizeTextarea();
+            updateSendButtonState();
+        }
     };
     
     recognition.onerror = function(event) {
@@ -1498,47 +994,9 @@ function stopVoiceRecognition(button) {
     showToast('Rekaman selesai', 'success');
 }
 
-// File Attachment (placeholder)
+// File attachment placeholder
 function attachFile() {
     showToast('Fitur upload file akan segera hadir!', 'info');
-}
-
-// Toast Notifications
-function showToast(message, type = 'info') {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    
-    toast.textContent = message;
-    toast.className = `toast ${type}`;
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-// Data Persistence
-function saveConversationHistory() {
-    try {
-        localStorage.setItem('puffoff_conversation_history', JSON.stringify(conversationHistory));
-    } catch (error) {
-        console.warn('Could not save conversation history:', error);
-    }
-}
-
-function loadConversationHistory() {
-    try {
-        const saved = localStorage.getItem('puffoff_conversation_history');
-        if (saved) {
-            conversationHistory = JSON.parse(saved);
-            // Restore messages to chat
-            conversationHistory.forEach(msg => {
-                addMessage(msg.content, msg.isUser, false);
-            });
-        }
-    } catch (error) {
-        console.warn('Could not load conversation history:', error);
-    }
 }
 
 // Auto-save conversation periodically
@@ -1552,3 +1010,20 @@ setInterval(() => {
 window.addEventListener('beforeunload', () => {
     saveConversationHistory();
 });
+
+// Global functions that might be called from HTML
+window.handleSendMessage = handleSendMessage;
+window.toggleSettings = toggleSettings;
+window.clearChat = clearChat;
+window.exportChat = exportChat;
+window.toggleVoiceInput = toggleVoiceInput;
+window.attachFile = attachFile;
+window.scrollToBottom = scrollToBottom;
+window.closeAllModals = closeAllModals;
+
+console.log('✅ Chatbot script loaded successfully!');Node.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+        
+        gain
