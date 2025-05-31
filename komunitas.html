@@ -1,4 +1,787 @@
-<!DOCTYPE html>
+<div class="post-title">🌟 Motivasi Pagi: Kamu Lebih Kuat Dari Yang Kamu Kira!</div>
+                    <div class="post-excerpt">
+                        "Setiap hari tanpa rokok adalah bukti kekuatanmu. Jangan pernah meremehkan progress kecil, karena dari situ lah perubahan besar dimulai." Mari semangat bersama! 💪
+                    </div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <i class="far fa-heart"></i>
+                            <span>156</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>42</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>28</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load More Button -->
+        <button class="load-more-btn" onclick="loadMorePosts()">
+            <i class="fas fa-plus"></i> Muat Lebih Banyak Post
+        </button>
+    </div>
+
+    <!-- Floating Create Button -->
+    <button class="floating-create" onclick="openCreateModal()" title="Buat Post Baru">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Create Post Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Buat Post Baru</h3>
+                <button class="close-btn" onclick="closeCreateModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createPostForm" onsubmit="submitPost(event)">
+                    <div class="form-group">
+                        <label class="form-label">Kategori Post</label>
+                        <div class="category-chips">
+                            <div class="chip" onclick="selectCategory(this, 'success')" data-category="success">
+                                🎉 Success Story
+                            </div>
+                            <div class="chip" onclick="selectCategory(this, 'question')" data-category="question">
+                                ❓ Pertanyaan
+                            </div>
+                            <div class="chip" onclick="selectCategory(this, 'tips')" data-category="tips">
+                                💡 Tips & Trick
+                            </div>
+                            <div class="chip" onclick="selectCategory(this, 'motivation')" data-category="motivation">
+                                🌟 Motivasi
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedCategory" name="category" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="postTitle">Judul Post</label>
+                        <input type="text" id="postTitle" name="title" class="form-input" placeholder="Tulis judul yang menarik..." required maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="postContent">Isi Post</label>
+                        <textarea id="postContent" name="content" class="form-textarea" placeholder="Ceritakan pengalaman, tips, atau pertanyaan kamu..." required maxlength="2000"></textarea>
+                        <div style="text-align: right; font-size: 0.8rem; color: #6b7280; margin-top: 4px;">
+                            <span id="charCount">0</span>/2000
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tambah Gambar (Opsional)</label>
+                        <input type="file" id="postImage" name="image" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                        <button type="button" onclick="document.getElementById('postImage').click()" style="
+                            width: 100%;
+                            padding: 40px 20px;
+                            border: 2px dashed #d1d5db;
+                            background: #f9fafb;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            color: #6b7280;
+                        " onmouseover="this.style.borderColor='#667eea'; this.style.color='#667eea'" onmouseout="this.style.borderColor='#d1d5db'; this.style.color='#6b7280'">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                            Klik untuk upload gambar
+                        </button>
+                        <div id="imagePreview" style="margin-top: 12px; display: none;">
+                            <img id="previewImg" style="width: 100%; border-radius: 8px; max-height: 200px; object-fit: cover;">
+                            <button type="button" onclick="removeImage()" style="
+                                margin-top: 8px;
+                                padding: 6px 12px;
+                                background: #ef4444;
+                                color: white;
+                                border: none;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                            ">
+                                <i class="fas fa-trash"></i> Hapus Gambar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                        <i class="fas fa-paper-plane"></i> Posting Sekarang
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- More Options Modal -->
+    <div id="moreModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Opsi Post</h3>
+                <button class="close-btn" onclick="closeMoreModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <button onclick="reportPost()" style="
+                    width: 100%;
+                    padding: 16px;
+                    background: white;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                    transition: all 0.3s ease;
+                    text-align: left;
+                    color: #ef4444;
+                " onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
+                    <i class="fas fa-flag"></i> Laporkan Post
+                </button>
+                
+                <button onclick="savePost()" style="
+                    width: 100%;
+                    padding: 16px;
+                    background: white;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                    transition: all 0.3s ease;
+                    text-align: left;
+                    color: #374151;
+                " onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                    <i class="fas fa-bookmark"></i> Simpan Post
+                </button>
+                
+                <button onclick="hidePost()" style="
+                    width: 100%;
+                    padding: 16px;
+                    background: white;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                    transition: all 0.3s ease;
+                    text-align: left;
+                    color: #374151;
+                " onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                    <i class="fas fa-eye-slash"></i> Sembunyikan Post
+                </button>
+                
+                <button onclick="copyLink()" style="
+                    width: 100%;
+                    padding: 16px;
+                    background: white;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-align: left;
+                    color: #374151;
+                " onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                    <i class="fas fa-link"></i> Salin Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="progress.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Progress</span>
+            </a>
+            <a href="chatbot.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                <span>AI Helper</span>
+            </a>
+            <a href="komunitas.html" class="nav-item active">
+                <div style="position: relative;">
+                    <i class="fas fa-users"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+                <span>Komunitas</span>
+            </a>
+            <a href="target.html" class="nav-item">
+                <i class="fas fa-bullseye"></i>
+                <span>Target</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" style="
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        display: none;
+        z-index: 10001;
+        font-weight: 500;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    "></div>
+
+    <script>
+        // Global variables
+        let currentTab = 'trending';
+        let selectedCategory = null;
+        let currentMorePost = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCharCounter();
+            setupFormValidation();
+        });
+
+        // Tab switching
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide trending section
+            const trendingSection = document.getElementById('trending-section');
+            if (tab === 'trending') {
+                trendingSection.style.display = 'block';
+            } else {
+                trendingSection.style.display = 'none';
+            }
+            
+            // Filter posts based on tab
+            filterPosts(tab);
+            
+            showToast(`Menampilkan: ${getTabName(tab)}`);
+        }
+
+        function getTabName(tab) {
+            const names = {
+                'trending': 'Post Trending',
+                'recent': 'Post Terbaru',
+                'motivasi': 'Post Motivasi',
+                'my-posts': 'Post Saya'
+            };
+            return names[tab] || 'Semua Post';
+        }
+
+        function filterPosts(tab) {
+            const posts = document.querySelectorAll('.post-card');
+            
+            posts.forEach(post => {
+                const badge = post.querySelector('.post-badge');
+                const username = post.querySelector('.username').textContent;
+                
+                let shouldShow = true;
+                
+                if (tab === 'motivasi') {
+                    shouldShow = badge && badge.textContent.includes('Motivasi');
+                } else if (tab === 'my-posts') {
+                    // Simulate showing only user's posts
+                    shouldShow = username === 'Andi Rahman'; // Example user
+                }
+                
+                post.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+
+        // Like functionality
+        function toggleLike(button) {
+            const isLiked = button.classList.contains('liked');
+            const countSpan = button.querySelector('span');
+            const icon = button.querySelector('i');
+            let count = parseInt(countSpan.textContent);
+            
+            if (isLiked) {
+                button.classList.remove('liked');
+                icon.className = 'far fa-heart';
+                count--;
+                showToast('Like dibatalkan');
+            } else {
+                button.classList.add('liked');
+                icon.className = 'fas fa-heart';
+                count++;
+                showToast('Post disukai! ❤️');
+                
+                // Add heart animation
+                createHeartAnimation(button);
+            }
+            
+            countSpan.textContent = count;
+        }
+
+        function createHeartAnimation(button) {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.style.cssText = `
+                position: absolute;
+                font-size: 1.5rem;
+                pointer-events: none;
+                animation: heartFloat 1s ease-out forwards;
+                z-index: 1000;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes heartFloat {
+                    0% {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: translateY(-30px) scale(1.5);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            button.style.position = 'relative';
+            button.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        }
+
+        // Toggle replies
+        function toggleReplies(button) {
+            const postCard = button.closest('.post-card');
+            const repliesSection = postCard.querySelector('.replies-section');
+            
+            if (repliesSection.style.display === 'none' || !repliesSection.style.display) {
+                repliesSection.style.display = 'block';
+                showToast('Menampilkan balasan');
+            } else {
+                repliesSection.style.display = 'none';
+                showToast('Menyembunyikan balasan');
+            }
+        }
+
+        // Share functionality
+        function sharePost(button) {
+            const postCard = button.closest('.post-card');
+            const title = postCard.querySelector('.post-title').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'PuffOff Community - ' + title,
+                    text: 'Lihat post menarik ini di komunitas PuffOff!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                const url = window.location.href + '#post-' + Date.now();
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('Link berhasil disalin!');
+                });
+            }
+            
+            // Update share count
+            const countSpan = button.querySelector('span');
+            const count = parseInt(countSpan.textContent) + 1;
+            countSpan.textContent = count;
+        }
+
+        // More options
+        function showMoreOptions(button) {
+            currentMorePost = button.closest('.post-card');
+            document.getElementById('moreModal').classList.add('show');
+        }
+
+        function closeMoreModal() {
+            document.getElementById('moreModal').classList.remove('show');
+            currentMorePost = null;
+        }
+
+        function reportPost() {
+            showToast('Post telah dilaporkan. Terima kasih!');
+            closeMoreModal();
+        }
+
+        function savePost() {
+            showToast('Post berhasil disimpan!');
+            closeMoreModal();
+        }
+
+        function hidePost() {
+            if (currentMorePost) {
+                currentMorePost.style.display = 'none';
+                showToast('Post disembunyikan');
+                closeMoreModal();
+            }
+        }
+
+        function copyLink() {
+            const url = window.location.href + '#post-' + Date.now();
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link berhasil disalin!');
+                closeMoreModal();
+            });
+        }
+
+        // Load more functionality
+        function loadMoreReplies(button) {
+            const repliesSection = button.closest('.replies-section');
+            
+            // Simulate loading more replies
+            const newReplies = [
+                { username: 'Maya S', avatar: 'MS', time: '30 menit lalu', content: 'Setuju banget! Saya juga pakai teknik yang sama.' },
+                { username: 'Budi P', avatar: 'BP', time: '25 menit lalu', content: 'Terima kasih sharingnya, sangat membantu!' },
+                { username: 'Rita K', avatar: 'RK', time: '20 menit lalu', content: 'Bookmark dulu ah, buat referensi.' }
+            ];
+            
+            newReplies.forEach(reply => {
+                const replyElement = document.createElement('div');
+                replyElement.className = 'reply-card';
+                replyElement.style.opacity = '0';
+                replyElement.innerHTML = `
+                    <div class="reply-header">
+                        <div class="reply-avatar">${reply.avatar}</div>
+                        <div class="reply-username">${reply.username}</div>
+                        <div class="reply-time">${reply.time}</div>
+                    </div>
+                    <div class="reply-content">${reply.content}</div>
+                `;
+                
+                repliesSection.insertBefore(replyElement, button);
+                
+                // Animate in
+                setTimeout(() => {
+                    replyElement.style.transition = 'opacity 0.3s ease';
+                    replyElement.style.opacity = '1';
+                }, 100);
+            });
+            
+            button.remove();
+            showToast('Balasan tambahan dimuat');
+        }
+
+        function loadMorePosts() {
+            const container = document.getElementById('posts-container');
+            
+            // Simulate loading more posts
+            const newPosts = [
+                {
+                    avatar: 'TA',
+                    username: 'Toni Ardiansyah',
+                    time: '2 hari yang lalu',
+                    badge: 'Question',
+                    badgeClass: 'badge-question',
+                    title: '🤔 Rekomendasi aplikasi olahraga ringan?',
+                    content: 'Teman-teman ada yang bisa rekomendasikan aplikasi untuk olahraga ringan di rumah? Buat ngilangin habit ngerokok...'
+                },
+                {
+                    avatar: 'EW',
+                    username: 'Eka Wijaya',
+                    time: '3 hari yang lalu',
+                    badge: 'Tips & Trick',
+                    badgeClass: 'badge-tips',
+                    title: '🥤 Minuman herbal pengganti rokok',
+                    content: 'Sharing resep minuman herbal yang membantu mengurangi keinginan merokok. Teh jahe + lemon + madu...'
+                }
+            ];
+            
+            newPosts.forEach((post, index) => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card';
+                postElement.style.opacity = '0';
+                postElement.style.transform = 'translateY(20px)';
+                
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <div class="user-info">
+                            <div class="user-avatar">${post.avatar}</div>
+                            <div class="user-details">
+                                <div class="username">${post.username}</div>
+                                <div class="post-time">${post.time}</div>
+                            </div>
+                            <div class="post-badge ${post.badgeClass}">${post.badge}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="post-title">${post.title}</div>
+                        <div class="post-excerpt">${post.content}</div>
+                    </div>
+                    <div class="post-actions">
+                        <div class="action-group">
+                            <button class="action-btn" onclick="toggleLike(this)">
+                                <i class="far fa-heart"></i>
+                                <span>${Math.floor(Math.random() * 50) + 10}</span>
+                            </button>
+                            <button class="action-btn" onclick="toggleReplies(this)">
+                                <i class="far fa-comment"></i>
+                                <span>${Math.floor(Math.random() * 20) + 5}</span>
+                            </button>
+                            <button class="action-btn" onclick="sharePost(this)">
+                                <i class="fas fa-share"></i>
+                                <span>${Math.floor(Math.random() * 10) + 1}</span>
+                            </button>
+                        </div>
+                        <button class="more-btn" onclick="showMoreOptions(this)">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(postElement);
+                
+                // Animate in
+                setTimeout(() => {
+                    postElement.style.transition = 'all 0.3s ease';
+                    postElement.style.opacity = '1';
+                    postElement.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+            
+            showToast('Post baru dimuat!');
+        }
+
+        // Create post modal
+        function openCreateModal() {
+            document.getElementById('createModal').classList.add('show');
+            document.getElementById('postTitle').focus();
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.remove('show');
+            document.getElementById('createPostForm').reset();
+            selectedCategory = null;
+            document.querySelectorAll('.chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            document.getElementById('submitBtn').disabled = true;
+            
+            // Reset image preview
+            const preview = document.getElementById('imagePreview');
+            preview.style.display = 'none';
+            document.getElementById('postImage').value = '';
+        }
+
+        function selectCategory(chip, category) {
+            // Remove selection from other chips
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+            
+            // Select current chip
+            chip.classList.add('selected');
+            selectedCategory = category;
+            document.getElementById('selectedCategory').value = category;
+            
+            // Validate form
+            validateForm();
+            
+            showToast(`Kategori dipilih: ${chip.textContent.trim()}`);
+        }
+
+        function updateCharCounter() {
+            const textarea = document.getElementById('postContent');
+            const counter = document.getElementById('charCount');
+            
+            textarea.addEventListener('input', function() {
+                const count = this.value.length;
+                counter.textContent = count;
+                
+                if (count > 1800) {
+                    counter.style.color = '#ef4444';
+                } else if (count > 1500) {
+                    counter.style.color = '#f59e0b';
+                } else {
+                    counter.style.color = '#6b7280';
+                }
+                
+                validateForm();
+            });
+        }
+
+        function setupFormValidation() {
+            const inputs = ['postTitle', 'postContent'];
+            
+            inputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                input.addEventListener('input', validateForm);
+            });
+        }
+
+        function validateForm() {
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            const category = selectedCategory;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            const isValid = title.length > 0 && content.length > 10 && category;
+            
+            submitBtn.disabled = !isValid;
+            
+            if (isValid) {
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            } else {
+                submitBtn.style.opacity = '0.6';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+                showToast('Gambar berhasil dipilih!');
+            }
+        }
+
+        function removeImage() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('postImage').value = '';
+            showToast('Gambar dihapus');
+        }
+
+        function submitPost(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const title = formData.get('title');
+            const content = formData.get('content');
+            const category = formData.get('category');
+            
+            // Simulate post submission
+            const badge = getBadgeHTML(category);
+            const newPost = createNewPostElement(title, content, category, badge);
+            
+            // Add to top of posts container
+            const container = document.getElementById('posts-container');
+            container.insertBefore(newPost, container.firstChild);
+            
+            // Animate in
+            newPost.style.opacity = '0';
+            newPost.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                newPost.style.transition = 'all 0.3s ease';
+                newPost.style.opacity = '1';
+                newPost.style.transform = 'translateY(0)';
+            }, 100);
+            
+            closeCreateModal();
+            showToast('Post berhasil dibuat! 🎉');
+        }
+
+        function getBadgeHTML(category) {
+            const badges = {
+                'success': { text: 'Success Story', class: 'badge-success' },
+                'question': { text: 'Pertanyaan', class: 'badge-question' },
+                'tips': { text: 'Tips & Trick', class: 'badge-tips' },
+                'motivation': { text: 'Motivasi', class: 'badge-motivation' }
+            };
+            
+            const badge = badges[category];
+            return `<div class="post-badge ${badge.class}">${badge.text}</div>`;
+        }
+
+        function createNewPostElement(title, content, category, badge) {
+            const postElement = document.createElement('div');
+            postElement.className = 'post-card';
+            
+            const icons = {
+                'success': '🎉',
+                'question': '❓',
+                'tips': '💡',
+                'motivation': '🌟'
+            };
+            
+            postElement.innerHTML = `
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">YOU</div>
+                        <div class="user-details">
+                            <div class="username">Anda</div>
+                            <div class="post-time">Baru saja</div>
+                        </div>
+                        ${badge}
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">${icons[category]} ${title}</div>
+                    <div class="post-excerpt">${content}</div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <i class="far fa-heart"></i>
+                            <span>0</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>0</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>0</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+                <div class="replies-section" style="display: none;">
+                    <div style="text-align: center; padding: 20px; color: #6b7280;">
+                        Belum ada balasan. Jadilah yang pertama berkomentar!
+                    </div>
+                </div>
+            `;
+            
+            return postElement;
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
