@@ -850,7 +850,7 @@
                 checkbox.classList.remove('checked');
             }
             
-            console.log('Terms accepted:', termsAccepted); // Debug log
+            console.log('📋 TERMS TOGGLED:', termsAccepted ? 'ACCEPTED ✅' : 'NOT ACCEPTED ❌');
             
             // Update button immediately when terms state changes
             updateRegisterButton();
@@ -932,20 +932,27 @@
             return strength;
         }
 
-        // Form validation
+        // Form validation - TIDAK termasuk terms checkbox
         function validateForm() {
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            console.log('=== VALIDATING FORM ===');
+            console.log('Name:', fullName, 'Length:', fullName.length);
+            console.log('Email:', email);
+            console.log('Password:', password, 'Length:', password.length);
+            console.log('Confirm:', confirmPassword);
             
             let isValid = true;
             
             // Name validation
             const nameInput = document.getElementById('fullName');
             const nameValidation = document.getElementById('nameValidation');
+            const nameValid = fullName.length >= 2;
             
-            if (fullName.length < 2) {
+            if (!nameValid) {
                 nameInput.classList.add('invalid');
                 nameInput.classList.remove('valid');
                 nameValidation.textContent = 'Nama harus minimal 2 karakter';
@@ -962,8 +969,9 @@
             const emailInput = document.getElementById('email');
             const emailValidation = document.getElementById('emailValidation');
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emailValid = emailPattern.test(email);
             
-            if (!emailPattern.test(email)) {
+            if (!emailValid) {
                 emailInput.classList.add('invalid');
                 emailInput.classList.remove('valid');
                 emailValidation.textContent = 'Format email tidak valid';
@@ -976,9 +984,11 @@
                 emailValidation.className = 'validation-message success';
             }
             
-            // Password validation - hanya cek minimal 6 karakter
+            // Password validation - minimal 6 karakter
             const passwordInput = document.getElementById('password');
-            if (password.length < 6) {
+            const passwordValid = password.length >= 6;
+            
+            if (!passwordValid) {
                 passwordInput.classList.add('invalid');
                 passwordInput.classList.remove('valid');
                 isValid = false;
@@ -990,64 +1000,75 @@
             // Confirm password validation
             const confirmPasswordInput = document.getElementById('confirmPassword');
             const confirmPasswordValidation = document.getElementById('confirmPasswordValidation');
+            const confirmValid = (password === confirmPassword && confirmPassword.length > 0);
             
-            if (password !== confirmPassword || confirmPassword.length === 0) {
+            if (!confirmValid) {
                 confirmPasswordInput.classList.add('invalid');
                 confirmPasswordInput.classList.remove('valid');
                 confirmPasswordValidation.textContent = 'Password tidak cocok';
                 confirmPasswordValidation.className = 'validation-message error';
                 isValid = false;
-            } else if (confirmPassword.length > 0) {
+            } else {
                 confirmPasswordInput.classList.add('valid');
                 confirmPasswordInput.classList.remove('invalid');
                 confirmPasswordValidation.textContent = '✓ Password cocok';
                 confirmPasswordValidation.className = 'validation-message success';
             }
             
-            console.log('Validation result:', {
-                nameValid: fullName.length >= 2,
-                emailValid: emailPattern.test(email),
-                passwordValid: password.length >= 6,
-                confirmValid: password === confirmPassword && confirmPassword.length > 0,
-                overallValid: isValid
-            });
+            console.log('=== VALIDATION RESULTS ===');
+            console.log('Name valid:', nameValid);
+            console.log('Email valid:', emailValid);
+            console.log('Password valid:', passwordValid);
+            console.log('Confirm valid:', confirmValid);
+            console.log('OVERALL FORM VALID:', isValid);
+            console.log('==========================');
             
             return isValid;
         }
 
-        // Update register button state
+        // Update register button state - LOGIC UTAMA
         function updateRegisterButton() {
             const registerBtn = document.getElementById('registerBtn');
             const btnText = document.getElementById('btnText');
-            const isFormValid = validateForm();
-            const isComplete = isFormValid && termsAccepted;
             
-            console.log('DEBUG UPDATE BUTTON:', {
-                formValid: isFormValid,
-                termsAccepted: termsAccepted,
-                buttonEnabled: isComplete
-            });
+            // Panggil validasi form (TANPA terms)
+            const isFormValid = validateForm();
+            
+            // Cek apakah KEDUA kondisi terpenuhi
+            const canSubmit = isFormValid && termsAccepted;
+            
+            console.log('🔍 BUTTON UPDATE CHECK:');
+            console.log('   📋 Form Valid:', isFormValid);
+            console.log('   ✅ Terms Accepted:', termsAccepted);
+            console.log('   🚀 Can Submit:', canSubmit);
+            console.log('   🎯 Button will be:', canSubmit ? 'ENABLED' : 'DISABLED');
             
             // Remove all custom classes first
             registerBtn.classList.remove('disabled-form', 'disabled-terms');
             
-            registerBtn.disabled = !isComplete;
+            // Set button state
+            registerBtn.disabled = !canSubmit;
             
-            // Update button appearance and text based on state
-            if (isComplete) {
+            // Update button text dan style
+            if (canSubmit) {
                 btnText.textContent = 'Buat Akun';
                 btnText.style.color = 'white';
-                // Button is enabled, no special class needed
+                console.log('✅ BUTTON IS NOW ENABLED - "Buat Akun"');
             } else if (!isFormValid && !termsAccepted) {
                 btnText.textContent = 'Lengkapi form dan setujui syarat';
                 registerBtn.classList.add('disabled-form');
+                console.log('❌ BUTTON DISABLED - Need both form and terms');
             } else if (!isFormValid) {
                 btnText.textContent = 'Lengkapi form terlebih dahulu';
                 registerBtn.classList.add('disabled-form');
+                console.log('❌ BUTTON DISABLED - Need valid form');
             } else if (!termsAccepted) {
                 btnText.textContent = 'Setujui syarat & ketentuan';
                 registerBtn.classList.add('disabled-terms');
+                console.log('❌ BUTTON DISABLED - Need terms acceptance');
             }
+            
+            console.log('=====================================');
         }
 
         // Handle registration
@@ -1246,28 +1267,36 @@
         }
             const inputs = ['fullName', 'email', 'password', 'confirmPassword'];
             
-            // Real-time validation for all inputs
+            // Real-time validation untuk semua inputs
             inputs.forEach(inputId => {
                 const input = document.getElementById(inputId);
                 input.addEventListener('input', function() {
-                    // Small delay to allow typing to complete
+                    console.log(`📝 INPUT CHANGED: ${inputId} = "${this.value}"`);
+                    
+                    // Small delay untuk allow typing to complete
                     clearTimeout(this.validationTimeout);
                     this.validationTimeout = setTimeout(() => {
+                        console.log(`⏰ VALIDATING after input change in ${inputId}`);
                         updateRegisterButton();
                     }, 300);
                 });
                 
-                // Also update on blur for immediate feedback
-                input.addEventListener('blur', updateRegisterButton);
+                // Juga update on blur untuk immediate feedback
+                input.addEventListener('blur', function() {
+                    console.log(`👁️ BLUR EVENT: ${inputId}`);
+                    updateRegisterButton();
+                });
             });
 
             // Real-time password strength checking
             document.getElementById('password').addEventListener('input', function() {
+                console.log('🔒 PASSWORD CHANGED:', this.value);
                 checkPasswordStrength(this.value);
                 
                 // Update button after password check
                 clearTimeout(this.validationTimeout);
                 this.validationTimeout = setTimeout(() => {
+                    console.log('⏰ VALIDATING after password change');
                     updateRegisterButton();
                 }, 300);
             });
