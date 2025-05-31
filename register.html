@@ -332,6 +332,13 @@
             cursor: pointer;
             transition: all 0.3s ease;
             flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .custom-checkbox:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
         }
 
         .custom-checkbox.checked {
@@ -344,6 +351,7 @@
             font-size: 12px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
         .custom-checkbox.checked i {
@@ -732,12 +740,12 @@
 
             <!-- Terms and Conditions -->
             <div class="terms-checkbox">
-                <div class="custom-checkbox" id="termsCheckbox" onclick="toggleTerms()">
+                <div class="custom-checkbox" id="termsCheckbox">
                     <i class="fas fa-check"></i>
                 </div>
                 <div>
-                    Saya setuju dengan <a href="terms.html" target="_blank">Syarat & Ketentuan</a> 
-                    dan <a href="privacy.html" target="_blank">Kebijakan Privasi</a> PuffOff
+                    Saya setuju dengan <a href="#" onclick="openTerms(); return false;">Syarat & Ketentuan</a> 
+                    dan <a href="#" onclick="openPrivacy(); return false;">Kebijakan Privasi</a> PuffOff
                 </div>
             </div>
 
@@ -829,8 +837,39 @@
                 checkbox.classList.remove('checked');
             }
             
+            console.log('Terms accepted:', termsAccepted); // Debug log
             updateRegisterButton();
         }
+
+        // Add click event listener for better compatibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            
+            // Add multiple event listeners for better compatibility
+            termsCheckbox.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTerms();
+            });
+            
+            termsCheckbox.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTerms();
+            });
+            
+            // Visual feedback
+            termsCheckbox.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            termsCheckbox.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+            
+            termsCheckbox.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
 
         // Password strength checker
         function checkPasswordStrength(password) {
