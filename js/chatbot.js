@@ -1,111 +1,88 @@
-// Message Sending dengan validation ketat
+// Simplified message sending function
 async function handleSendMessage() {
-    console.log('🚀 [SEND] handleSendMessage function called');
+    console.log('🚀 [SEND] START handleSendMessage');
     
-    if (!hasUserInteracted) {
-        hasUserInteracted = true;
-        initAudioContext();
-    }
-    
-    if (!chatInput) {
-        console.error('❌ [SEND] Chat input not found!');
-        showToast('Error: Input tidak ditemukan', 'error');
+    // Basic validation
+    if (!chatInput || !chatMessages || !sendBtn) {
+        console.error('❌ [SEND] Missing DOM elements');
+        alert('Error: Halaman tidak lengkap. Silakan refresh.');
         return;
     }
     
     const message = chatInput.value.trim();
-    console.log('📝 [SEND] Message to send:', `"${message}"`);
+    console.log('📝 [SEND] Message:', message);
     
     if (!message) {
-        console.warn('⚠️ [SEND] Empty message, not sending');
-        showToast('Silakan ketik pesan terlebih dahulu', 'warning');
+        console.warn('⚠️ [SEND] Empty message');
+        showToast('Silakan ketik pesan', 'warning');
         return;
     }
     
     if (isTyping) {
-        console.warn('⚠️ [SEND] Bot is typing, please wait');
-        showToast('Tunggu sebentar, bot sedang mengetik...', 'warning');
+        console.warn('⚠️ [SEND] Already processing');
+        showToast('Tunggu sebentar...', 'warning');
         return;
     }
     
-    console.log('✅ [SEND] Message validation passed, proceeding...');
-    
     try {
-        // Add user message
-        console.log('👤 [SEND] Adding user message to chat');
+        // Mark as processing
+        isTyping = true;
+        sendBtn.disabled = true;
+        
+        console.log('👤 [SEND] Adding user message');
         addMessage(message, true);
         
-        // Clear input and set typing state
+        // Clear input
         chatInput.value = '';
         autoResizeTextarea();
-        sendBtn.disabled = true;
-        isTyping = true;
         
-        console.log('🔄 [SEND] Input cleared, showing typing indicator');
-        
-        // Show typing indicator
+        console.log('⏳ [SEND] Showing typing indicator');
         showTypingIndicator();
         
-        // Get bot response with detailed logging
-        console.log('🤖 [SEND] Calling getBotResponse...');
-        const response = await getBotResponse(message);
+        console.log('🤖 [SEND] Getting bot response');
+        const botResponse = await getBotResponse(message);
         
-        console.log('💬 [SEND] Response received - type:', typeof response, 'length:', response ? response.length : 'null');
-        console.log('💬 [SEND] Response preview:', response ? response.substring(0, 100) + '...' : 'NO RESPONSE');
+        console.log('📥 [SEND] Response received:', !!botResponse);
         
-        if (!response || typeof response !== 'string' || response.trim().length === 0) {
-            console.error('❌ [SEND] Invalid response received!');
-            throw new Error('Invalid or empty response from getBotResponse');
+        if (!botResponse) {
+            throw new Error('No response received');
         }
         
-        // Hide typing indicator
         console.log('⏹️ [SEND] Hiding typing indicator');
         hideTypingIndicator();
         
-        // Add bot response
-        console.log('🤖 [SEND] Adding bot response to chat');
-        addMessage(response.trim(), false, true);
-        console.log('✅ [SEND] Bot message added to chat successfully');
+        console.log('🤖 [SEND] Adding bot message');
+        addMessage(botResponse, false, true);
         
-        showToast('Pesan berhasil dikirim!', 'success');
+        console.log('✅ [SEND] SUCCESS!');
+        showToast('Pesan terkirim!', 'success');
         
     } catch (error) {
-        console.error('❌ [SEND] Error in handleSendMessage:', error);
+        console.error('❌ [SEND] Error:', error);
         hideTypingIndicator();
         
-        // GUARANTEED emergency fallback
-        console.log('🆘 [EMERGENCY] Using guaranteed emergency response');
-        const emergencyResponse = `# Maaf, Terjadi Kesalahan! 😅
+        // Emergency response
+        const emergency = `# Sistem Bermasalah 😅
 
-Sistem sedang mengalami gangguan teknis, tapi saya tetap bisa membantu!
+Maaf ada gangguan teknis! Tapi tetap semangat bebas rokok ya!
 
-## Tips Cepat untuk Sekarang:
+**Tips sementara:**
+- Tarik napas dalam-dalam
+- Minum air putih
+- Jalan-jalan sebentar
 
-### 🚫 **Jika Ingin Merokok:**
-- Tarik napas dalam-dalam 10 kali
-- Minum segelas air putih
-- Berdiri dan jalan-jalan 2 menit
-
-### 💪 **Motivasi Cepat:**
-- "Saya lebih kuat dari keinginan merokok"
-- "Setiap detik tanpa rokok adalah kemenangan"
-- "Kesehatan saya lebih berharga dari rokok"
-
-### 🎯 **Yang Bisa Dilakukan:**
-- Refresh halaman dan coba lagi
-- Kirim pesan yang lebih spesifik
-- Gunakan prompt cepat di bawah
-
-[TIP]Jangan menyerah! Gangguan teknis ini sementara, tapi komitmen bebas rokok kamu adalah selamanya! 💪[/TIP]`;
-
-        addMessage(emergencyResponse, false);
-        showToast('Sistem bermasalah, tapi saya tetap membantu!', 'warning');
+Coba kirim pesan lagi! 💪`;
+        
+        addMessage(emergency, false);
+        showToast('Ada gangguan, coba lagi', 'error');
     }
     
+    // Reset state
     isTyping = false;
     sendBtn.disabled = false;
     chatInput.focus();
-    console.log('🏁 [SEND] handleSendMessage completed');
+    
+    console.log('🏁 [SEND] END handleSendMessage');
 }
         // Initialize marked for markdown parsing
 if (typeof marked !== 'undefined') {
@@ -523,121 +500,99 @@ function getQuickReplies(botMessage) {
     return ['Terima kasih', 'Tanya lagi', 'Bantuan lain'];
 }
 
-// API Communication dengan debugging yang sangat detail
+// Simplified API Communication - ALWAYS return response
 async function getBotResponse(userMessage) {
-    console.log('🤖 [getBotResponse] Starting with message:', userMessage);
+    console.log('🤖 [getBotResponse] START with:', userMessage);
     
+    // For now, ALWAYS use fallback to ensure response
+    console.log('🔄 [DIRECT FALLBACK] Using fallback response immediately');
+    return getSimpleFallbackResponse(userMessage);
+    
+    /* API code disabled for debugging - uncomment when working
     try {
-        console.log('📡 [API] Attempting to call PuffOff API...');
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => {
-            console.log('⏰ [API] Request timeout after 8 seconds');
-            controller.abort();
-        }, 8000); // Reduced timeout
-        
-        const requestBody = { 
-            message: userMessage,
-            timestamp: new Date().toISOString()
-        };
-        
-        console.log('📤 [API] Request body:', JSON.stringify(requestBody));
+        console.log('📡 [API] Calling PuffOff API...');
         
         const response = await fetch('https://puffoff-api.vercel.app/api/chat', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            signal: controller.signal
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userMessage }),
+            signal: AbortSignal.timeout(5000)
         });
         
-        clearTimeout(timeoutId);
-        
-        console.log('📡 [API] Response status:', response.status);
-        console.log('📡 [API] Response ok:', response.ok);
-        
-        if (!response.ok) {
-            console.error('❌ [API] HTTP error! status:', response.status, response.statusText);
-            throw new Error(`API returned ${response.status}: ${response.statusText}`);
-        }
-        
-        const responseText = await response.text();
-        console.log('📄 [API] Raw response (first 200 chars):', responseText.substring(0, 200));
-        
-        if (!responseText || responseText.trim() === '') {
-            console.error('❌ [API] Empty response received');
-            throw new Error('Empty response from API');
-        }
-        
-        let data;
-        try {
-            data = JSON.parse(responseText);
-            console.log('✅ [API] Successfully parsed JSON:', Object.keys(data));
-        } catch (parseError) {
-            console.error('❌ [API] JSON parse error:', parseError.message);
-            console.error('❌ [API] Raw text was:', responseText);
-            throw new Error('Invalid JSON response from API');
-        }
-        
-        // Check for various possible response fields
-        const possibleFields = ['reply', 'response', 'message', 'answer', 'text', 'content', 'data', 'result'];
-        let botResponse = null;
-        
-        for (const field of possibleFields) {
-            if (data[field] && typeof data[field] === 'string' && data[field].trim().length > 0) {
-                botResponse = data[field].trim();
-                console.log(`✅ [API] Found response in field '${field}':`, botResponse.substring(0, 100) + '...');
-                break;
+        if (response.ok) {
+            const data = await response.json();
+            const botResponse = data.reply || data.response || data.message;
+            if (botResponse) {
+                console.log('✅ [API] SUCCESS');
+                return botResponse;
             }
         }
-        
-        if (!botResponse) {
-            console.warn('⚠️ [API] No valid response field found');
-            console.log('📊 [API] Available data:', data);
-            throw new Error('No valid response content from API');
-        }
-        
-        console.log('🎉 [API] SUCCESS - Response length:', botResponse.length);
-        
-        // Natural delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        return botResponse;
-        
+        throw new Error('API failed');
     } catch (error) {
-        console.error('❌ [API] Error caught:', error.name, '-', error.message);
-        
-        if (error.name === 'AbortError') {
-            console.log('🔄 [FALLBACK] Request timeout - switching to fallback...');
-        } else if (error.message.includes('Failed to fetch')) {
-            console.log('🔄 [FALLBACK] Network error - switching to fallback...');
-        } else {
-            console.log('🔄 [FALLBACK] API error - switching to fallback...');
-        }
-        
-        console.log('🎯 [FALLBACK] Calling getFallbackResponse...');
-        const fallbackResponse = getFallbackResponse(userMessage);
-        console.log('✅ [FALLBACK] Generated response:', fallbackResponse ? 'SUCCESS' : 'FAILED');
-        
-        if (!fallbackResponse) {
-            console.error('❌ [FALLBACK] Failed to generate fallback response!');
-            return `# Oops! Terjadi Kesalahan 😅
-
-Maaf, sistem sedang mengalami gangguan. Tapi jangan khawatir!
-
-## Tips Cepat Sementara:
-- 🚫 **Jika ingin merokok**: Tarik napas dalam 10 kali
-- 💧 **Minum air**: Hidrasi membantu mengurangi craving
-- 🚶‍♂️ **Bergerak**: Berdiri dan jalan-jalan sebentar
-
-[TIP]Coba kirim pesan lagi atau refresh halaman![/TIP]`;
-        }
-        
-        await new Promise(resolve => setTimeout(resolve, 500));
-        return fallbackResponse;
+        console.log('❌ [API] Failed:', error.message);
+        return getSimpleFallbackResponse(userMessage);
     }
+    */
+}
+
+// Simple fallback that ALWAYS works
+function getSimpleFallbackResponse(userMessage) {
+    console.log('🔄 [SIMPLE FALLBACK] Processing:', userMessage);
+    
+    const msg = (userMessage || '').toLowerCase();
+    
+    if (msg.includes('halo') || msg.includes('hai') || msg.includes('hello')) {
+        return `# Halo! Selamat datang di PuffBot! 👋
+
+Saya siap membantu perjalanan bebas rokok kamu.
+
+**Yang bisa saya bantu:**
+- Tips mengatasi keinginan merokok
+- Motivasi harian
+- Informasi kesehatan
+- Perhitungan penghematan
+
+Apa yang ingin kamu tanyakan? 😊`;
+    }
+    
+    if (msg.includes('rokok') || msg.includes('merokok') || msg.includes('craving')) {
+        return `# Tips Mengatasi Keinginan Merokok 🚫
+
+**Teknik Cepat:**
+- Tarik napas dalam 10 kali
+- Minum segelas air putih
+- Berdiri dan jalan-jalan 2 menit
+- Alihkan pikiran dengan aktivitas lain
+
+**Ingat:** Keinginan merokok hanya berlangsung 3-5 menit. Kamu pasti bisa mengatasinya! 💪`;
+    }
+    
+    if (msg.includes('motivasi') || msg.includes('semangat')) {
+        return `# Motivasi Bebas Rokok 💪
+
+**Quotes Hari Ini:**
+> "Kamu lebih kuat dari keinginan merokok"
+
+**Ingat Alasanmu:**
+- Kesehatan yang lebih baik
+- Hemat uang untuk masa depan
+- Menjadi role model keluarga
+- Napas lebih lega dan segar
+
+Setiap hari tanpa rokok adalah kemenangan! 🌟`;
+    }
+    
+    // Default response
+    return `# PuffBot Siap Membantu! 🤖
+
+Halo! Saya di sini untuk membantu perjalanan bebas rokok kamu.
+
+**Coba tanyakan:**
+- "Bagaimana mengatasi keinginan merokok?"
+- "Butuh motivasi"
+- "Apa manfaat berhenti merokok?"
+
+Ada yang bisa saya bantu? 😊`;
 }
 
 // Fallback Responses yang PASTI selalu return response
