@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MLBB Hero Spinner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="spinner-container">
+    <select id="role-filter">
+      <option value="All">All Roles</option>
+      <option value="Fighter">Fighter</option>
+      <option value="Tank">Tank</option>
+      <option value="Assassin">Assassin</option>
+      <option value="Marksman">Marksman</option>
+      <option value="Support">Support</option>
+      <option value="Mage">Mage</option>
+    </select>
+    <div id="hero-display">
+      <img id="hero-image" src="" alt="Hero Image">
+      <h2 id="hero-name"></h2>
+    </div>
+    <button id="spin-button">Spin</button>
+  </div>
+
+  <script src="heroes_array.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
