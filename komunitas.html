@@ -1,4 +1,783 @@
-<!DOCTYPE html>
+</div>
+                    <div class="reply-card">
+                        <div class="reply-header">
+                            <div class="reply-avatar">DK</div>
+                            <div class="reply-username">Doni Kurniawan</div>
+                            <div class="reply-time">45 menit lalu</div>
+                        </div>
+                        <div class="reply-content">
+                            Mantap! Saya baru 20 hari, semoga bisa kayak abang. Terima kasih motivasinya! 💪
+                        </div>
+                    </div>
+                    <button class="load-more-btn" onclick="loadMoreReplies(this)">
+                        Lihat 9 balasan lainnya
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post 2: Question -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">LP</div>
+                        <div class="user-details">
+                            <div class="username">Linda Permata</div>
+                            <div class="post-time">4 jam yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-question">Pertanyaan</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">❓ Bagaimana mengatasi stress tanpa rokok?</div>
+                    <div class="post-excerpt">
+                        Halo semua, saya baru mulai program berhenti merokok hari ke-3. Masalahnya kalau lagi stress kerja, reflek pengen nyari rokok. Ada yang punya tips alternatif yang efektif?
+                    </div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <i class="far fa-heart"></i>
+                            <span>23</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>18</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>2</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post 3: Tips -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">RH</div>
+                        <div class="user-details">
+                            <div class="username">Rudi Hartono</div>
+                            <div class="post-time">6 jam yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-tips">Tips & Trick</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">💡 5 Teknik Pernapasan untuk Mengatasi Craving</div>
+                    <div class="post-excerpt">
+                        Setelah 8 bulan bebas rokok, saya mau share teknik pernapasan yang sangat membantu saat ada keinginan merokok. Teknik 4-7-8 adalah yang paling efektif untuk saya...
+                    </div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn liked" onclick="toggleLike(this)">
+                            <i class="fas fa-heart"></i>
+                            <span>89</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>31</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>15</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post 4: Motivation -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">NK</div>
+                        <div class="user-details">
+                            <div class="username">Novi Kartika</div>
+                            <div class="post-time">1 hari yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-motivation">Motivasi</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">🌟 Motivasi Pagi: Kamu Lebih Kuat Dari Yang Kamu Kira!</div>
+                    <div class="post-excerpt">
+                        "Setiap hari tanpa rokok adalah bukti kekuatanmu. Jangan pernah meremehkan progress kecil, karena dari situ lah perubahan besar dimulai." Mari semangat bersama! 💪
+                    </div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <i class="far fa-heart"></i>
+                            <span>156</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>42</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>28</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load More Button -->
+        <button class="load-more-btn" onclick="loadMorePosts()">
+            <i class="fas fa-plus"></i> Muat Lebih Banyak Post
+        </button>
+    </div>
+
+    <!-- Floating Create Button -->
+    <button class="floating-create" onclick="openCreateModal()" title="Buat Post Baru">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Create Post Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Buat Post Baru</h3>
+                <button class="close-btn" onclick="closeCreateModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createPostForm" onsubmit="submitPost(event)">
+                    <div class="form-group">
+                        <label class="form-label">Kategori Post</label>
+                        <div class="category-chips">
+                            <div class="chip" onclick="selectCategory(this, 'success')" data-category="success">
+                                🎉 Success Story
+                            </div>
+                            <div class="chip" onclick="selectCategory(this, 'question')" data-category="question">
+                                ❓ Pertanyaan
+                            </div>
+                            <div class="chip" onclick="selectCategory(this, 'tips')" data-category="tips">
+                                💡 Tips & Trick
+                            </div>
+                            <div class="chip" onclick="selectCategory(this, 'motivation')" data-category="motivation">
+                                🌟 Motivasi
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedCategory" name="category">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="postTitle">Judul Post</label>
+                        <input type="text" id="postTitle" name="title" class="form-input" placeholder="Tulis judul yang menarik..." maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="postContent">Isi Post</label>
+                        <textarea id="postContent" name="content" class="form-textarea" placeholder="Ceritakan pengalaman, tips, atau pertanyaan kamu..." maxlength="2000"></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span>/2000
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tambah Gambar (Opsional)</label>
+                        <input type="file" id="postImage" name="image" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                        <div class="image-upload-area" onclick="document.getElementById('postImage').click()">
+                            <i class="fas fa-cloud-upload-alt image-upload-icon"></i>
+                            Klik untuk upload gambar (opsional)
+                        </div>
+                        <div id="imagePreview" class="image-preview">
+                            <img id="previewImg" class="preview-img">
+                            <button type="button" class="remove-image-btn" onclick="removeImage()">
+                                <i class="fas fa-trash"></i> Hapus Gambar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Posting Sekarang
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- More Options Modal -->
+    <div id="moreModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Opsi Post</h3>
+                <button class="close-btn" onclick="closeMoreModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <button class="more-option-btn danger" onclick="reportPost()">
+                    <i class="fas fa-flag"></i> Laporkan Post
+                </button>
+                
+                <button class="more-option-btn" onclick="savePost()">
+                    <i class="fas fa-bookmark"></i> Simpan Post
+                </button>
+                
+                <button class="more-option-btn" onclick="hidePost()">
+                    <i class="fas fa-eye-slash"></i> Sembunyikan Post
+                </button>
+                
+                <button class="more-option-btn" onclick="copyLink()">
+                    <i class="fas fa-link"></i> Salin Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="progress.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Progress</span>
+            </a>
+            <a href="chatbot.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                <span>AI Helper</span>
+            </a>
+            <a href="komunitas.html" class="nav-item active">
+                <div style="position: relative;">
+                    <i class="fas fa-users"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+                <span>Komunitas</span>
+            </a>
+            <a href="target.html" class="nav-item">
+                <i class="fas fa-bullseye"></i>
+                <span>Target</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Global variables
+        let currentTab = 'trending';
+        let selectedCategory = null;
+        let currentMorePost = null;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            updateCharCounter();
+            setupScrollToTop();
+            console.log('🎉 PuffOff Community Forum initialized!');
+        });
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', handleSearch);
+            
+            // Form validation
+            const titleInput = document.getElementById('postTitle');
+            const contentInput = document.getElementById('postContent');
+            
+            titleInput.addEventListener('input', validateForm);
+            contentInput.addEventListener('input', function() {
+                updateCharCounter();
+                validateForm();
+            });
+            
+            // Modal close on outside click
+            window.addEventListener('click', function(event) {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (event.target === modal) {
+                        modal.classList.remove('show');
+                    }
+                });
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.classList.remove('show');
+                    });
+                }
+                
+                if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                    const createModal = document.getElementById('createModal');
+                    if (createModal.classList.contains('show')) {
+                        const submitBtn = document.getElementById('submitBtn');
+                        if (!submitBtn.disabled) {
+                            submitBtn.click();
+                        }
+                    }
+                }
+            });
+        }
+
+        // Tab switching
+        function switchTab(tab, button) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+            
+            // Show/hide trending section
+            const trendingSection = document.getElementById('trending-section');
+            if (tab === 'trending') {
+                trendingSection.style.display = 'block';
+            } else {
+                trendingSection.style.display = 'none';
+            }
+            
+            // Filter posts based on tab
+            filterPosts(tab);
+            showToast(`Menampilkan: ${getTabName(tab)}`);
+        }
+
+        function getTabName(tab) {
+            const names = {
+                'trending': 'Post Trending',
+                'recent': 'Post Terbaru',
+                'motivasi': 'Post Motivasi',
+                'my-posts': 'Post Saya'
+            };
+            return names[tab] || 'Semua Post';
+        }
+
+        function filterPosts(tab) {
+            const posts = document.querySelectorAll('.post-card');
+            
+            posts.forEach(post => {
+                const badge = post.querySelector('.post-badge');
+                const username = post.querySelector('.username').textContent;
+                
+                let shouldShow = true;
+                
+                if (tab === 'motivasi') {
+                    shouldShow = badge && badge.textContent.includes('Motivasi');
+                } else if (tab === 'my-posts') {
+                    shouldShow = username === 'Anda'; // Show user's own posts
+                }
+                
+                post.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+
+        // Search functionality
+        function handleSearch() {
+            const query = this.value.toLowerCase().trim();
+            const posts = document.querySelectorAll('.post-card');
+            
+            posts.forEach(post => {
+                const title = post.querySelector('.post-title').textContent.toLowerCase();
+                const content = post.querySelector('.post-excerpt').textContent.toLowerCase();
+                const username = post.querySelector('.username').textContent.toLowerCase();
+                
+                const matches = title.includes(query) || 
+                              content.includes(query) || 
+                              username.includes(query);
+                
+                post.style.display = matches || query === '' ? 'block' : 'none';
+            });
+            
+            if (query) {
+                showToast(`Mencari: "${query}"`);
+            }
+        }
+
+        // Like functionality
+        function toggleLike(button) {
+            const isLiked = button.classList.contains('liked');
+            const countSpan = button.querySelector('span');
+            const icon = button.querySelector('i');
+            let count = parseInt(countSpan.textContent);
+            
+            if (isLiked) {
+                button.classList.remove('liked');
+                icon.className = 'far fa-heart';
+                count--;
+                showToast('Like dibatalkan');
+            } else {
+                button.classList.add('liked');
+                icon.className = 'fas fa-heart';
+                count++;
+                showToast('Post disukai! ❤️');
+                createHeartAnimation(button);
+            }
+            
+            countSpan.textContent = count;
+        }
+
+        function createHeartAnimation(button) {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.style.cssText = `
+                position: absolute;
+                font-size: 1.5rem;
+                pointer-events: none;
+                animation: heartFloat 1s ease-out forwards;
+                z-index: 1000;
+            `;
+            
+            if (!document.querySelector('#heartAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'heartAnimation';
+                style.textContent = `
+                    @keyframes heartFloat {
+                        0% {
+                            opacity: 1;
+                            transform: translateY(0) scale(1);
+                        }
+                        100% {
+                            opacity: 0;
+                            transform: translateY(-30px) scale(1.5);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            button.style.position = 'relative';
+            button.appendChild(heart);
+            
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.remove();
+                }
+            }, 1000);
+        }
+
+        // Toggle replies
+        function toggleReplies(button) {
+            const postCard = button.closest('.post-card');
+            const repliesSection = postCard.querySelector('.replies-section');
+            
+            if (repliesSection.style.display === 'none' || !repliesSection.style.display) {
+                repliesSection.style.display = 'block';
+                showToast('Menampilkan balasan');
+            } else {
+                repliesSection.style.display = 'none';
+                showToast('Menyembunyikan balasan');
+            }
+        }
+
+        // Share functionality
+        function sharePost(button) {
+            const postCard = button.closest('.post-card');
+            const title = postCard.querySelector('.post-title').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'PuffOff Community - ' + title,
+                    text: 'Lihat post menarik ini di komunitas PuffOff!',
+                    url: window.location.href
+                });
+            } else {
+                const url = window.location.href + '#post-' + Date.now();
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('Link berhasil disalin!');
+                });
+            }
+            
+            // Update share count
+            const countSpan = button.querySelector('span');
+            const count = parseInt(countSpan.textContent) + 1;
+            countSpan.textContent = count;
+        }
+
+        // More options
+        function showMoreOptions(button) {
+            currentMorePost = button.closest('.post-card');
+            document.getElementById('moreModal').classList.add('show');
+        }
+
+        function closeMoreModal() {
+            document.getElementById('moreModal').classList.remove('show');
+            currentMorePost = null;
+        }
+
+        function reportPost() {
+            showToast('Post telah dilaporkan. Terima kasih!');
+            closeMoreModal();
+        }
+
+        function savePost() {
+            showToast('Post berhasil disimpan!');
+            closeMoreModal();
+        }
+
+        function hidePost() {
+            if (currentMorePost) {
+                currentMorePost.style.display = 'none';
+                showToast('Post disembunyikan');
+                closeMoreModal();
+            }
+        }
+
+        function copyLink() {
+            const url = window.location.href + '#post-' + Date.now();
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link berhasil disalin!');
+                closeMoreModal();
+            });
+        }
+
+        // Load more functionality
+        function loadMoreReplies(button) {
+            const repliesSection = button.closest('.replies-section');
+            
+            const newReplies = [
+                { username: 'Maya S', avatar: 'MS', time: '30 menit lalu', content: 'Setuju banget! Saya juga pakai teknik yang sama.' },
+                { username: 'Budi P', avatar: 'BP', time: '25 menit lalu', content: 'Terima kasih sharingnya, sangat membantu!' },
+                { username: 'Rita K', avatar: 'RK', time: '20 menit lalu', content: 'Bookmark dulu ah, buat referensi.' }
+            ];
+            
+            newReplies.forEach((reply, index) => {
+                const replyElement = document.createElement('div');
+                replyElement.className = 'reply-card';
+                replyElement.style.opacity = '0';
+                replyElement.innerHTML = `
+                    <div class="reply-header">
+                        <div class="reply-avatar">${reply.avatar}</div>
+                        <div class="reply-username">${reply.username}</div>
+                        <div class="reply-time">${reply.time}</div>
+                    </div>
+                    <div class="reply-content">${reply.content}</div>
+                `;
+                
+                repliesSection.insertBefore(replyElement, button);
+                
+                setTimeout(() => {
+                    replyElement.style.transition = 'opacity 0.3s ease';
+                    replyElement.style.opacity = '1';
+                }, index * 200);
+            });
+            
+            button.remove();
+            showToast('Balasan tambahan dimuat');
+        }
+
+        function loadMorePosts() {
+            const container = document.getElementById('posts-container');
+            
+            const newPosts = [
+                {
+                    avatar: 'TA',
+                    username: 'Toni Ardiansyah',
+                    time: '2 hari yang lalu',
+                    badge: 'Pertanyaan',
+                    badgeClass: 'badge-question',
+                    title: '🤔 Rekomendasi aplikasi olahraga ringan?',
+                    content: 'Teman-teman ada yang bisa rekomendasikan aplikasi untuk olahraga ringan di rumah? Buat ngilangin habit ngerokok...'
+                },
+                {
+                    avatar: 'EW',
+                    username: 'Eka Wijaya',
+                    time: '3 hari yang lalu',
+                    badge: 'Tips & Trick',
+                    badgeClass: 'badge-tips',
+                    title: '🥤 Minuman herbal pengganti rokok',
+                    content: 'Sharing resep minuman herbal yang membantu mengurangi keinginan merokok. Teh jahe + lemon + madu...'
+                }
+            ];
+            
+            newPosts.forEach((post, index) => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card';
+                postElement.style.opacity = '0';
+                postElement.style.transform = 'translateY(20px)';
+                
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <div class="user-info">
+                            <div class="user-avatar">${post.avatar}</div>
+                            <div class="user-details">
+                                <div class="username">${post.username}</div>
+                                <div class="post-time">${post.time}</div>
+                            </div>
+                            <div class="post-badge ${post.badgeClass}">${post.badge}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="post-title">${post.title}</div>
+                        <div class="post-excerpt">${post.content}</div>
+                    </div>
+                    <div class="post-actions">
+                        <div class="action-group">
+                            <button class="action-btn" onclick="toggleLike(this)">
+                                <i class="far fa-heart"></i>
+                                <span>${Math.floor(Math.random() * 50) + 10}</span>
+                            </button>
+                            <button class="action-btn" onclick="toggleReplies(this)">
+                                <i class="far fa-comment"></i>
+                                <span>${Math.floor(Math.random() * 20) + 5}</span>
+                            </button>
+                            <button class="action-btn" onclick="sharePost(this)">
+                                <i class="fas fa-share"></i>
+                                <span>${Math.floor(Math.random() * 10) + 1}</span>
+                            </button>
+                        </div>
+                        <button class="more-btn" onclick="showMoreOptions(this)">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(postElement);
+                
+                setTimeout(() => {
+                    postElement.style.transition = 'all 0.3s ease';
+                    postElement.style.opacity = '1';
+                    postElement.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+            
+            showToast('Post baru dimuat!');
+        }
+
+        // Create post modal
+        function openCreateModal() {
+            document.getElementById('createModal').classList.add('show');
+            document.getElementById('postTitle').focus();
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.remove('show');
+            document.getElementById('createPostForm').reset();
+            selectedCategory = null;
+            document.querySelectorAll('.chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            
+            // Reset image preview
+            const preview = document.getElementById('imagePreview');
+            preview.style.display = 'none';
+            document.getElementById('postImage').value = '';
+            
+            // Reset validation
+            document.getElementById('submitBtn').disabled = false;
+            updateCharCounter();
+        }
+
+        function selectCategory(chip, category) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            selectedCategory = category;
+            document.getElementById('selectedCategory').value = category;
+            validateForm();
+            showToast(`Kategori dipilih: ${chip.textContent.trim()}`);
+        }
+
+        function updateCharCounter() {
+            const textarea = document.getElementById('postContent');
+            const counter = document.getElementById('charCount');
+            
+            if (textarea && counter) {
+                const count = textarea.value.length;
+                counter.textContent = count;
+                
+                // Update counter color based on length
+                counter.className = 'char-counter';
+                if (count > 1800) {
+                    counter.classList.add('danger');
+                } else if (count > 1500) {
+                    counter.classList.add('warning');
+                }
+            }
+        }
+
+        function validateForm() {
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Form is valid if we have title, content, and category
+            // Image is completely optional
+            const isValid = title.length > 0 && content.length >= 10 && selectedCategory;
+            
+            submitBtn.disabled = !isValid;
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+                showToast('Gambar berhasil dipilih!');
+            }
+        }
+
+        function removeImage() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('postImage').value = '';
+            showToast('Gambar dihapus');
+        }
+
+        function submitPost(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const title = formData.get('title');
+            const content = formData.get('content');
+            const category = selectedCategory;
+            
+            if (!title || !content || !category) {
+                showToast('Mohon lengkapi semua field yang diperlukan');
+                return;
+            }
+            
+            // Create new post element
+            const badge = getBadgeHTML(category);
+            const newPost = createNewPostElement(title, content, category, badge);
+            
+            // Add to top of posts container
+            const container = document.getElementById('posts-container');
+            container.insertBefore(newPost, container.firstChild);
+            
+            // Animate in
+            newPost.style.opacity = '0';
+            newPost.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                newPost.style.transition = 'all 0.3s ease';
+                newPost.style<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
