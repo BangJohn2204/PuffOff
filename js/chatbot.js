@@ -1,4 +1,97 @@
-// Initialize marked for markdown parsing
+// Message Sending dengan debugging lebih detail
+async function handleSendMessage() {
+    console.log('🚀 handleSendMessage function called');
+    
+    if (!hasUserInteracted) {
+        hasUserInteracted = true;
+        initAudioContext();
+    }
+    
+    if (!chatInput) {
+        console.error('❌ Chat input not found!');
+        showToast('Error: Input tidak ditemukan', 'error');
+        return;
+    }
+    
+    const message = chatInput.value.trim();
+    console.log('📝 Message to send:', `"${message}"`);
+    
+    if (!message) {
+        console.warn('⚠️ Empty message, not sending');
+        showToast('Silakan ketik pesan terlebih dahulu', 'warning');
+        return;
+    }
+    
+    if (isTyping) {
+        console.warn('⚠️ Bot is typing, please wait');
+        showToast('Tunggu sebentar, bot sedang mengetik...', 'warning');
+        return;
+    }
+    
+    console.log('✅ Message validation passed, proceeding...');
+    
+    try {
+        // Add user message
+        console.log('👤 Adding user message to chat');
+        addMessage(message, true);
+        
+        // Clear input and set typing state
+        chatInput.value = '';
+        autoResizeTextarea();
+        sendBtn.disabled = true;
+        isTyping = true;
+        
+        console.log('🔄 Input cleared, showing typing indicator');
+        
+        // Show typing indicator IMMEDIATELY
+        showTypingIndicator();
+        
+        // Get bot response
+        console.log('🤖 Calling getBotResponse...');
+        const response = await getBotResponse(message);
+        console.log('💬 Response received from getBotResponse:', response ? 'SUCCESS' : 'FAILED');
+        
+        if (!response) {
+            throw new Error('No response received from getBotResponse');
+        }
+        
+        // Hide typing indicator
+        console.log('⏹️ Hiding typing indicator');
+        hideTypingIndicator();
+        
+        // Add bot response
+        console.log('🤖 Adding bot response to chat');
+        addMessage(response, false, true);
+        console.log('✅ Bot message added to chat successfully');
+        
+        showToast('Pesan berhasil dikirim!', 'success');
+        
+    } catch (error) {
+        console.error('❌ Error in handleSendMessage:', error);
+        hideTypingIndicator();
+        
+        // Emergency fallback - pastikan selalu ada response
+        const emergencyResponse = `[WARNING]Maaf, terjadi kesalahan sistem. Tapi jangan khawatir, saya tetap di sini untuk membantu![/WARNING]
+
+# Sementara ini, beberapa tips cepat untuk kamu: 💪
+
+- 🚫 **Jika ingin merokok**: Tarik napas dalam 10 kali
+- 💧 **Minum air putih**: Hidrasi membantu mengurangi craving  
+- 🚶‍♂️ **Bergerak**: Berdiri dan stretching 2 menit
+- 🎵 **Musik**: Dengarkan lagu favorit
+
+[TIP]Coba refresh halaman atau kirim pesan lagi. Saya akan berusaha memberikan respons yang lebih baik![/TIP]`;
+
+        addMessage(emergencyResponse, false);
+        showToast('Terjadi kesalahan, tapi saya tetap bisa membantu!', 'error');
+    }
+    
+    isTyping = false;
+    sendBtn.disabled = false;
+    chatInput.focus();
+    console.log('🏁 handleSendMessage completed');
+}
+        // Initialize marked for markdown parsing
 if (typeof marked !== 'undefined') {
     marked.setOptions({
         breaks: true,
@@ -414,97 +507,147 @@ function getQuickReplies(botMessage) {
     return ['Terima kasih', 'Tanya lagi', 'Bantuan lain'];
 }
 
-// API Communication
+// API Communication dengan debugging yang lebih detail
 async function getBotResponse(userMessage) {
-    console.log('🤖 Starting API call to PuffOff with message:', userMessage);
+    console.log('🤖 Starting getBotResponse with message:', userMessage);
+    
+    // SELALU gunakan fallback untuk testing - hapus komentar ini setelah API fixed
+    console.log('🔄 Using fallback response for testing...');
+    return getFallbackResponse(userMessage);
+    
     
     try {
         console.log('📡 Making fetch request to API...');
         
-        // Add timeout to prevent hanging
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+        const timeoutId = setTimeout(() => {
+            console.log('⏰ Request timeout after 10 seconds');
+            controller.abort();
+        }, 10000);
+        
+        const requestBody = { 
+            message: userMessage,
+            history: conversationHistory.slice(-3)
+        };
+        
+        console.log('📤 Sending request body:', requestBody);
         
         const response = await fetch('https://puffoff-api.vercel.app/api/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ 
-                message: userMessage,
-                history: conversationHistory.slice(-5) // Send last 5 messages for context
-            }),
+            body: JSON.stringify(requestBody),
             signal: controller.signal
         });
         
         clearTimeout(timeoutId);
         
-        console.log('📡 API Response status:', response.status);
-        console.log('📡 API Response ok:', response.ok);
+        console.log('📡 Response status:', response.status);
+        console.log('📡 Response headers:', [...response.headers.entries()]);
         
         if (!response.ok) {
             console.error('❌ HTTP error! status:', response.status);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('❌ Error response:', errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
         
-        console.log('📊 Parsing JSON response...');
-        const data = await response.json();
-        console.log('✅ API Response received successfully:', data);
+        const responseText = await response.text();
+        console.log('📄 Raw response text:', responseText);
         
-        // Add small delay to make typing feel more natural
-        console.log('⏳ Adding natural response delay...');
-        await new Promise(resolve => setTimeout(resolve, 800));
+        let data;
+        try {
+            data = JSON.parse(responseText);
+            console.log('✅ Parsed JSON response:', data);
+        } catch (parseError) {
+            console.error('❌ JSON parse error:', parseError);
+            throw new Error('Invalid JSON response from API');
+        }
         
-        const botResponse = data.reply || data.response || data.message || data.answer;
+        const botResponse = data.reply || data.response || data.message || data.answer || data.text;
         
         if (!botResponse) {
-            console.warn('⚠️ No valid response field found in API response:', data);
+            console.warn('⚠️ No valid response field found in API response');
+            console.log('📊 Available fields:', Object.keys(data));
             throw new Error('No valid response from API');
         }
         
-        console.log('🗣️ Final bot response:', botResponse.substring(0, 100) + '...');
+        console.log('🗣️ Bot response found:', botResponse.substring(0, 100) + '...');
+        
+        // Small delay for natural feel
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
         return botResponse;
         
     } catch (error) {
-        console.error('❌ API Error details:', error);
+        console.error('❌ API Error:', error.name, error.message);
         
         if (error.name === 'AbortError') {
-            console.log('🔄 Request timeout - falling back to local responses...');
+            console.log('🔄 Request timeout - using fallback...');
         } else {
-            console.log('🔄 API error - falling back to local responses...');
+            console.log('🔄 API error - using fallback...');
         }
         
-        await new Promise(resolve => setTimeout(resolve, 1200));
+        await new Promise(resolve => setTimeout(resolve, 800));
         return getFallbackResponse(userMessage);
     }
+    
 }
 
-// Fallback Responses
+// Fallback Responses yang lebih comprehensive
 function getFallbackResponse(userMessage) {
-    console.log('🔄 Generating fallback response for:', userMessage);
+    console.log('🔄 getFallbackResponse called with:', userMessage);
     const message = userMessage.toLowerCase();
     
-    if (message.includes('keinginan merokok') || message.includes('ingin merokok') || message.includes('craving')) {
+    // Greeting responses
+    if (message.includes('halo') || message.includes('hai') || message.includes('hello') || message.includes('hi')) {
+        console.log('💡 Using greeting response');
+        return `# Halo! Selamat datang di PuffBot! 👋
+
+Senang bertemu denganmu! Saya di sini untuk membantu perjalanan bebas rokok kamu.
+
+## Apa yang bisa saya bantu hari ini?
+- 🚫 Tips mengatasi keinginan merokok
+- ❤️ Informasi kesehatan
+- 💪 Motivasi harian
+- 💰 Perhitungan penghematan
+
+[TIP]Coba tanyakan "Bagaimana cara berhenti merokok?" atau pilih salah satu prompt di bawah![/TIP]`;
+    }
+    
+    // Smoking craving responses
+    if (message.includes('keinginan merokok') || message.includes('ingin merokok') || message.includes('craving') || message.includes('ngidam rokok')) {
+        console.log('💡 Using smoking craving response');
         return `# Tips Mengatasi Keinginan Merokok 🚫
 
 [TIP]Keinginan merokok biasanya hanya berlangsung 3-5 menit. Kamu bisa mengatasinya![/TIP]
 
-## Teknik Segera:
+## Teknik Segera (1-5 menit):
 - **Teknik 4-7-8**: Tarik napas 4 detik, tahan 7 detik, hembuskan 8 detik
 - **Minum air putih**: Hidrasi membantu mengurangi craving
 - **Gigit sesuatu**: Wortel, apel, atau permen bebas gula
 - **Ubah posisi**: Berdiri, jalan-jalan, atau stretch
 
-## Pengalihan Jangka Pendek:
+## Pengalihan Jangka Pendek (5-15 menit):
 - 🎵 Dengarkan musik favorit
 - 📱 Chat dengan teman atau keluarga
-- 🎮 Main game ringan
-- 🧘 Meditasi 2 menit
+- 🎮 Main game ringan di HP
+- 🧘 Meditasi atau mindfulness 2 menit
+- 🚶‍♂️ Jalan-jalan ke luar ruangan
+
+## Tips Jangka Panjang:
+- Identifikasi trigger kamu
+- Siapkan aktivitas pengganti
+- Bergabung dengan support group
+- Reward diri saat berhasil menahan
 
 [MOTIVATION]Ingat, setiap kali kamu berhasil mengatasi keinginan merokok, kamu semakin kuat! 💪[/MOTIVATION]`;
     }
     
-    if (message.includes('stress') || message.includes('cemas') || message.includes('tegang')) {
+    // Stress management
+    if (message.includes('stress') || message.includes('cemas') || message.includes('tegang') || message.includes('gelisah')) {
+        console.log('💡 Using stress management response');
         return `# Mengelola Stress Tanpa Rokok 🧘
 
 [HEALTH]Stress adalah trigger utama keinginan merokok. Mari kelola dengan cara sehat![/HEALTH]
@@ -513,12 +656,14 @@ function getFallbackResponse(userMessage) {
 - **Deep Breathing**: Napas dalam selama 5 menit
 - **Progressive Muscle Relaxation**: Tegang-rileks otot secara bertahap
 - **Mindfulness**: Fokus pada saat ini, bukan kekhawatiran
+- **Grounding 5-4-3-2-1**: 5 hal yang dilihat, 4 yang disentuh, 3 yang didengar, 2 yang dicium, 1 yang dirasa
 
 ## Aktivitas Anti-Stress:
 - 🚶‍♂️ **Jalan kaki**: 10-15 menit di luar ruangan
 - 🎵 **Musik**: Dengarkan musik yang menenangkan
 - ✍️ **Journaling**: Tulis perasaan dan pikiran
 - 🛁 **Mandi hangat**: Relaksasi untuk tubuh dan pikiran
+- 📚 **Baca buku**: Alihkan pikiran ke hal positif
 
 ## Jangka Panjang:
 - Olahraga teratur (minimal 30 menit/hari)
@@ -529,67 +674,183 @@ function getFallbackResponse(userMessage) {
 [TIP]Stress adalah normal, yang penting adalah cara kita mengatasinya dengan sehat![/TIP]`;
     }
     
-    if (message.includes('manfaat') && message.includes('berhenti merokok')) {
+    // Health benefits
+    if (message.includes('manfaat') && (message.includes('berhenti merokok') || message.includes('quit') || message.includes('kesehatan'))) {
+        console.log('💡 Using health benefits response');
         return `# Manfaat Luar Biasa Berhenti Merokok ❤️
 
 [HEALTH]Tubuhmu mulai membaik dalam hitungan menit setelah rokok terakhir![/HEALTH]
 
 ## Timeline Pemulihan:
 - **20 menit**: Detak jantung dan tekanan darah turun
-- **12 jam**: Kadar karbon monoksida normal
+- **12 jam**: Kadar karbon monoksida dalam darah normal
 - **2 minggu**: Sirkulasi membaik, fungsi paru meningkat
-- **1 bulan**: Batuk berkurang, napas lebih lega
+- **1-9 bulan**: Batuk dan sesak napas berkurang
 - **1 tahun**: Risiko penyakit jantung turun 50%
+- **5 tahun**: Risiko stroke sama dengan non-perokok
+- **10 tahun**: Risiko kanker paru turun 50%
 
-## Manfaat Jangka Panjang:
+## Manfaat yang Langsung Terasa:
 - 💰 **Finansial**: Hemat jutaan rupiah per tahun
 - 👃 **Penciuman**: Kembali normal dalam 2 minggu
-- 🦷 **Gigi**: Lebih putih dan sehat
-- 👨‍👩‍👧‍👦 **Keluarga**: Melindungi dari asap rokok
-- 🏃 **Stamina**: Energi dan daya tahan meningkat
+- 👅 **Pengecapan**: Makanan terasa lebih enak
+- 🦷 **Gigi**: Lebih putih dan nafas lebih segar
+- 👨‍👩‍👧‍👦 **Keluarga**: Melindungi dari bahaya asap rokok sekunder
+- 🏃 **Stamina**: Energi dan daya tahan meningkat drastis
+- 😴 **Tidur**: Kualitas tidur lebih baik
 
-[SUCCESS]Kamu sudah membuat keputusan terbaik untuk hidupmu! 🌟[/SUCCESS]`;
+[SUCCESS]Kamu sudah membuat keputusan terbaik untuk hidupmu! Setiap hari bebas rokok adalah investasi kesehatan! 🌟[/SUCCESS]`;
     }
     
-    if (message.includes('motivasi') || message.includes('semangat')) {
+    // Motivation
+    if (message.includes('motivasi') || message.includes('semangat') || message.includes('inspirasi')) {
+        console.log('💡 Using motivation response');
         return `# Motivasi Harian Bebas Rokok 💪
 
-[MOTIVATION]Kamu lebih kuat dari kebiasaan lama! Setiap hari tanpa rokok adalah kemenangan.[/MOTIVATION]
+[MOTIVATION]Kamu lebih kuat dari kebiasaan lama! Setiap hari tanpa rokok adalah kemenangan besar.[/MOTIVATION]
 
 ## Quotes Inspiratif:
-> "Kekuatan tidak berasal dari kemampuan fisik. Kekuatan berasal dari tekad yang tidak dapat dikalahkan."
+> "Kekuatan tidak berasal dari kemampuan fisik. Kekuatan berasal dari tekad yang tidak dapat dikalahkan." - Mahatma Gandhi
 
-## Ingat Alasanmu:
+> "Perubahan dimulai dari ujung zona nyaman kamu."
+
+> "Kamu tidak bisa mengubah masa lalu, tapi kamu bisa mengubah masa depan."
+
+## Ingat Alasan Kuat Kamu:
 - ❤️ **Kesehatan**: Hidup lebih lama dan berkualitas
-- 👨‍👩‍👧‍👦 **Keluarga**: Menjadi role model yang baik
-- 💰 **Uang**: Investasi untuk masa depan
-- 🌱 **Prestasi**: Membuktikan kamu bisa berubah
+- 👨‍👩‍👧‍👦 **Keluarga**: Menjadi role model yang baik untuk anak
+- 💰 **Finansial**: Uang untuk investasi masa depan
+- 🌱 **Prestasi Pribadi**: Membuktikan kamu bisa berubah
+- 🌍 **Lingkungan**: Turut menjaga bumi dari polusi
 
-## Afirmasi Positif:
+## Afirmasi Positif Harian:
 - "Saya memilih kesehatan daripada rokok"
 - "Setiap napas bebas rokok membuat saya lebih kuat"
-- "Saya layak mendapat hidup yang sehat"
+- "Saya layak mendapat hidup yang sehat dan bahagia"
+- "Saya bangga dengan keputusan berhenti merokok"
 
-[TIP]Buat reminder di HP kamu dengan quotes motivasi ini![/TIP]`;
+[TIP]Buat reminder di HP kamu dengan quotes motivasi ini! Set alarm harian dengan pesan positif![/TIP]`;
     }
     
-    // Default responses with variety
-    const responses = [
-        `Halo! Saya PuffBot, siap membantu perjalanan bebas rokok kamu. Ada yang bisa saya bantu? 😊
+    // Money savings calculation
+    if (message.includes('uang') || message.includes('hemat') || message.includes('penghematan') || message.includes('hitung') || message.includes('biaya')) {
+        console.log('💡 Using money savings response');
+        return `# Kalkulator Penghematan PuffOff 💰
 
-[TIP]Coba tanyakan tentang tips mengatasi keinginan merokok, manfaat kesehatan, atau motivasi harian![/TIP]`,
-        
-        `Terima kasih sudah berbagi! Setiap langkah dalam perjalanan bebas rokok adalah kemajuan yang berarti. 💪
+[SUCCESS]Mari hitung berapa banyak uang yang sudah dan akan kamu hemat![/SUCCESS]
 
-[INFO]Saya bisa membantu dengan tips praktis, motivasi, atau informasi kesehatan.[/INFO]`,
-        
-        `Pertanyaan yang menarik! Saya akan berusaha memberikan jawaban terbaik untuk mendukung perjalanan bebas rokok kamu.
+## Asumsi Perhitungan:
+- **Harga rokok**: Rp 25.000 per bungkus (rata-rata)
+- **Konsumsi**: 1 bungkus per hari
+- **Biaya harian**: Rp 25.000
 
-[MOTIVATION]Ingat, kamu tidak sendirian dalam perjalanan ini![/MOTIVATION]`
+## Perhitungan Penghematan:
+- **1 hari**: Rp 25.000
+- **1 minggu**: Rp 175.000
+- **1 bulan**: Rp 750.000
+- **3 bulan**: Rp 2.250.000
+- **6 bulan**: Rp 4.500.000
+- **1 tahun**: Rp 9.125.000
+- **5 tahun**: Rp 45.625.000
+
+## Investasi Alternatif dengan Rp 750.000/bulan:
+- 🏠 **DP Rumah**: Dalam 5 tahun bisa terkumpul Rp 45 juta
+- 📚 **Pendidikan**: Kursus bahasa asing atau sertifikasi
+- 🏥 **Asuransi Kesehatan**: Proteksi keluarga yang lengkap
+- 🚗 **Kendaraan**: Cicilan motor atau mobil bekas
+- 💎 **Emas**: Investasi yang nilainya cenderung naik
+- 📈 **Reksadana**: Investasi untuk masa depan
+
+[TIP]Buat rekening khusus "tabungan rokok" dan transfer Rp 25.000 setiap hari! Lihat hasilnya dalam 1 bulan![/TIP]`;
+    }
+    
+    // How to quit smoking
+    if (message.includes('cara berhenti') || message.includes('bagaimana berhenti') || message.includes('tips berhenti') || message.includes('quit smoking')) {
+        console.log('💡 Using how to quit response');
+        return `# Panduan Lengkap Berhenti Merokok 🎯
+
+[INFO]Berhenti merokok adalah proses, bukan event satu kali. Setiap orang punya cara yang berbeda![/INFO]
+
+## Langkah Persiapan:
+1. **Tentukan tanggal quit**: Pilih hari yang tidak stressful
+2. **Beritahu orang terdekat**: Minta dukungan keluarga/teman
+3. **Buang semua rokok**: Termasuk asbak dan korek api
+4. **Identifikasi trigger**: Kapan biasanya kamu merokok?
+5. **Siapkan alternatif**: Permen, snack sehat, atau fidget toy
+
+## Metode Berhenti:
+- **Cold Turkey**: Berhenti total sekaligus (paling efektif)
+- **Gradual**: Kurangi bertahap (lebih mudah tapi kurang efektif)
+- **Nicotine Replacement**: Patch, gum, atau vape (konsultasi dokter)
+
+## Strategi Mengatasi Withdrawal:
+- Hari 1-3: Yang paling berat, minum banyak air
+- Minggu 1: Hindari tempat yang biasa merokok
+- Minggu 2-4: Cari hobi baru, olahraga rutin
+- Bulan 2-3: Tetap waspada, jangan lengah
+
+## Tips Sukses:
+- 🏃‍♂️ Olahraga teratur untuk mengurangi stress
+- 🥗 Makan makanan sehat, hindari alkohol
+- 😴 Tidur cukup untuk recovery tubuh
+- 🧘 Meditasi atau yoga untuk ketenangan pikiran
+- 👥 Bergabung dengan support group
+
+[MOTIVATION]Jutaan orang sudah berhasil berhenti merokok. Kamu pasti bisa! 💪[/MOTIVATION]`;
+    }
+    
+    // Default responses with more variety
+    console.log('💡 Using default response');
+    const defaultResponses = [
+        `# Halo! Selamat datang di PuffBot! 👋
+
+Saya **PuffBot**, asisten AI yang siap membantu perjalanan bebas rokok kamu.
+
+## Yang bisa saya bantu:
+- 🚫 **Tips mengatasi keinginan merokok**
+- ❤️ **Informasi manfaat kesehatan**  
+- 💪 **Motivasi dan dukungan harian**
+- 💰 **Perhitungan penghematan uang**
+- 🎯 **Strategi berhenti merokok**
+- 🧘 **Teknik mengelola stress**
+
+[TIP]Coba tanyakan sesuatu seperti "Bagaimana cara mengatasi keinginan merokok?" atau pilih prompt cepat di bawah![/TIP]
+
+**Apa yang ingin kamu ketahui hari ini?** 😊`,
+
+        `# Terima kasih sudah bertanya! 💭
+
+Setiap pertanyaan adalah langkah menuju hidup bebas rokok yang lebih sehat.
+
+## Topik Populer:
+- Tips mengatasi craving rokok
+- Manfaat kesehatan berhenti merokok  
+- Cara mengelola stress tanpa rokok
+- Motivasi untuk tetap konsisten
+- Penghematan uang dari berhenti merokok
+
+[INFO]Saya siap membantu dengan informasi praktis dan dukungan yang kamu butuhkan![/INFO]
+
+**Ada hal spesifik yang ingin kamu tanyakan?**`,
+
+        `# Bagus sekali kamu bertanya! 🌟
+
+Mencari informasi adalah tanda kamu serius ingin berubah ke hidup yang lebih sehat.
+
+## Saya bisa membantu dengan:
+- Strategi praktis berhenti merokok
+- Tips mengatasi tantangan withdrawal
+- Informasi kesehatan yang akurat
+- Motivasi ketika kamu merasa down
+- Perhitungan manfaat finansial
+
+[MOTIVATION]Ingat, kamu tidak sendirian dalam perjalanan ini. Jutaan orang sudah berhasil, dan kamu juga pasti bisa! 💪[/MOTIVATION]
+
+**Ceritakan, apa yang paling kamu butuhkan sekarang?**`
     ];
     
-    const selectedResponse = responses[Math.floor(Math.random() * responses.length)];
-    console.log('🎲 Selected fallback response:', selectedResponse.substring(0, 50) + '...');
+    const selectedResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+    console.log('🎲 Selected default response:', selectedResponse.substring(0, 50) + '...');
     
     return selectedResponse;
 }
