@@ -1,244 +1,336 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Target & Refleksi - PuffOff</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      padding-bottom: 60px; /* agar konten tidak tertutup navbar bawah */
-    }
-
-    .ui.bottom.fixed.menu {
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    .ui.bottom.fixed.menu .item {
-      flex-shrink: 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target & Refleksi - PuffOff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/target.css">
 </head>
 <body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-bullseye"></i> Target & Refleksi</h1>
+            <p>Tetapkan tujuan dan refleksikan perjalananmu</p>
+        </div>
 
-<!-- Konten -->
-<div class="ui container" style="margin-top: 40px; max-width: 500px;">
-  <h2 class="ui header center aligned">Target & Refleksi</h2>
+        <!-- Emergency Support Button -->
+        <button class="emergency-btn" onclick="showTemptationSupport()">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Saya Tergoda Hari Ini!</span>
+        </button>
 
-  <div class="ui segment">
-    <form class="ui form" onsubmit="return saveTarget()">
-      <div class="field">
-        <label>Target Mingguan (jumlah hari bebas rokok)</label>
-        <input type="number" id="targetHari" placeholder="Contoh: 7" min="1" required>
-      </div>
-      <div class="field">
-        <label>Tanggal Mulai Berhenti Merokok</label>
-        <input type="date" id="tanggalMulai" required>
-      </div>
-      <div class="field">
-        <label>Catatan Refleksi Hari Ini</label>
-        <textarea id="refleksi" rows="3" placeholder="Tantangan atau keberhasilanmu hari ini?" required></textarea>
-      </div>
-      <button class="ui blue button fluid" type="submit">Simpan Target & Refleksi</button>
-    </form>
-  </div>
+        <!-- Current Target Overview -->
+        <div class="target-overview" id="targetOverview" style="display: none;">
+            <div class="overview-header">
+                <h3><i class="fas fa-target"></i> Target Aktif</h3>
+                <button class="edit-btn" onclick="editTarget()">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </div>
+            
+            <div class="target-stats">
+                <div class="stat-card primary">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="currentTargetDays">0</span>
+                        <span class="stat-label">Hari Target</span>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="achievedDays">0</span>
+                        <span class="stat-label">Hari Tercapai</span>
+                    </div>
+                </div>
+                <div class="stat-card info">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="remainingDays">0</span>
+                        <span class="stat-label">Hari Tersisa</span>
+                    </div>
+                </div>
+            </div>
 
-  <div class="ui segment" id="target-summary" style="display: none;">
-    <h4 class="ui header">Targetmu Saat Ini</h4>
-    <p>Target: <strong id="summaryTarget"></strong> hari</p>
-    <p>Mulai sejak: <strong id="summaryTanggal"></strong></p>
-    <p>Sudah berjalan: <strong id="summaryBerjalan"></strong> hari</p>
-    <p><em id="summaryRefleksi"></em></p>
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>Progress Target</span>
+                    <span class="progress-percentage" id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
 
-    <div class="ui center aligned segment">
-      <canvas id="progressChart" width="200" height="200"></canvas>
+        <!-- Interactive Calendar -->
+        <div class="calendar-section">
+            <div class="section-header">
+                <h3><i class="fas fa-calendar-alt"></i> Kalender Pencapaian</h3>
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="changeMonth(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="month-year" id="monthYear"></span>
+                    <button class="nav-btn" onclick="changeMonth(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be generated here -->
+            </div>
+            
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <div class="legend-color success"></div>
+                    <span>Hari Sukses</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color failed"></div>
+                    <span>Hari Tergoda</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color target"></div>
+                    <span>Target Minggu</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Target Setting -->
+        <div class="target-setting" id="targetSetting">
+            <div class="section-header">
+                <h3><i class="fas fa-cog"></i> Atur Target</h3>
+            </div>
+            
+            <form class="target-form" id="targetForm">
+                <div class="form-group">
+                    <label for="targetType">Jenis Target</label>
+                    <select id="targetType" class="form-input" onchange="handleTargetTypeChange()">
+                        <option value="weekly">Target Mingguan</option>
+                        <option value="monthly">Target Bulanan</option>
+                        <option value="custom">Target Kustom</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetDays">Jumlah Hari Target</label>
+                    <input type="number" id="targetDays" class="form-input" min="1" max="365" placeholder="Masukkan jumlah hari" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Tanggal Mulai</label>
+                    <input type="date" id="startDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetDescription">Deskripsi Target (Opsional)</label>
+                    <textarea id="targetDescription" class="form-textarea" placeholder="Ceritakan motivasi atau alasan targetmu..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    Simpan Target
+                </button>
+            </form>
+        </div>
+
+        <!-- Daily Reflection -->
+        <div class="reflection-section">
+            <div class="section-header">
+                <h3><i class="fas fa-journal-whills"></i> Refleksi Harian</h3>
+                <span class="date-today" id="dateToday"></span>
+            </div>
+
+            <div class="mood-tracker">
+                <label>Bagaimana perasaanmu hari ini?</label>
+                <div class="mood-options">
+                    <button class="mood-btn" data-mood="excellent" onclick="selectMood('excellent')">
+                        <span class="mood-emoji">😁</span>
+                        <span class="mood-label">Sangat Baik</span>
+                    </button>
+                    <button class="mood-btn" data-mood="good" onclick="selectMood('good')">
+                        <span class="mood-emoji">😊</span>
+                        <span class="mood-label">Baik</span>
+                    </button>
+                    <button class="mood-btn" data-mood="neutral" onclick="selectMood('neutral')">
+                        <span class="mood-emoji">😐</span>
+                        <span class="mood-label">Biasa</span>
+                    </button>
+                    <button class="mood-btn" data-mood="bad" onclick="selectMood('bad')">
+                        <span class="mood-emoji">😟</span>
+                        <span class="mood-label">Buruk</span>
+                    </button>
+                    <button class="mood-btn" data-mood="terrible" onclick="selectMood('terrible')">
+                        <span class="mood-emoji">😢</span>
+                        <span class="mood-label">Sangat Buruk</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="reflection-form">
+                <div class="form-group">
+                    <label for="dailyReflection">Refleksi Hari Ini</label>
+                    <textarea id="dailyReflection" class="form-textarea" placeholder="Bagaimana hari ini? Tantangan apa yang kamu hadapi? Apa yang membuatmu bangga?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="gratitude">Satu Hal yang Disyukuri Hari Ini</label>
+                    <input type="text" id="gratitude" class="form-input" placeholder="Apa yang membuatmu bersyukur hari ini?">
+                </div>
+
+                <div class="form-group">
+                    <label for="tomorrowGoal">Tujuan untuk Besok</label>
+                    <input type="text" id="tomorrowGoal" class="form-input" placeholder="Apa yang ingin kamu capai besok?">
+                </div>
+
+                <button type="button" class="submit-btn" onclick="saveReflection()">
+                    <i class="fas fa-heart"></i>
+                    Simpan Refleksi
+                </button>
+            </div>
+        </div>
+
+        <!-- Weekly Reflection -->
+        <div class="weekly-reflection" id="weeklyReflection" style="display: none;">
+            <div class="section-header">
+                <h3><i class="fas fa-calendar-week"></i> Refleksi Mingguan</h3>
+                <span class="week-number" id="weekNumber"></span>
+            </div>
+
+            <div class="weekly-form">
+                <div class="form-group">
+                    <label for="weeklyReflectionText">Bagaimana minggu ini secara keseluruhan?</label>
+                    <textarea id="weeklyReflectionText" class="form-textarea" placeholder="Refleksikan pencapaian, tantangan, dan pembelajaran minggu ini..."></textarea>
+                </div>
+
+                <div class="achievements">
+                    <label>Pencapaian Minggu Ini</label>
+                    <div class="achievement-list" id="achievementList">
+                        <div class="achievement-item">
+                            <input type="text" class="achievement-input" placeholder="Pencapaian #1">
+                        </div>
+                    </div>
+                    <button type="button" class="add-achievement" onclick="addAchievement()">
+                        <i class="fas fa-plus"></i> Tambah Pencapaian
+                    </button>
+                </div>
+
+                <button type="button" class="submit-btn" onclick="saveWeeklyReflection()">
+                    <i class="fas fa-check-circle"></i>
+                    Simpan Refleksi Mingguan
+                </button>
+            </div>
+        </div>
+
+        <!-- Reflection History -->
+        <div class="reflection-history">
+            <div class="section-header">
+                <h3><i class="fas fa-history"></i> Riwayat Refleksi</h3>
+                <div class="history-filter">
+                    <button class="filter-btn active" onclick="filterHistory('all')">Semua</button>
+                    <button class="filter-btn" onclick="filterHistory('daily')">Harian</button>
+                    <button class="filter-btn" onclick="filterHistory('weekly')">Mingguan</button>
+                </div>
+            </div>
+
+            <div class="history-list" id="historyList">
+                <!-- History items will be generated here -->
+            </div>
+        </div>
     </div>
 
-    <div class="ui progress" id="targetProgress">
-      <div class="bar" id="progressBar" style="width: 0%;"></div>
-      <div class="label" id="progressLabel">0% dari target tercapai</div>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="progress.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Progress</span>
+            </a>
+            <a href="chatbot.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                <span>AI Helper</span>
+            </a>
+            <a href="komunitas.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Komunitas</span>
+            </a>
+            <a href="target.html" class="nav-item active">
+                <i class="fas fa-bullseye"></i>
+                <span>Target</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </div>
     </div>
-  </div>
 
-  <div class="ui segment" id="weekly-reflection-form" style="display: none;">
-    <h4 class="ui header">Refleksi Mingguan</h4>
-    <p>Bagaimana pengalamanmu selama minggu ke-<strong id="mingguKe"></strong> ini?</p>
-    <form class="ui form" onsubmit="return simpanRefleksiMingguan()">
-      <div class="field">
-        <textarea id="refleksiMingguan" rows="3" placeholder="Tulis refleksi minggu ini..." required></textarea>
-      </div>
-      <button class="ui green button" type="submit">Simpan Refleksi Mingguan</button>
-    </form>
-  </div>
+    <!-- Support Modal -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-heart"></i> Kamu Tidak Sendirian!</h3>
+                <button class="close-btn" onclick="closeSupportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="support-message">
+                    <p>Merasa tergoda untuk merokok? Itu normal dan kamu pasti bisa melewatinya!</p>
+                </div>
+                
+                <div class="coping-strategies">
+                    <h4>Strategi Coping Cepat:</h4>
+                    <div class="strategy-grid">
+                        <button class="strategy-btn" onclick="useStrategy('breathing')">
+                            <i class="fas fa-wind"></i>
+                            <span>Latihan Napas</span>
+                        </button>
+                        <button class="strategy-btn" onclick="useStrategy('water')">
+                            <i class="fas fa-tint"></i>
+                            <span>Minum Air</span>
+                        </button>
+                        <button class="strategy-btn" onclick="useStrategy('walk')">
+                            <i class="fas fa-walking"></i>
+                            <span>Jalan Kaki</span>
+                        </button>
+                        <button class="strategy-btn" onclick="useStrategy('music')">
+                            <i class="fas fa-music"></i>
+                            <span>Dengar Musik</span>
+                        </button>
+                        <button class="strategy-btn" onclick="useStrategy('call')">
+                            <i class="fas fa-phone"></i>
+                            <span>Telepon Teman</span>
+                        </button>
+                        <button class="strategy-btn" onclick="useStrategy('community')">
+                            <i class="fas fa-users"></i>
+                            <span>Chat Komunitas</span>
+                        </button>
+                    </div>
+                </div>
 
-  <div class="ui segment" id="daftar-refleksi-mingguan" style="display: none;">
-    <h4 class="ui header">Refleksi Mingguan Sebelumnya</h4>
-    <div id="list-refleksi"></div>
-  </div>
-</div>
+                <div class="temptation-log">
+                    <h4>Catat Situasi Ini:</h4>
+                    <textarea id="temptationNote" placeholder="Apa yang memicu keinginan merokok? Di mana? Dengan siapa? Jam berapa?"></textarea>
+                    <button class="log-btn" onclick="logTemptation()">
+                        <i class="fas fa-save"></i>
+                        Simpan Catatan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Navbar bawah -->
-<div class="ui bottom fixed menu green inverted">
-  <div class="ui container">
-    <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
-    <a class="item" href="progress.html"><i class="chart bar icon"></i>Progres</a>
-    <a class="item" href="chatbot.html"><i class="comments icon"></i>Chatbot</a>
-    <a class="item" href="komunitas.html"><i class="users icon"></i>Komunitas</a>
-    <a class="item active" href="target.html"><i class="target icon"></i>Target</a>
-    <a class="item" href="profile.html"><i class="user icon"></i>Profil</a>
-  </div>
-</div>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
-<script>
-let chartInstance = null;
-
-function saveTarget() {
-  const hariTarget = parseInt(document.getElementById("targetHari").value);
-  const tanggalMulai = document.getElementById("tanggalMulai").value;
-  const refleksi = document.getElementById("refleksi").value;
-
-  if (!tanggalMulai || hariTarget <= 0) {
-    alert("Mohon isi data dengan benar.");
-    return false;
-  }
-
-  localStorage.setItem("targetHari", hariTarget);
-  localStorage.setItem("tanggalMulai", tanggalMulai);
-  localStorage.setItem("refleksi", refleksi);
-
-  tampilkanRingkasan();
-
-  document.getElementById("targetHari").value = "";
-  document.getElementById("tanggalMulai").value = "";
-  document.getElementById("refleksi").value = "";
-
-  return false;
-}
-
-function tampilkanRingkasan() {
-  const hariTarget = parseInt(localStorage.getItem("targetHari"));
-  const tanggalMulai = localStorage.getItem("tanggalMulai");
-  const refleksi = localStorage.getItem("refleksi");
-
-  const hariBerjalan = hitungHariBerjalan(tanggalMulai);
-
-  document.getElementById("summaryTarget").innerText = hariTarget;
-  document.getElementById("summaryTanggal").innerText = formatTanggal(tanggalMulai);
-  document.getElementById("summaryBerjalan").innerText = hariBerjalan;
-  document.getElementById("summaryRefleksi").innerText = refleksi;
-
-  updateProgress(hariBerjalan, hariTarget);
-  cekRefleksiMingguan(hariBerjalan);
-  tampilkanDaftarRefleksi();
-
-  document.getElementById("target-summary").style.display = "block";
-}
-
-function updateProgress(current, target) {
-  let progress = Math.min((current / target) * 100, 100);
-  document.getElementById("progressBar").style.width = progress + "%";
-  document.getElementById("progressLabel").innerText = `${Math.round(progress)}% dari target tercapai`;
-  renderChart(progress);
-}
-
-function renderChart(percentage) {
-  const ctx = document.getElementById('progressChart').getContext('2d');
-  if (chartInstance) chartInstance.destroy();
-
-  chartInstance = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: [percentage, 100 - percentage],
-        backgroundColor: ['#21ba45', '#f0f0f0'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      cutout: '70%',
-      responsive: false,
-      plugins: {
-        tooltip: { enabled: false },
-        legend: { display: false },
-        title: {
-          display: true,
-          text: `${Math.round(percentage)}%`,
-          position: 'center',
-          font: {
-            size: 18,
-            weight: 'bold'
-          }
-        }
-      }
-    }
-  });
-}
-
-function hitungHariBerjalan(tanggalMulai) {
-  const mulai = new Date(tanggalMulai);
-  const hariIni = new Date();
-  const selisihMs = hariIni - mulai;
-  const selisihHari = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
-  return selisihHari >= 0 ? selisihHari + 1 : 0;
-}
-
-function formatTanggal(input) {
-  const d = new Date(input);
-  return d.toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-function cekRefleksiMingguan(hariBerjalan) {
-  const mingguKe = Math.floor(hariBerjalan / 7);
-  if (mingguKe === 0) return;
-
-  const key = `minggu${mingguKe}`;
-  const sudahAda = localStorage.getItem(key);
-
-  if (!sudahAda) {
-    document.getElementById("weekly-reflection-form").style.display = "block";
-    document.getElementById("mingguKe").innerText = mingguKe;
-    document.getElementById("weekly-reflection-form").dataset.minggu = mingguKe;
-  }
-}
-
-function simpanRefleksiMingguan() {
-  const minggu = document.getElementById("weekly-reflection-form").dataset.minggu;
-  const isi = document.getElementById("refleksiMingguan").value;
-
-  localStorage.setItem(`minggu${minggu}`, isi);
-  document.getElementById("weekly-reflection-form").style.display = "none";
-  tampilkanDaftarRefleksi();
-
-  return false;
-}
-
-function tampilkanDaftarRefleksi() {
-  let output = "";
-  let ada = false;
-
-  for (let i = 1; i <= 52; i++) {
-    const data = localStorage.getItem(`minggu${i}`);
-    if (data) {
-      ada = true;
-      output += `<div class="ui segment"><strong>Minggu ${i}:</strong><br><em>${data}</em></div>`;
-    }
-  }
-
-  if (ada) {
-    document.getElementById("daftar-refleksi-mingguan").style.display = "block";
-    document.getElementById("list-refleksi").innerHTML = output;
-  }
-}
-
-window.onload = function () {
-  if (localStorage.getItem("targetHari") && localStorage.getItem("tanggalMulai")) {
-    tampilkanRingkasan();
-  }
-};
-</script>
-
+    <!-- JavaScript -->
+    <script src="js/target.js"></script>
 </body>
 </html>
