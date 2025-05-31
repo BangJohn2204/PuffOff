@@ -5,489 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progress - PuffOff</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            padding-top: 20px;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            color: #6b7280;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .section {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1f2937;
-        }
-
-        .section-icon {
-            font-size: 1.5rem;
-            color: #667eea;
-        }
-
-        .view-toggle {
-            display: flex;
-            background: #f3f4f6;
-            border-radius: 8px;
-            padding: 4px;
-        }
-
-        .toggle-btn {
-            padding: 8px 16px;
-            border: none;
-            background: transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            color: #6b7280;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-btn.active {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .chart-container {
-            height: 300px;
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .chart-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #cbd5e1;
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        .progress-timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 24px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -30px;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            background: #e5e7eb;
-        }
-
-        .timeline-item:last-child::before {
-            display: none;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -38px;
-            top: 4px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #667eea;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px #667eea;
-        }
-
-        .timeline-content {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-        }
-
-        .timeline-title {
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .timeline-desc {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .timeline-time {
-            color: #9ca3af;
-            font-size: 0.8rem;
-            margin-top: 8px;
-        }
-
-        .badges-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 16px;
-        }
-
-        .badge-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .badge-card.earned {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .badge-card.locked {
-            opacity: 0.6;
-            filter: grayscale(100%);
-        }
-
-        .badge-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-        }
-
-        .badge-title {
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .badge-desc {
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
-
-        .health-metrics {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .health-item {
-            text-align: center;
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 2px solid #e5e7eb;
-        }
-
-        .health-item.improving {
-            border-color: #10b981;
-            background: #f0fdf4;
-        }
-
-        .health-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-
-        .health-item.improving .health-icon {
-            color: #10b981;
-        }
-
-        .health-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .health-status {
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-
-        .health-item.improving .health-status {
-            color: #10b981;
-            font-weight: 600;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .action-btn {
-            padding: 14px 20px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .milestone-card {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 2px solid #f59e0b;
-        }
-
-        .milestone-icon {
-            font-size: 2rem;
-            color: #f59e0b;
-            margin-bottom: 12px;
-        }
-
-        .milestone-title {
-            font-weight: 700;
-            color: #92400e;
-            margin-bottom: 8px;
-        }
-
-        .milestone-desc {
-            color: #b45309;
-            margin-bottom: 12px;
-        }
-
-        .milestone-progress {
-            background: rgba(245, 158, 11, 0.2);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .milestone-progress-bar {
-            height: 100%;
-            background: #f59e0b;
-            transition: width 0.3s ease;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            padding: 12px 0;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            max-width: 500px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #6b7280;
-            transition: color 0.3s ease;
-            padding: 8px;
-        }
-
-        .nav-item.active {
-            color: #667eea;
-        }
-
-        .nav-item i {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
-        }
-
-        .nav-item span {
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        .savings-breakdown {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .savings-item {
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .savings-amount {
-            font-weight: 700;
-            color: #10b981;
-            font-size: 1.1rem;
-        }
-
-        .savings-label {
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 16px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/progress.css">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>Progress Tracker 📊</h1>
+            <h1><i class="fas fa-chart-bar"></i> Progress Tracker</h1>
             <p>Pantau perjalanan bebas rokokmu</p>
         </div>
 
@@ -535,11 +60,24 @@
                 <div class="view-toggle">
                     <button class="toggle-btn active" onclick="switchChart('daily')">Harian</button>
                     <button class="toggle-btn" onclick="switchChart('weekly')">Mingguan</button>
+                    <button class="toggle-btn" onclick="switchChart('monthly')">Bulanan</button>
                 </div>
             </div>
             <div class="chart-container">
-                <div class="chart-placeholder">
-                    📈 Grafik Progress Akan Muncul Di Sini
+                <canvas id="progressChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color success"></div>
+                    <span>Hari Sukses</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color savings"></div>
+                    <span>Penghematan</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color health"></div>
+                    <span>Health Score</span>
                 </div>
             </div>
         </div>
@@ -555,21 +93,33 @@
                     <div class="health-icon">🫁</div>
                     <div class="health-title">Fungsi Paru</div>
                     <div class="health-status">Membaik 15%</div>
+                    <div class="health-progress">
+                        <div class="health-progress-bar" style="width: 15%"></div>
+                    </div>
                 </div>
                 <div class="health-item improving">
                     <div class="health-icon">💓</div>
                     <div class="health-title">Sirkulasi Darah</div>
                     <div class="health-status">Membaik 20%</div>
+                    <div class="health-progress">
+                        <div class="health-progress-bar" style="width: 20%"></div>
+                    </div>
                 </div>
                 <div class="health-item">
                     <div class="health-icon">👃</div>
                     <div class="health-title">Penciuman</div>
                     <div class="health-status">Normal</div>
+                    <div class="health-progress">
+                        <div class="health-progress-bar" style="width: 90%"></div>
+                    </div>
                 </div>
                 <div class="health-item">
                     <div class="health-icon">💪</div>
                     <div class="health-title">Energi</div>
                     <div class="health-status">Meningkat</div>
+                    <div class="health-progress">
+                        <div class="health-progress-bar" style="width: 75%"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -581,32 +131,32 @@
                 Pencapaian & Lencana
             </div>
             <div class="badges-grid">
-                <div class="badge-card earned">
+                <div class="badge-card earned" data-achievement="fire-starter">
                     <div class="badge-icon">🔥</div>
                     <div class="badge-title">Fire Starter</div>
                     <div class="badge-desc">3 hari bebas rokok</div>
                 </div>
-                <div class="badge-card earned">
+                <div class="badge-card earned" data-achievement="money-saver">
                     <div class="badge-icon">💰</div>
                     <div class="badge-title">Money Saver</div>
                     <div class="badge-desc">Hemat Rp 100K</div>
                 </div>
-                <div class="badge-card earned">
+                <div class="badge-card earned" data-achievement="week-warrior">
                     <div class="badge-icon">🏃</div>
                     <div class="badge-title">Week Warrior</div>
                     <div class="badge-desc">7 hari konsisten</div>
                 </div>
-                <div class="badge-card locked">
+                <div class="badge-card locked" data-achievement="champion">
                     <div class="badge-icon">👑</div>
                     <div class="badge-title">Champion</div>
                     <div class="badge-desc">30 hari bebas rokok</div>
                 </div>
-                <div class="badge-card locked">
+                <div class="badge-card locked" data-achievement="diamond">
                     <div class="badge-icon">💎</div>
                     <div class="badge-title">Diamond</div>
                     <div class="badge-desc">90 hari bebas rokok</div>
                 </div>
-                <div class="badge-card locked">
+                <div class="badge-card locked" data-achievement="legend">
                     <div class="badge-icon">🌟</div>
                     <div class="badge-title">Legend</div>
                     <div class="badge-desc">1 tahun bebas rokok</div>
@@ -636,6 +186,31 @@
                 <div class="savings-item">
                     <div class="savings-amount">84</div>
                     <div class="savings-label">Batang Dihindari</div>
+                </div>
+            </div>
+            
+            <!-- Savings Goals -->
+            <div class="savings-goals">
+                <h4>🎯 Target Penghematan</h4>
+                <div class="goal-item">
+                    <div class="goal-info">
+                        <span class="goal-title">Smartphone Baru</span>
+                        <span class="goal-target">Rp 3.000.000</span>
+                    </div>
+                    <div class="goal-progress">
+                        <div class="goal-progress-bar" style="width: 7%"></div>
+                        <span class="goal-percentage">7%</span>
+                    </div>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-info">
+                        <span class="goal-title">Liburan Keluarga</span>
+                        <span class="goal-target">Rp 5.000.000</span>
+                    </div>
+                    <div class="goal-progress">
+                        <div class="goal-progress-bar" style="width: 4%"></div>
+                        <span class="goal-percentage">4%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -669,6 +244,14 @@
                         <div class="timeline-title">Hemat Rp 100.000! 💰</div>
                         <div class="timeline-desc">Pencapaian penghematan pertama yang luar biasa</div>
                         <div class="timeline-time">3 hari lalu, 16:20</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Mood Check-in Streak</div>
+                        <div class="timeline-desc">5 hari berturut-turut melakukan mood check-in</div>
+                        <div class="timeline-time">4 hari lalu, 08:15</div>
                     </div>
                 </div>
             </div>
@@ -717,167 +300,10 @@
         </div>
     </div>
 
-    <script>
-        // Data dummy untuk simulasi
-        const progressData = {
-            smokeFreedays: 7,
-            moneySaved: 210000,
-            cigarettesAvoided: 84,
-            healthScore: 78,
-            dailySavings: [5000, 7500, 6000, 8000, 4500, 9000, 12000],
-            weeklySavings: [35000, 42000, 38000, 45000]
-        };
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
-        // Update stats dengan animasi
-        function updateStats() {
-            const elements = {
-                smokeFreedays: document.getElementById('smokeFreedays'),
-                moneySaved: document.getElementById('moneySaved'),
-                cigarettesAvoided: document.getElementById('cigarettesAvoided'),
-                healthScore: document.getElementById('healthScore')
-            };
-
-            // Animate numbers
-            animateValue(elements.smokeFreedays, 0, progressData.smokeFreedays, 1000);
-            animateValue(elements.cigarettesAvoided, 0, progressData.cigarettesAvoided, 1200);
-            animateValue(elements.healthScore, 0, progressData.healthScore, 1500, '%');
-            
-            // Format money with currency
-            setTimeout(() => {
-                elements.moneySaved.textContent = formatCurrency(progressData.moneySaved);
-            }, 800);
-        }
-
-        // Animasi angka
-        function animateValue(element, start, end, duration, suffix = '') {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const current = Math.floor(progress * (end - start) + start);
-                element.textContent = current + suffix;
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        // Format currency
-        function formatCurrency(amount) {
-            if (amount >= 1000000) {
-                return 'Rp ' + (amount / 1000000).toFixed(1) + 'M';
-            } else if (amount >= 1000) {
-                return 'Rp ' + (amount / 1000).toFixed(0) + 'K';
-            }
-            return 'Rp ' + amount.toLocaleString('id-ID');
-        }
-
-        // Switch chart view
-        function switchChart(type) {
-            const buttons = document.querySelectorAll('.toggle-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            const chartPlaceholder = document.querySelector('.chart-placeholder');
-            if (type === 'daily') {
-                chartPlaceholder.innerHTML = '📊 Grafik Harian - Progress 7 Hari Terakhir';
-            } else {
-                chartPlaceholder.innerHTML = '📈 Grafik Mingguan - Trend Bulanan';
-            }
-            
-            // Simulate chart animation
-            chartPlaceholder.style.opacity = '0';
-            setTimeout(() => {
-                chartPlaceholder.style.opacity = '1';
-            }, 300);
-        }
-
-        // Share progress
-        function shareProgress() {
-            const text = `🎉 Aku sudah ${progressData.smokeFreedays} hari bebas rokok! 
-💰 Berhasil hemat ${formatCurrency(progressData.moneySaved)}
-🚫 Hindari ${progressData.cigarettesAvoided} batang rokok
-❤️ Health Score: ${progressData.healthScore}%
-
-#PuffOff #BebasRokok #SehatTanpaRokok`;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Progress Bebas Rokok - PuffOff',
-                    text: text,
-                    url: window.location.href
-                });
-            } else {
-                // Fallback untuk browser yang tidak support Web Share API
-                navigator.clipboard.writeText(text).then(() => {
-                    showNotification('Progress berhasil disalin ke clipboard!', 'success');
-                });
-            }
-        }
-
-        // Export data
-        function exportData() {
-            const data = {
-                tanggal_export: new Date().toISOString(),
-                statistik: progressData,
-                pencapaian: [
-                    { nama: 'Fire Starter', tanggal: '2024-01-15' },
-                    { nama: 'Money Saver', tanggal: '2024-01-18' },
-                    { nama: 'Week Warrior', tanggal: '2024-01-22' }
-                ]
-            };
-
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `puffoff_progress_${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            
-            URL.revokeObjectURL(url);
-            showNotification('Data progress berhasil diexport!', 'success');
-        }
-
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#10b981' : '#667eea'};
-                color: white;
-                padding: 16px 24px;
-                border-radius: 12px;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-                z-index: 10000;
-                font-weight: 600;
-                max-width: 300px;
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            `;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-
-        // Badge unlock animation
-        function unlockBadge(badgeElement) {
-            badgeElement.classList.remove('locked');
-            badgeElement.classList.add('earned');
-            
-            // Add celebration effect
+    <!-- JavaScript -->
+    <script src="js/progress.js"></script>
+</body>
+</html>
