@@ -1,817 +1,30 @@
-</div>
-                    <div class="reply-card">
-                        <div class="reply-header">
-                            <div class="reply-avatar">DK</div>
-                            <div class="reply-username">Doni Kurniawan</div>
-                            <div class="reply-time">45 menit lalu</div>
-                        </div>
-                        <div class="reply-content">
-                            Mantap! Saya baru 20 hari, semoga bisa kayak abang. Terima kasih motivasinya! 💪
-                        </div>
-                    </div>
-                    <button class="load-more-btn" onclick="loadMoreReplies(this)">
-                        Lihat 9 balasan lainnya
-                    </button>
-                </div>
-            </div>
-
-            <!-- Post 2: Question -->
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="user-info">
-                        <div class="user-avatar">LP</div>
-                        <div class="user-details">
-                            <div class="username">Linda Permata</div>
-                            <div class="post-time">4 jam yang lalu</div>
-                        </div>
-                        <div class="post-badge badge-question">Pertanyaan</div>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <div class="post-title">❓ Bagaimana mengatasi stress tanpa rokok?</div>
-                    <div class="post-excerpt">
-                        Halo semua, saya baru mulai program berhenti merokok hari ke-3. Masalahnya kalau lagi stress kerja, reflek pengen nyari rokok. Ada yang punya tips alternatif yang efektif?
-                    </div>
-                </div>
-                <div class="post-actions">
-                    <div class="action-group">
-                        <button class="action-btn" onclick="toggleLike(this)">
-                            <i class="far fa-heart"></i>
-                            <span>23</span>
-                        </button>
-                        <button class="action-btn" onclick="toggleReplies(this)">
-                            <i class="far fa-comment"></i>
-                            <span>18</span>
-                        </button>
-                        <button class="action-btn" onclick="sharePost(this)">
-                            <i class="fas fa-share"></i>
-                            <span>2</span>
-                        </button>
-                    </div>
-                    <button class="more-btn" onclick="showMoreOptions(this)">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Post 3: Tips -->
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="user-info">
-                        <div class="user-avatar">RH</div>
-                        <div class="user-details">
-                            <div class="username">Rudi Hartono</div>
-                            <div class="post-time">6 jam yang lalu</div>
-                        </div>
-                        <div class="post-badge badge-tips">Tips & Trick</div>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <div class="post-title">💡 5 Teknik Pernapasan untuk Mengatasi Craving</div>
-                    <div class="post-excerpt">
-                        Setelah 8 bulan bebas rokok, saya mau share teknik pernapasan yang sangat membantu saat ada keinginan merokok. Teknik 4-7-8 adalah yang paling efektif untuk saya...
-                    </div>
-                </div>
-                <div class="post-actions">
-                    <div class="action-group">
-                        <button class="action-btn liked" onclick="toggleLike(this)">
-                            <i class="fas fa-heart"></i>
-                            <span>89</span>
-                        </button>
-                        <button class="action-btn" onclick="toggleReplies(this)">
-                            <i class="far fa-comment"></i>
-                            <span>31</span>
-                        </button>
-                        <button class="action-btn" onclick="sharePost(this)">
-                            <i class="fas fa-share"></i>
-                            <span>15</span>
-                        </button>
-                    </div>
-                    <button class="more-btn" onclick="showMoreOptions(this)">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Post 4: Motivation -->
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="user-info">
-                        <div class="user-avatar">NK</div>
-                        <div class="user-details">
-                            <div class="username">Novi Kartika</div>
-                            <div class="post-time">1 hari yang lalu</div>
-                        </div>
-                        <div class="post-badge badge-motivation">Motivasi</div>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <div class="post-title">🌟 Motivasi Pagi: Kamu Lebih Kuat Dari Yang Kamu Kira!</div>
-                    <div class="post-excerpt">
-                        "Setiap hari tanpa rokok adalah bukti kekuatanmu. Jangan pernah meremehkan progress kecil, karena dari situ lah perubahan besar dimulai." Mari semangat bersama! 💪
-                    </div>
-                </div>
-                <div class="post-actions">
-                    <div class="action-group">
-                        <button class="action-btn" onclick="toggleLike(this)">
-                            <i class="far fa-heart"></i>
-                            <span>156</span>
-                        </button>
-                        <button class="action-btn" onclick="toggleReplies(this)">
-                            <i class="far fa-comment"></i>
-                            <span>42</span>
-                        </button>
-                        <button class="action-btn" onclick="sharePost(this)">
-                            <i class="fas fa-share"></i>
-                            <span>28</span>
-                        </button>
-                    </div>
-                    <button class="more-btn" onclick="showMoreOptions(this)">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Load More Button -->
-        <button class="load-more-btn" onclick="loadMorePosts()">
-            <i class="fas fa-plus"></i> Muat Lebih Banyak Post
-        </button>
-    </div>
-
-    <!-- Floating Create Button -->
-    <button class="floating-create" onclick="openCreateModal()" title="Buat Post Baru">
-        <i class="fas fa-plus"></i>
-    </button>
-
-    <!-- Scroll to Top Button -->
-    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
-        <i class="fas fa-chevron-up"></i>
-    </button>
-
-    <!-- Create Post Modal -->
-    <div id="createModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">✏️ Buat Post Baru</h3>
-                <button class="close-btn" onclick="closeCreateModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="createPostForm" onsubmit="submitPost(event)">
-                    <div class="form-group">
-                        <label class="form-label">Kategori Post</label>
-                        <div class="category-chips">
-                            <div class="chip" onclick="selectCategory(this, 'success')" data-category="success">
-                                🎉 Success Story
-                            </div>
-                            <div class="chip" onclick="selectCategory(this, 'question')" data-category="question">
-                                ❓ Pertanyaan
-                            </div>
-                            <div class="chip" onclick="selectCategory(this, 'tips')" data-category="tips">
-                                💡 Tips & Trick
-                            </div>
-                            <div class="chip" onclick="selectCategory(this, 'motivation')" data-category="motivation">
-                                🌟 Motivasi
-                            </div>
-                        </div>
-                        <input type="hidden" id="selectedCategory" name="category">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="postTitle">Judul Post</label>
-                        <input type="text" id="postTitle" name="title" class="form-input" placeholder="Tulis judul yang menarik..." maxlength="100">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="postContent">Isi Post</label>
-                        <textarea id="postContent" name="content" class="form-textarea" placeholder="Ceritakan pengalaman, tips, atau pertanyaan kamu..." maxlength="2000"></textarea>
-                        <div class="char-counter">
-                            <span id="charCount">0</span>/2000
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Tambah Gambar (Opsional)</label>
-                        <input type="file" id="postImage" name="image" accept="image/*" style="display: none;" onchange="previewImage(this)">
-                        <div class="image-upload-area" onclick="document.getElementById('postImage').click()">
-                            <i class="fas fa-cloud-upload-alt image-upload-icon"></i>
-                            Klik untuk upload gambar (opsional)
-                        </div>
-                        <div id="imagePreview" class="image-preview">
-                            <img id="previewImg" class="preview-img">
-                            <button type="button" class="remove-image-btn" onclick="removeImage()">
-                                <i class="fas fa-trash"></i> Hapus Gambar
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn" id="submitBtn">
-                        <i class="fas fa-paper-plane"></i> Posting Sekarang
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- More Options Modal -->
-    <div id="moreModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Opsi Post</h3>
-                <button class="close-btn" onclick="closeMoreModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <button class="more-option-btn danger" onclick="reportPost()">
-                    <i class="fas fa-flag"></i> Laporkan Post
-                </button>
-                
-                <button class="more-option-btn" onclick="savePost()">
-                    <i class="fas fa-bookmark"></i> Simpan Post
-                </button>
-                
-                <button class="more-option-btn" onclick="hidePost()">
-                    <i class="fas fa-eye-slash"></i> Sembunyikan Post
-                </button>
-                
-                <button class="more-option-btn" onclick="copyLink()">
-                    <i class="fas fa-link"></i> Salin Link
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="nav-container">
-            <a href="home.html" class="nav-item">
-                <i class="fas fa-home"></i>
-                <span>Beranda</span>
-            </a>
-            <a href="progress.html" class="nav-item">
-                <i class="fas fa-chart-bar"></i>
-                <span>Progress</span>
-            </a>
-            <a href="chatbot.html" class="nav-item">
-                <i class="fas fa-robot"></i>
-                <span>AI Helper</span>
-            </a>
-            <a href="komunitas.html" class="nav-item active">
-                <div style="position: relative;">
-                    <i class="fas fa-users"></i>
-                    <div class="notification-badge">3</div>
-                </div>
-                <span>Komunitas</span>
-            </a>
-            <a href="target.html" class="nav-item">
-                <i class="fas fa-bullseye"></i>
-                <span>Target</span>
-            </a>
-            <a href="profile.html" class="nav-item">
-                <i class="fas fa-user"></i>
-                <span>Profil</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
-
-    <script>
-        // Global variables
-        let currentTab = 'trending';
-        let selectedCategory = null;
-        let currentMorePost = null;
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
-            updateCharCounter();
-            setupScrollToTop();
-            console.log('🎉 PuffOff Community Forum initialized!');
-        });
-
-        // Setup all event listeners
-        function setupEventListeners() {
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', handleSearch);
-            
-            // Form validation
-            const titleInput = document.getElementById('postTitle');
-            const contentInput = document.getElementById('postContent');
-            
-            titleInput.addEventListener('input', validateForm);
-            contentInput.addEventListener('input', function() {
-                updateCharCounter();
-                validateForm();
-            });
-            
-            // Modal close on outside click
-            window.addEventListener('click', function(event) {
-                const modals = document.querySelectorAll('.modal');
-                modals.forEach(modal => {
-                    if (event.target === modal) {
-                        modal.classList.remove('show');
-                    }
-                });
-            });
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        modal.classList.remove('show');
-                    });
-                }
-                
-                if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-                    const createModal = document.getElementById('createModal');
-                    if (createModal.classList.contains('show')) {
-                        const submitBtn = document.getElementById('submitBtn');
-                        if (!submitBtn.disabled) {
-                            submitBtn.click();
-                        }
-                    }
-                }
-            });
-        }
-
-        // Tab switching
-        function switchTab(tab, button) {
-            currentTab = tab;
-            
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            button.classList.add('active');
-            
-            // Show/hide trending section
-            const trendingSection = document.getElementById('trending-section');
-            if (tab === 'trending') {
-                trendingSection.style.display = 'block';
-            } else {
-                trendingSection.style.display = 'none';
-            }
-            
-            // Filter posts based on tab
-            filterPosts(tab);
-            showToast(`Menampilkan: ${getTabName(tab)}`);
-        }
-
-        function getTabName(tab) {
-            const names = {
-                'trending': 'Post Trending',
-                'recent': 'Post Terbaru',
-                'motivasi': 'Post Motivasi',
-                'my-posts': 'Post Saya'
-            };
-            return names[tab] || 'Semua Post';
-        }
-
-        function filterPosts(tab) {
-            const posts = document.querySelectorAll('.post-card');
-            
-            posts.forEach(post => {
-                const badge = post.querySelector('.post-badge');
-                const username = post.querySelector('.username').textContent;
-                
-                let shouldShow = true;
-                
-                if (tab === 'motivasi') {
-                    shouldShow = badge && badge.textContent.includes('Motivasi');
-                } else if (tab === 'my-posts') {
-                    shouldShow = username === 'Anda'; // Show user's own posts
-                }
-                
-                post.style.display = shouldShow ? 'block' : 'none';
-            });
-        }
-
-        // Search functionality
-        function handleSearch() {
-            const query = this.value.toLowerCase().trim();
-            const posts = document.querySelectorAll('.post-card');
-            
-            posts.forEach(post => {
-                const title = post.querySelector('.post-title').textContent.toLowerCase();
-                const content = post.querySelector('.post-excerpt').textContent.toLowerCase();
-                const username = post.querySelector('.username').textContent.toLowerCase();
-                
-                const matches = title.includes(query) || 
-                              content.includes(query) || 
-                              username.includes(query);
-                
-                post.style.display = matches || query === '' ? 'block' : 'none';
-            });
-            
-            if (query) {
-                showToast(`Mencari: "${query}"`);
-            }
-        }
-
-        // Like functionality
-        function toggleLike(button) {
-            const isLiked = button.classList.contains('liked');
-            const countSpan = button.querySelector('span');
-            const icon = button.querySelector('i');
-            let count = parseInt(countSpan.textContent);
-            
-            if (isLiked) {
-                button.classList.remove('liked');
-                icon.className = 'far fa-heart';
-                count--;
-                showToast('Like dibatalkan');
-            } else {
-                button.classList.add('liked');
-                icon.className = 'fas fa-heart';
-                count++;
-                showToast('Post disukai! ❤️');
-                createHeartAnimation(button);
-            }
-            
-            countSpan.textContent = count;
-        }
-
-        function createHeartAnimation(button) {
-            const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
-            heart.style.cssText = `
-                position: absolute;
-                font-size: 1.5rem;
-                pointer-events: none;
-                animation: heartFloat 1s ease-out forwards;
-                z-index: 1000;
-            `;
-            
-            if (!document.querySelector('#heartAnimation')) {
-                const style = document.createElement('style');
-                style.id = 'heartAnimation';
-                style.textContent = `
-                    @keyframes heartFloat {
-                        0% {
-                            opacity: 1;
-                            transform: translateY(0) scale(1);
-                        }
-                        100% {
-                            opacity: 0;
-                            transform: translateY(-30px) scale(1.5);
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-            
-            button.style.position = 'relative';
-            button.appendChild(heart);
-            
-            setTimeout(() => {
-                if (heart.parentNode) {
-                    heart.remove();
-                }
-            }, 1000);
-        }
-
-        // Toggle replies
-        function toggleReplies(button) {
-            const postCard = button.closest('.post-card');
-            const repliesSection = postCard.querySelector('.replies-section');
-            
-            if (repliesSection.style.display === 'none' || !repliesSection.style.display) {
-                repliesSection.style.display = 'block';
-                showToast('Menampilkan balasan');
-            } else {
-                repliesSection.style.display = 'none';
-                showToast('Menyembunyikan balasan');
-            }
-        }
-
-        // Share functionality
-        function sharePost(button) {
-            const postCard = button.closest('.post-card');
-            const title = postCard.querySelector('.post-title').textContent;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'PuffOff Community - ' + title,
-                    text: 'Lihat post menarik ini di komunitas PuffOff!',
-                    url: window.location.href
-                });
-            } else {
-                const url = window.location.href + '#post-' + Date.now();
-                navigator.clipboard.writeText(url).then(() => {
-                    showToast('Link berhasil disalin!');
-                });
-            }
-            
-            // Update share count
-            const countSpan = button.querySelector('span');
-            const count = parseInt(countSpan.textContent) + 1;
-            countSpan.textContent = count;
-        }
-
-        // More options
-        function showMoreOptions(button) {
-            currentMorePost = button.closest('.post-card');
-            document.getElementById('moreModal').classList.add('show');
-        }
-
-        function closeMoreModal() {
-            document.getElementById('moreModal').classList.remove('show');
-            currentMorePost = null;
-        }
-
-        function reportPost() {
-            showToast('Post telah dilaporkan. Terima kasih!');
-            closeMoreModal();
-        }
-
-        function savePost() {
-            showToast('Post berhasil disimpan!');
-            closeMoreModal();
-        }
-
-        function hidePost() {
-            if (currentMorePost) {
-                currentMorePost.style.display = 'none';
-                showToast('Post disembunyikan');
-                closeMoreModal();
-            }
-        }
-
-        function copyLink() {
-            const url = window.location.href + '#post-' + Date.now();
-            navigator.clipboard.writeText(url).then(() => {
-                showToast('Link berhasil disalin!');
-                closeMoreModal();
-            });
-        }
-
-        // Load more functionality
-        function loadMoreReplies(button) {
-            const repliesSection = button.closest('.replies-section');
-            
-            const newReplies = [
-                { username: 'Maya S', avatar: 'MS', time: '30 menit lalu', content: 'Setuju banget! Saya juga pakai teknik yang sama.' },
-                { username: 'Budi P', avatar: 'BP', time: '25 menit lalu', content: 'Terima kasih sharingnya, sangat membantu!' },
-                { username: 'Rita K', avatar: 'RK', time: '20 menit lalu', content: 'Bookmark dulu ah, buat referensi.' }
-            ];
-            
-            newReplies.forEach((reply, index) => {
-                const replyElement = document.createElement('div');
-                replyElement.className = 'reply-card';
-                replyElement.style.opacity = '0';
-                replyElement.innerHTML = `
-                    <div class="reply-header">
-                        <div class="reply-avatar">${reply.avatar}</div>
-                        <div class="reply-username">${reply.username}</div>
-                        <div class="reply-time">${reply.time}</div>
-                    </div>
-                    <div class="reply-content">${reply.content}</div>
-                `;
-                
-                repliesSection.insertBefore(replyElement, button);
-                
-                setTimeout(() => {
-                    replyElement.style.transition = 'opacity 0.3s ease';
-                    replyElement.style.opacity = '1';
-                }, index * 200);
-            });
-            
-            button.remove();
-            showToast('Balasan tambahan dimuat');
-        }
-
-        function loadMorePosts() {
-            const container = document.getElementById('posts-container');
-            
-            const newPosts = [
-                {
-                    avatar: 'TA',
-                    username: 'Toni Ardiansyah',
-                    time: '2 hari yang lalu',
-                    badge: 'Pertanyaan',
-                    badgeClass: 'badge-question',
-                    title: '🤔 Rekomendasi aplikasi olahraga ringan?',
-                    content: 'Teman-teman ada yang bisa rekomendasikan aplikasi untuk olahraga ringan di rumah? Buat ngilangin habit ngerokok...'
-                },
-                {
-                    avatar: 'EW',
-                    username: 'Eka Wijaya',
-                    time: '3 hari yang lalu',
-                    badge: 'Tips & Trick',
-                    badgeClass: 'badge-tips',
-                    title: '🥤 Minuman herbal pengganti rokok',
-                    content: 'Sharing resep minuman herbal yang membantu mengurangi keinginan merokok. Teh jahe + lemon + madu...'
-                }
-            ];
-            
-            newPosts.forEach((post, index) => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post-card';
-                postElement.style.opacity = '0';
-                postElement.style.transform = 'translateY(20px)';
-                
-                postElement.innerHTML = `
-                    <div class="post-header">
-                        <div class="user-info">
-                            <div class="user-avatar">${post.avatar}</div>
-                            <div class="user-details">
-                                <div class="username">${post.username}</div>
-                                <div class="post-time">${post.time}</div>
-                            </div>
-                            <div class="post-badge ${post.badgeClass}">${post.badge}</div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-title">${post.title}</div>
-                        <div class="post-excerpt">${post.content}</div>
-                    </div>
-                    <div class="post-actions">
-                        <div class="action-group">
-                            <button class="action-btn" onclick="toggleLike(this)">
-                                <i class="far fa-heart"></i>
-                                <span>${Math.floor(Math.random() * 50) + 10}</span>
-                            </button>
-                            <button class="action-btn" onclick="toggleReplies(this)">
-                                <i class="far fa-comment"></i>
-                                <span>${Math.floor(Math.random() * 20) + 5}</span>
-                            </button>
-                            <button class="action-btn" onclick="sharePost(this)">
-                                <i class="fas fa-share"></i>
-                                <span>${Math.floor(Math.random() * 10) + 1}</span>
-                            </button>
-                        </div>
-                        <button class="more-btn" onclick="showMoreOptions(this)">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                    </div>
-                `;
-                
-                container.appendChild(postElement);
-                
-                setTimeout(() => {
-                    postElement.style.transition = 'all 0.3s ease';
-                    postElement.style.opacity = '1';
-                    postElement.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
-            
-            showToast('Post baru dimuat!');
-        }
-
-        // Create post modal
-        function openCreateModal() {
-            document.getElementById('createModal').classList.add('show');
-            document.getElementById('postTitle').focus();
-        }
-
-        function closeCreateModal() {
-            document.getElementById('createModal').classList.remove('show');
-            document.getElementById('createPostForm').reset();
-            selectedCategory = null;
-            document.querySelectorAll('.chip').forEach(chip => {
-                chip.classList.remove('selected');
-            });
-            
-            // Reset image preview
-            const preview = document.getElementById('imagePreview');
-            preview.style.display = 'none';
-            document.getElementById('postImage').value = '';
-            
-            // Reset validation
-            document.getElementById('submitBtn').disabled = false;
-            updateCharCounter();
-        }
-
-        function selectCategory(chip, category) {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-            chip.classList.add('selected');
-            selectedCategory = category;
-            document.getElementById('selectedCategory').value = category;
-            validateForm();
-            showToast(`Kategori dipilih: ${chip.textContent.trim()}`);
-        }
-
-        function updateCharCounter() {
-            const textarea = document.getElementById('postContent');
-            const counter = document.getElementById('charCount');
-            
-            if (textarea && counter) {
-                const count = textarea.value.length;
-                counter.textContent = count;
-                
-                // Update counter color based on length
-                counter.className = 'char-counter';
-                if (count > 1800) {
-                    counter.classList.add('danger');
-                } else if (count > 1500) {
-                    counter.classList.add('warning');
-                }
-            }
-        }
-
-        function validateForm() {
-            const title = document.getElementById('postTitle').value.trim();
-            const content = document.getElementById('postContent').value.trim();
-            const submitBtn = document.getElementById('submitBtn');
-            
-            // Form is valid if we have title, content, and category
-            // Image is completely optional
-            const isValid = title.length > 0 && content.length >= 10 && selectedCategory;
-            
-            submitBtn.disabled = !isValid;
-        }
-
-        function previewImage(input) {
-            const preview = document.getElementById('imagePreview');
-            const previewImg = document.getElementById('previewImg');
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                
-                reader.readAsDataURL(input.files[0]);
-                showToast('Gambar berhasil dipilih!');
-            }
-        }
-
-        function removeImage() {
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('postImage').value = '';
-            showToast('Gambar dihapus');
-        }
-
-        function submitPost(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const title = formData.get('title');
-            const content = formData.get('content');
-            const category = selectedCategory;
-            
-            if (!title || !content || !category) {
-                showToast('Mohon lengkapi semua field yang diperlukan');
-                return;
-            }
-            
-            // Create new post element
-            const badge = getBadgeHTML(category);
-            const newPost = createNewPostElement(title, content, category, badge);
-            
-            // Add to top of posts container
-            const container = document.getElementById('posts-container');
-            container.insertBefore(newPost, container.firstChild);
-            
-            // Animate in
-            newPost.style.opacity = '0';
-            newPost.style.transform = 'translateY(-20px)';
-            
-            setTimeout(() => {
-                newPost.style.transition = 'all 0.3s ease';
-                newPost.style<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Komunitas - PuffOff</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Reset dan Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html, body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f8fafc;
-            min-height: 100vh;
-            line-height: 1.6;
-            color: #1a202c;
-        }
-
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
             padding-bottom: 80px;
         }
 
-        /* Container */
         .container {
             max-width: 500px;
             margin: 0 auto;
             padding: 20px 16px;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -833,7 +46,6 @@
             font-size: 0.9rem;
         }
 
-        /* Community Stats */
         .community-stats {
             display: flex;
             justify-content: space-around;
@@ -861,29 +73,6 @@
             margin-top: 4px;
         }
 
-        /* Search Input */
-        .search-container {
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            width: 100% !important;
-            padding: 12px 16px !important;
-            border: 2px solid #e5e7eb !important;
-            border-radius: 25px !important;
-            font-size: 0.9rem !important;
-            transition: all 0.3s ease !important;
-            background: white !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
-            outline: none !important;
-        }
-
-        .search-input:focus {
-            border-color: #667eea !important;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-        }
-
-        /* Tab Navigation */
         .tab-navigation {
             display: flex;
             background: white;
@@ -903,7 +92,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 0.9rem;
-            color: #6b7280;
         }
 
         .tab-btn.active {
@@ -912,12 +100,15 @@
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
+        .tab-btn:not(.active) {
+            color: #6b7280;
+        }
+
         .tab-btn:not(.active):hover {
             background: #f1f5f9;
             color: #374151;
         }
 
-        /* Create Post Button */
         .create-post-btn {
             width: 100%;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -930,7 +121,6 @@
             margin-bottom: 20px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            font-size: 1rem;
         }
 
         .create-post-btn:hover {
@@ -938,49 +128,6 @@
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
         }
 
-        /* Trending Topics */
-        .trending-topics {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .trending-title {
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 12px;
-            font-size: 1rem;
-        }
-
-        .trending-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .trending-item:last-child {
-            border-bottom: none;
-        }
-
-        .trending-text {
-            flex: 1;
-            font-size: 0.85rem;
-            color: #374151;
-        }
-
-        .trending-count {
-            font-size: 0.75rem;
-            color: #6b7280;
-            background: #f1f5f9;
-            padding: 2px 8px;
-            border-radius: 8px;
-        }
-
-        /* Post Cards */
         .post-card {
             background: white;
             border-radius: 16px;
@@ -1034,7 +181,6 @@
             color: #6b7280;
         }
 
-        /* Post Badges */
         .post-badge {
             padding: 4px 8px;
             border-radius: 12px;
@@ -1063,7 +209,6 @@
             color: #7c3aed;
         }
 
-        /* Post Content */
         .post-content {
             padding: 0 20px 16px;
         }
@@ -1090,7 +235,6 @@
             border-radius: 8px;
         }
 
-        /* Post Actions */
         .post-actions {
             display: flex;
             align-items: center;
@@ -1147,12 +291,15 @@
             color: #374151;
         }
 
-        /* Replies Section */
         .replies-section {
             padding: 16px 20px;
             background: #f8fafc;
             border-top: 1px solid #e5e7eb;
             display: none;
+        }
+
+        .replies-section.show {
+            display: block;
         }
 
         .reply-card {
@@ -1200,7 +347,6 @@
             font-size: 0.85rem;
         }
 
-        /* Load More Button */
         .load-more-btn {
             width: 100%;
             padding: 12px;
@@ -1219,7 +365,6 @@
             background: #f8fafc;
         }
 
-        /* Floating Create Button */
         .floating-create {
             position: fixed;
             bottom: 100px;
@@ -1234,7 +379,6 @@
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
             transition: all 0.3s ease;
             z-index: 1000;
-            font-size: 1.2rem;
         }
 
         .floating-create:hover {
@@ -1242,7 +386,6 @@
             box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
         }
 
-        /* Modal Styles */
         .modal {
             position: fixed;
             top: 0;
@@ -1255,7 +398,6 @@
             justify-content: center;
             z-index: 10000;
             backdrop-filter: blur(5px);
-            padding: 20px;
         }
 
         .modal.show {
@@ -1265,9 +407,9 @@
         .modal-content {
             background: white;
             border-radius: 20px;
-            width: 100%;
+            width: 90%;
             max-width: 500px;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: modalSlideUp 0.3s ease;
@@ -1317,7 +459,6 @@
             padding: 20px;
         }
 
-        /* Form Styles */
         .form-group {
             margin-bottom: 20px;
         }
@@ -1330,7 +471,7 @@
             font-size: 0.9rem;
         }
 
-        .form-input, .form-textarea {
+        .form-input, .form-textarea, .form-select {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid #e5e7eb;
@@ -1338,20 +479,19 @@
             font-size: 1rem;
             font-family: inherit;
             transition: border-color 0.3s ease;
-            resize: vertical;
         }
 
-        .form-input:focus, .form-textarea:focus {
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .form-textarea {
+            resize: vertical;
             min-height: 120px;
         }
 
-        /* Category Chips */
         .category-chips {
             display: flex;
             flex-wrap: wrap;
@@ -1360,13 +500,13 @@
         }
 
         .chip {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: #f1f5f9;
             border: 2px solid #e5e7eb;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
         }
 
@@ -1376,65 +516,6 @@
             border-color: #667eea;
         }
 
-        .chip:hover:not(.selected) {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
-        }
-
-        /* Image Upload */
-        .image-upload-area {
-            width: 100%;
-            padding: 40px 20px;
-            border: 2px dashed #d1d5db;
-            background: #f9fafb;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #6b7280;
-            text-align: center;
-        }
-
-        .image-upload-area:hover {
-            border-color: #667eea;
-            color: #667eea;
-            background: #f8fafc;
-        }
-
-        .image-upload-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .image-preview {
-            margin-top: 12px;
-            display: none;
-        }
-
-        .preview-img {
-            width: 100%;
-            border-radius: 8px;
-            max-height: 200px;
-            object-fit: cover;
-        }
-
-        .remove-image-btn {
-            margin-top: 8px;
-            padding: 6px 12px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .remove-image-btn:hover {
-            background: #dc2626;
-        }
-
-        /* Submit Button */
         .submit-btn {
             width: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1446,10 +527,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
-            font-size: 1rem;
         }
 
-        .submit-btn:hover:not(:disabled) {
+        .submit-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
@@ -1461,23 +541,6 @@
             box-shadow: none;
         }
 
-        /* Character Counter */
-        .char-counter {
-            text-align: right;
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-
-        .char-counter.warning {
-            color: #f59e0b;
-        }
-
-        .char-counter.danger {
-            color: #ef4444;
-        }
-
-        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1505,7 +568,6 @@
             color: #6b7280;
             transition: color 0.3s ease;
             padding: 8px;
-            position: relative;
         }
 
         .nav-item.active {
@@ -1538,78 +600,134 @@
             font-weight: 600;
         }
 
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1f2937;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            display: none;
-            z-index: 10001;
-            font-weight: 500;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
         }
 
-        /* Scroll to Top Button */
-        .scroll-to-top {
-            position: fixed;
-            bottom: 170px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: rgba(102, 126, 234, 0.9);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: scale(0.8);
-            z-index: 999;
-            backdrop-filter: blur(10px);
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #d1d5db;
         }
 
-        .scroll-to-top.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .scroll-to-top:hover {
-            transform: scale(1.1);
-        }
-
-        /* More Options Modal */
-        .more-option-btn {
-            width: 100%;
-            padding: 16px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            cursor: pointer;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            text-align: left;
+        .empty-state h3 {
+            margin-bottom: 8px;
             color: #374151;
         }
 
-        .more-option-btn:hover {
-            background: #f9fafb;
+        .trending-topics {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
-        .more-option-btn.danger {
-            color: #ef4444;
+        .trending-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            font-size: 1rem;
         }
 
-        .more-option-btn.danger:hover {
-            background: #fef2f2;
+        .trending-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        /* Responsive */
+        .trending-item:last-child {
+            border-bottom: none;
+        }
+
+        .trending-text {
+            flex: 1;
+            font-size: 0.85rem;
+            color: #374151;
+        }
+
+        .trending-count {
+            font-size: 0.75rem;
+            color: #6b7280;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 8px;
+        }
+
+        .new-reply-form {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .reply-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .reply-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .reply-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .reply-btn.cancel {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .reply-btn.submit {
+            background: #667eea;
+            color: white;
+        }
+
+        .reply-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 16px 12px;
@@ -1626,35 +744,6 @@
             .action-group {
                 gap: 12px;
             }
-
-            .modal {
-                padding: 10px;
-            }
-        }
-
-        /* Loading States */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        /* Animations */
-        .fadeIn {
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .slideIn {
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
@@ -1669,41 +758,36 @@
         <!-- Community Stats -->
         <div class="community-stats">
             <div class="stat-item">
-                <span class="stat-number">2,847</span>
+                <span class="stat-number" id="member-count">2,847</span>
                 <div class="stat-label">Anggota</div>
             </div>
             <div class="stat-item">
-                <span class="stat-number">156</span>
+                <span class="stat-number" id="posts-today">156</span>
                 <div class="stat-label">Post Hari Ini</div>
             </div>
             <div class="stat-item">
-                <span class="stat-number">1,293</span>
+                <span class="stat-number" id="success-stories">1,293</span>
                 <div class="stat-label">Sukses Stories</div>
             </div>
         </div>
 
-        <!-- Search Container -->
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="🔍 Cari post, topik, atau user..." id="searchInput">
-        </div>
-
         <!-- Tab Navigation -->
         <div class="tab-navigation">
-            <button class="tab-btn active" onclick="switchTab('trending', this)">
+            <button class="tab-btn active" onclick="switchTab('trending')">
                 <i class="fas fa-fire"></i> Trending
             </button>
-            <button class="tab-btn" onclick="switchTab('recent', this)">
+            <button class="tab-btn" onclick="switchTab('recent')">
                 <i class="fas fa-clock"></i> Terbaru
             </button>
-            <button class="tab-btn" onclick="switchTab('motivasi', this)">
+            <button class="tab-btn" onclick="switchTab('motivasi')">
                 <i class="fas fa-heart"></i> Motivasi
             </button>
-            <button class="tab-btn" onclick="switchTab('my-posts', this)">
+            <button class="tab-btn" onclick="switchTab('my-posts')">
                 <i class="fas fa-user"></i> Saya
             </button>
         </div>
 
-        <!-- Trending Topics -->
+        <!-- Trending Topics (Visible on trending tab) -->
         <div id="trending-section" class="trending-topics">
             <div class="trending-title">🔥 Topik Trending</div>
             <div class="trending-item">
@@ -1748,6 +832,7 @@
                     <div class="post-excerpt">
                         Halo teman-teman! Hari ini genap 100 hari saya bebas dari rokok. Perjalanan yang tidak mudah, tapi dengan dukungan kalian semua, akhirnya berhasil! Sharing tips yang membantu saya...
                     </div>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23ecfdf5'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='24' fill='%2310b981' text-anchor='middle' dominant-baseline='middle'%3E🎉 100 Days Milestone! 🎉%3C/text%3E%3C/svg%3E" alt="100 Days Milestone" class="post-image">
                 </div>
                 <div class="post-actions">
                     <div class="action-group">
@@ -1778,3 +863,72 @@
                         <div class="reply-content">
                             Selamat bang! Inspiratif banget. Bisa sharing tips untuk melewati minggu pertama?
                         </div>
+                    </div>
+                    <div class="reply-card">
+                        <div class="reply-header">
+                            <div class="reply-avatar">DK</div>
+                            <div class="reply-username">Doni Kurniawan</div>
+                            <div class="reply-time">45 menit lalu</div>
+                        </div>
+                        <div class="reply-content">
+                            Mantap! Saya baru 20 hari, semoga bisa kayak abang. Terima kasih motivasinya! 💪
+                        </div>
+                    </div>
+                    <button class="load-more-btn" onclick="loadMoreReplies(this)">
+                        Lihat 9 balasan lainnya
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post 2: Question -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">LP</div>
+                        <div class="user-details">
+                            <div class="username">Linda Permata</div>
+                            <div class="post-time">4 jam yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-question">Pertanyaan</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">❓ Bagaimana mengatasi stress tanpa rokok?</div>
+                    <div class="post-excerpt">
+                        Halo semua, saya baru mulai program berhenti merokok hari ke-3. Masalahnya kalau lagi stress kerja, reflek pengen nyari rokok. Ada yang punya tips alternatif yang efektif?
+                    </div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <i class="far fa-heart"></i>
+                            <span>23</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>18</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>2</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+                <div class="replies-section"></div>
+            </div>
+
+            <!-- Post 3: Tips -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">RH</div>
+                        <div class="user-details">
+                            <div class="username">Rudi Hartono</div>
+                            <div class="post-time">6 jam yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-tips">Tips & Trick</div>
+                    </div>
+                </div>
