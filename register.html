@@ -1283,6 +1283,16 @@
                 input.addEventListener('blur', function() {
                     this.parentNode.querySelector('.input-icon').style.color = '#9ca3af';
                 });
+            // Add focus effects
+            const formInputs = document.querySelectorAll('.form-input');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentNode.querySelector('.input-icon').style.color = '#667eea';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentNode.querySelector('.input-icon').style.color = '#9ca3af';
+                });
             });
 
             // Initial button state check
