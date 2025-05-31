@@ -1,0 +1,43 @@
+
+body {
+  background: #000;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding-top: 50px;
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#hero-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+#hero-name {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+#spin-button {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#role-filter {
+  margin-bottom: 20px;
+  padding: 8px;
+  font-size: 1em;
+}
