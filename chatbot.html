@@ -50,22 +50,22 @@
             <div class="chat-input-area">
                 <!-- Suggested Prompts -->
                 <div class="suggested-prompts" id="suggestedPrompts">
-                    <div class="prompt-chip" onclick="sendQuickMessage('Bagaimana cara mengatasi keinginan merokok?')">
+                    <div class="prompt-chip" data-message="Bagaimana cara mengatasi keinginan merokok?">
                         🚫 Tips mengatasi keinginan merokok
                     </div>
-                    <div class="prompt-chip" onclick="sendQuickMessage('Apa manfaat berhenti merokok?')">
+                    <div class="prompt-chip" data-message="Apa manfaat berhenti merokok?">
                         ❤️ Manfaat berhenti merokok
                     </div>
-                    <div class="prompt-chip" onclick="sendQuickMessage('Motivasi untuk tetap bebas rokok')">
+                    <div class="prompt-chip" data-message="Motivasi untuk tetap bebas rokok">
                         💪 Motivasi harian
                     </div>
-                    <div class="prompt-chip" onclick="sendQuickMessage('Cara menghitung penghematan uang')">
+                    <div class="prompt-chip" data-message="Cara menghitung penghematan uang">
                         💰 Hitung penghematan
                     </div>
-                    <div class="prompt-chip" onclick="sendQuickMessage('Tips mengelola stress tanpa rokok')">
+                    <div class="prompt-chip" data-message="Tips mengelola stress tanpa rokok">
                         🧘 Kelola stress
                     </div>
-                    <div class="prompt-chip" onclick="sendQuickMessage('Cerita sukses berhenti merokok')">
+                    <div class="prompt-chip" data-message="Cerita sukses berhenti merokok">
                         🌟 Success stories
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                             </button>
                         </div>
                     </div>
-                    <button class="send-btn" id="sendBtn" onclick="handleSendMessage()" type="button">
+                    <button class="send-btn" id="sendBtn" type="button" title="Kirim Pesan">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
@@ -169,7 +169,105 @@
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
+    <!-- Debug Panel (temporary for testing) -->
+    <div id="debugPanel" style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 10000; display: none;">
+        <div>Status: <span id="debugStatus">Ready</span></div>
+        <div>Last Action: <span id="debugAction">None</span></div>
+        <button onclick="toggleDebug()" style="margin-top: 5px; padding: 2px 5px;">Hide Debug</button>
+    </div>
+
     <!-- JavaScript -->
     <script src="js/chatbot.js"></script>
+    
+    <!-- Inline script for immediate testing -->
+    <script>
+        console.log('🔥 HTML loaded, testing basic functionality...');
+        
+        // Test DOM elements immediately
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📋 DOM loaded, checking elements...');
+            
+            const elements = {
+                chatInput: document.getElementById('chatInput'),
+                sendBtn: document.getElementById('sendBtn'),
+                chatMessages: document.getElementById('chatMessages')
+            };
+            
+            console.log('🔍 Elements check:', elements);
+            
+            // Add immediate click handler for testing
+            if (elements.sendBtn) {
+                elements.sendBtn.addEventListener('click', function() {
+                    console.log('🔥 DIRECT SEND BUTTON CLICKED!');
+                    updateDebug('Send button clicked');
+                    
+                    if (typeof handleSendMessage === 'function') {
+                        handleSendMessage();
+                    } else {
+                        console.error('❌ handleSendMessage function not found!');
+                        alert('Function not loaded yet. Please wait or refresh.');
+                    }
+                });
+                console.log('✅ Send button click handler added');
+            }
+            
+            // Add prompt chip handlers
+            document.querySelectorAll('.prompt-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const message = this.getAttribute('data-message');
+                    console.log('🔥 PROMPT CHIP CLICKED:', message);
+                    updateDebug('Prompt clicked: ' + message);
+                    
+                    if (elements.chatInput) {
+                        elements.chatInput.value = message;
+                        if (typeof handleSendMessage === 'function') {
+                            handleSendMessage();
+                        }
+                    }
+                });
+            });
+            
+            // Add Enter key handler
+            if (elements.chatInput) {
+                elements.chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        console.log('🔥 ENTER KEY PRESSED!');
+                        updateDebug('Enter key pressed');
+                        
+                        if (typeof handleSendMessage === 'function') {
+                            handleSendMessage();
+                        }
+                    }
+                });
+                console.log('✅ Enter key handler added');
+            }
+            
+            updateDebug('DOM ready');
+        });
+        
+        function updateDebug(action) {
+            const debugStatus = document.getElementById('debugStatus');
+            const debugAction = document.getElementById('debugAction');
+            
+            if (debugStatus) debugStatus.textContent = 'Active';
+            if (debugAction) debugAction.textContent = action;
+        }
+        
+        function toggleDebug() {
+            const panel = document.getElementById('debugPanel');
+            if (panel) {
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+        
+        // Show debug panel by default for testing
+        setTimeout(() => {
+            const panel = document.getElementById('debugPanel');
+            if (panel) panel.style.display = 'block';
+        }, 1000);
+        
+        console.log('✅ Inline script loaded');
+    </script>
 </body>
 </html>
