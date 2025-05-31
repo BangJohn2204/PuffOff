@@ -773,6 +773,19 @@ Halo! Saya di sini untuk mendukung perjalanan bebas rokok kamu.
     
     console.log('✅ [FALLBACK] Response generated successfully, length:', response.length);
     return response;
+}
+
+// Quick message sender
+function sendQuickMessage(message) {
+    console.log('⚡ Quick message:', message);
+    
+    if (!hasUserInteracted) {
+        hasUserInteracted = true;
+        initAudioContext();
+    }
+    
+    chatInput.value = message;
+    handleSendMessage();
 } sekunder
 - 🏃 **Stamina**: Energi dan daya tahan meningkat drastis
 - 😴 **Tidur**: Kualitas tidur lebih baik
