@@ -856,35 +856,7 @@
             updateRegisterButton();
         }
 
-        // Add click event listener for better compatibility
-        document.addEventListener('DOMContentLoaded', function() {
-            const termsCheckbox = document.getElementById('termsCheckbox');
-            
-            // Add multiple event listeners for better compatibility
-            termsCheckbox.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleTerms();
-            });
-            
-            termsCheckbox.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleTerms();
-            });
-            
-            // Visual feedback
-            termsCheckbox.addEventListener('mousedown', function() {
-                this.style.transform = 'scale(0.95)';
-            });
-            
-            termsCheckbox.addEventListener('mouseup', function() {
-                this.style.transform = 'scale(1)';
-            });
-            
-            termsCheckbox.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
+
 
         // Password strength checker
         function checkPasswordStrength(password) {
@@ -1312,6 +1284,12 @@
                     this.parentNode.querySelector('.input-icon').style.color = '#9ca3af';
                 });
             });
+
+            // Initial button state check
+            console.log('🔄 INITIAL BUTTON STATE CHECK');
+            updateRegisterButton();
+            
+            console.log('✅ FORM INITIALIZATION COMPLETE');
         });
     </script>
 </body>
