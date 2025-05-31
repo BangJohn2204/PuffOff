@@ -629,7 +629,7 @@
                             </button>
                         </div>
                     </div>
-                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    <button class="send-btn" id="sendBtn" onclick="handleSendMessage()" type="button">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
@@ -685,61 +685,7 @@
         // Global variables
         let conversationHistory = [];
         let isTyping = false;
-
-        // DOM elements - moved to global scope
         let chatMessages, chatInput, sendBtn, scrollBtn;
-
-        // Auto-resize textarea (moved outside event listeners)
-        function setupInputListeners() {
-            if (!chatInput) return;
-            
-            chatInput.addEventListener('input', function() {
-                console.log('📝 Input event triggered:', this.value.length, 'characters');
-                
-                // Auto-resize textarea
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-                
-                // Update send button state
-                const hasValue = this.value.trim().length > 0;
-                if (sendBtn) {
-                    sendBtn.disabled = !hasValue;
-                    console.log('🔘 Send button state:', hasValue ? 'enabled' : 'disabled');
-                }
-            });
-
-            // Send message on Enter (but not Shift+Enter)
-            chatInput.addEventListener('keypress', function(e) {
-                console.log('⌨️ Keypress:', e.key, 'Shift held:', e.shiftKey);
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    console.log('🚀 Enter key - calling sendMessage()');
-                    sendMessage();
-                }
-            });
-        }
-
-        function setupSendButton() {
-            if (!sendBtn) return;
-            
-            sendBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🖱️ Send button clicked - calling sendMessage()');
-                sendMessage();
-            });
-        }
-
-        function setupScrollDetection() {
-            if (!chatMessages) return;
-            
-            chatMessages.addEventListener('scroll', function() {
-                const isAtBottom = this.scrollTop >= this.scrollHeight - this.clientHeight - 50;
-                if (scrollBtn) {
-                    scrollBtn.classList.toggle('show', !isAtBottom);
-                }
-            });
-        }
 
         // Format message with enhanced markdown support
         function formatMessage(text) {
@@ -773,6 +719,8 @@
 
         // Add message to chat
         function addMessage(content, isUser = false, showQuickReplies = false) {
+            console.log('📝 Adding message:', isUser ? 'User' : 'Bot', content.substring(0, 50) + '...');
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'message-user' : 'message-bot'}`;
             
@@ -829,6 +777,7 @@
 
         // Show typing indicator
         function showTypingIndicator() {
+            console.log('⏳ Showing typing indicator');
             const typingDiv = document.createElement('div');
             typingDiv.className = 'message message-bot';
             typingDiv.id = 'typing-indicator';
@@ -851,6 +800,7 @@
 
         // Hide typing indicator
         function hideTypingIndicator() {
+            console.log('❌ Hiding typing indicator');
             const typingIndicator = document.getElementById('typing-indicator');
             if (typingIndicator) {
                 typingIndicator.remove();
@@ -878,85 +828,6 @@
             }
             
             return ['Terima kasih', 'Tanya lagi', 'Bantuan lain'];
-        }
-
-        // Send message function with extensive debugging
-        async function sendMessage() {
-            console.log('🚀 sendMessage function called');
-            
-            const chatInput = document.getElementById('chatInput');
-            const sendBtn = document.getElementById('sendBtn');
-            
-            if (!chatInput) {
-                console.error('❌ Chat input not found!');
-                return;
-            }
-            
-            const message = chatInput.value.trim();
-            console.log('📝 Message to send:', `"${message}"`);
-            console.log('📏 Message length:', message.length);
-            console.log('🤖 Is typing:', isTyping);
-            
-            if (!message) {
-                console.warn('⚠️ Empty message, not sending');
-                return;
-            }
-            
-            if (isTyping) {
-                console.warn('⚠️ Bot is typing, please wait');
-                return;
-            }
-            
-            console.log('✅ Message validation passed, proceeding...');
-            
-            try {
-                // Add user message
-                console.log('👤 Adding user message to chat');
-                addMessage(message, true);
-                
-                // Clear input
-                chatInput.value = '';
-                chatInput.style.height = 'auto';
-                sendBtn.disabled = true;
-                isTyping = true;
-                
-                console.log('🔄 Input cleared, showing typing indicator');
-                
-                // Show typing indicator
-                showTypingIndicator();
-                
-                // Simulate API delay
-                const delay = 1000 + Math.random() * 2000;
-                console.log('⏱️ Simulating API delay:', Math.round(delay), 'ms');
-                
-                await new Promise(resolve => setTimeout(resolve, delay));
-                
-                // Hide typing indicator
-                console.log('🤖 Getting bot response');
-                hideTypingIndicator();
-                
-                // Get bot response
-                const response = await getBotResponse(message);
-                console.log('💬 Bot response received:', response.substring(0, 100) + '...');
-                
-                addMessage(response, false, true);
-                console.log('✅ Bot message added to chat');
-                
-            } catch (error) {
-                console.error('❌ Error in sendMessage:', error);
-                hideTypingIndicator();
-                addMessage('[WARNING]Maaf, terjadi kesalahan. Silakan coba lagi.[/WARNING]', false);
-            }
-            
-            isTyping = false;
-            chatInput.focus();
-            console.log('🏁 sendMessage completed');
-        }
-
-        // Send quick message
-        function sendQuickMessage(message) {
-            chatInput.value = message;
-            sendMessage();
         }
 
         // Get bot response using real PuffOff API
@@ -1011,12 +882,6 @@
 - **Gigit sesuatu**: Wortel, apel, atau permen bebas gula
 - **Ubah posisi**: Berdiri, jalan-jalan, atau stretch
 
-## Pengalihan Jangka Pendek:
-- 🎵 Dengarkan musik favorit
-- 📱 Chat dengan teman atau keluarga
-- 🎮 Main game ringan
-- 🧘 Meditasi 2 menit
-
 [MOTIVATION]Ingat, setiap kali kamu berhasil mengatasi keinginan merokok, kamu semakin kuat! 💪[/MOTIVATION]`;
             }
             
@@ -1031,13 +896,6 @@
 - **2 minggu**: Sirkulasi membaik, fungsi paru meningkat
 - **1 bulan**: Batuk berkurang, napas lebih lega
 - **1 tahun**: Risiko penyakit jantung turun 50%
-
-## Manfaat Jangka Panjang:
-- 💰 **Finansial**: Hemat jutaan rupiah per tahun
-- 👃 **Penciuman**: Kembali normal dalam 2 minggu
-- 🦷 **Gigi**: Lebih putih dan sehat
-- 👨‍👩‍👧‍👦 **Keluarga**: Melindungi dari asap rokok
-- 🏃 **Stamina**: Energi dan daya tahan meningkat
 
 [SUCCESS]Kamu sudah membuat keputusan terbaik untuk hidupmu! 🌟[/SUCCESS]`;
             }
@@ -1054,40 +912,8 @@
 - ❤️ **Kesehatan**: Hidup lebih lama dan berkualitas
 - 👨‍👩‍👧‍👦 **Keluarga**: Menjadi role model yang baik
 - 💰 **Uang**: Investasi untuk masa depan
-- 🌱 **Prestasi**: Membuktikan kamu bisa berubah
-
-## Afirmasi Positif:
-- "Saya memilih kesehatan daripada rokok"
-- "Setiap napas bebas rokok membuat saya lebih kuat"
-- "Saya layak mendapat hidup yang sehat"
 
 [TIP]Buat reminder di HP kamu dengan quotes motivasi ini![/TIP]`;
-            }
-            
-            if (message.includes('hitung') && (message.includes('uang') || message.includes('hemat') || message.includes('penghematan'))) {
-                return `# Kalkulator Penghematan PuffOff 💰
-
-[SUCCESS]Mari hitung berapa banyak uang yang sudah kamu hemat![/SUCCESS]
-
-## Input Data Merokok:
-- **Harga per bungkus**: Rp 25.000 (rata-rata)
-- **Konsumsi harian**: Misal 1 bungkus/hari
-- **Biaya harian**: Rp 25.000
-
-## Perhitungan Penghematan:
-- **1 hari**: Rp 25.000
-- **1 minggu**: Rp 175.000
-- **1 bulan**: Rp 750.000
-- **1 tahun**: Rp 9.125.000
-
-## Investasi Alternatif:
-Dengan Rp 750.000 per bulan, kamu bisa:
-- 🏠 **Tabungan rumah**: DP rumah dalam 5 tahun
-- 📚 **Pendidikan**: Kursus atau sertifikasi
-- 🏥 **Asuransi kesehatan**: Proteksi keluarga
-- 🚗 **Transportasi**: Cicilan motor baru
-
-[TIP]Buat jar khusus "uang rokok" dan lihat sendiri hasilnya dalam 1 bulan![/TIP]`;
             }
             
             // Default fallback responses
@@ -1108,10 +934,87 @@ Dengan Rp 750.000 per bulan, kamu bisa:
             return responses[Math.floor(Math.random() * responses.length)];
         }
 
+        // Main send message function
+        async function handleSendMessage() {
+            console.log('🚀 handleSendMessage function called');
+            
+            if (!chatInput) {
+                console.error('❌ Chat input not found!');
+                return;
+            }
+            
+            const message = chatInput.value.trim();
+            console.log('📝 Message to send:', `"${message}"`);
+            
+            if (!message) {
+                console.warn('⚠️ Empty message, not sending');
+                return;
+            }
+            
+            if (isTyping) {
+                console.warn('⚠️ Bot is typing, please wait');
+                return;
+            }
+            
+            console.log('✅ Message validation passed, proceeding...');
+            
+            try {
+                // Add user message
+                console.log('👤 Adding user message to chat');
+                addMessage(message, true);
+                
+                // Clear input
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+                sendBtn.disabled = true;
+                isTyping = true;
+                
+                console.log('🔄 Input cleared, showing typing indicator');
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Simulate API delay
+                const delay = 1000 + Math.random() * 2000;
+                console.log('⏱️ Simulating API delay:', Math.round(delay), 'ms');
+                
+                await new Promise(resolve => setTimeout(resolve, delay));
+                
+                // Hide typing indicator
+                console.log('🤖 Getting bot response');
+                hideTypingIndicator();
+                
+                // Get bot response
+                const response = await getBotResponse(message);
+                console.log('💬 Bot response received:', response.substring(0, 100) + '...');
+                
+                addMessage(response, false, true);
+                console.log('✅ Bot message added to chat');
+                
+            } catch (error) {
+                console.error('❌ Error in handleSendMessage:', error);
+                hideTypingIndicator();
+                addMessage('[WARNING]Maaf, terjadi kesalahan. Silakan coba lagi.[/WARNING]', false);
+            }
+            
+            isTyping = false;
+            chatInput.focus();
+            console.log('🏁 handleSendMessage completed');
+        }
+
+        // Send quick message
+        function sendQuickMessage(message) {
+            console.log('⚡ Quick message:', message);
+            chatInput.value = message;
+            handleSendMessage();
+        }
+
         // Scroll to bottom
         function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            scrollBtn.classList.remove('show');
+            if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                scrollBtn.classList.remove('show');
+            }
         }
 
         // Clear chat
@@ -1224,6 +1127,47 @@ Halo! Saya **PuffBot**, asisten AI khusus untuk mendampingi perjalanan bebas rok
             }, 500);
         }
 
+        // Setup input listeners
+        function setupInputListeners() {
+            if (!chatInput) return;
+            
+            // Auto-resize textarea and enable/disable send button
+            chatInput.addEventListener('input', function() {
+                console.log('📝 Input event triggered:', this.value.length, 'characters');
+                
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                
+                const hasValue = this.value.trim().length > 0;
+                if (sendBtn) {
+                    sendBtn.disabled = !hasValue;
+                    console.log('🔘 Send button state:', hasValue ? 'enabled' : 'disabled');
+                }
+            });
+
+            // Send message on Enter (but not Shift+Enter)
+            chatInput.addEventListener('keypress', function(e) {
+                console.log('⌨️ Keypress:', e.key, 'Shift held:', e.shiftKey);
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    console.log('🚀 Enter key - calling handleSendMessage()');
+                    handleSendMessage();
+                }
+            });
+        }
+
+        // Setup scroll detection
+        function setupScrollDetection() {
+            if (!chatMessages) return;
+            
+            chatMessages.addEventListener('scroll', function() {
+                const isAtBottom = this.scrollTop >= this.scrollHeight - this.clientHeight - 50;
+                if (scrollBtn) {
+                    scrollBtn.classList.toggle('show', !isAtBottom);
+                }
+            });
+        }
+
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 DOM Content Loaded - Starting initialization');
@@ -1250,25 +1194,12 @@ Halo! Saya **PuffBot**, asisten AI khusus untuk mendampingi perjalanan bebas rok
             // Setup event listeners
             console.log('⚙️ Setting up event listeners...');
             setupInputListeners();
-            setupSendButton();
             setupScrollDetection();
-            
-            // Test send button click directly
-            console.log('🧪 Testing send button...');
-            if (sendBtn) {
-                sendBtn.onclick = function(e) {
-                    e.preventDefault();
-                    console.log('🔥 Direct onclick triggered!');
-                    sendMessage();
-                };
-            }
             
             // Focus on input
             if (chatInput) {
                 chatInput.focus();
                 console.log('🎯 Input focused');
-                
-                // Test input functionality
                 chatInput.placeholder = 'Ketik pesan dan tekan Enter atau klik kirim...';
             }
             
@@ -1278,49 +1209,9 @@ Halo! Saya **PuffBot**, asisten AI khusus untuk mendampingi perjalanan bebas rok
                 showWelcomeMessage();
             }, 800);
             
-            // Update suggested prompts
-            updateSuggestedPrompts();
-            
             console.log('✅ Initialization complete!');
             console.log('💡 Try typing a message and pressing Enter or clicking send');
         });
-
-        // Update suggested prompts
-        function updateSuggestedPrompts() {
-            const hour = new Date().getHours();
-            const prompts = document.getElementById('suggestedPrompts');
-            
-            let timeBasedPrompts = [];
-            
-            if (hour >= 6 && hour < 12) {
-                // Morning prompts
-                timeBasedPrompts = [
-                    { text: '☀️ Motivasi pagi hari', query: 'Motivasi untuk memulai hari tanpa rokok' },
-                    { text: '💪 Tips kuat pagi', query: 'Tips mengatasi keinginan merokok di pagi hari' },
-                    { text: '☕ Alternatif rokok pagi', query: 'Kebiasaan sehat pengganti rokok di pagi hari' }
-                ];
-            } else if (hour >= 12 && hour < 18) {
-                // Afternoon prompts
-                timeBasedPrompts = [
-                    { text: '😰 Stress kerja', query: 'Cara mengatasi stress kerja tanpa merokok' },
-                    { text: '🍽️ Break sehat', query: 'Aktivitas sehat saat istirahat kerja' },
-                    { text: '💰 Hitung penghematan', query: 'Berapa uang yang sudah saya hemat hari ini' }
-                ];
-            } else {
-                // Evening prompts
-                timeBasedPrompts = [
-                    { text: '🌅 Refleksi hari ini', query: 'Bagaimana cara merayakan hari bebas rokok' },
-                    { text: '😴 Tidur nyenyak', query: 'Tips tidur berkualitas setelah berhenti merokok' },
-                    { text: '📱 Komunitas malam', query: 'Cara bergabung dengan komunitas support' }
-                ];
-            }
-            
-            // Add time-based prompts
-            timeBasedPrompts.forEach(prompt => {
-                const chip = document.createElement('div');
-                chip.className = 'prompt-chip';
-                chip.textContent = prompt.text;
-                chip.onclick = () => sendQuickMessage(prompt.query);
-                prompts.appendChild(chip);
-            });
-        }
+    </script>
+</body>
+</html>
