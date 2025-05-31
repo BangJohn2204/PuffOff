@@ -1,157 +1,168 @@
-// PuffOff Chatbot - Debug & Fixed Always Online Version
-// Fixed connecting issue and guaranteed message sending
+// PuffOff Chatbot - Complete JavaScript Implementation
+// Integrated with Vercel API using best free models
 
-// Configuration
-var API_CONFIG = {
+// Configuration for Vercel API
+const API_CONFIG = {
     baseUrl: 'https://puffoff-api.vercel.app',
     endpoint: '/api/chat',
-    timeout: 10000,
-    maxRetries: 1
+    timeout: 20000, // 20 seconds for free models
+    maxRetries: 2
 };
 
 // Global variables
-var conversationHistory = [];
-var isTyping = false;
-var chatMessages, chatInput, sendBtn, scrollBtn;
-var hasUserInteracted = false;
-var audioContext = null;
+let conversationHistory = [];
+let isTyping = false;
+let chatMessages, chatInput, sendBtn, scrollBtn;
+let isVoiceRecording = false;
+let hasUserInteracted = false;
+let audioContext = null;
+let apiHealthStatus = {
+    isHealthy: true,
+    lastCheck: null,
+    consecutiveFailures: 0
+};
 
-var settings = {
+let settings = {
     autoScroll: true,
     soundEnabled: true,
     showTimestamps: true,
     chatTheme: 'light'
 };
 
-// Debug flag
-var DEBUG_MODE = true;
-
-function debugLog(message) {
-    if (DEBUG_MODE) {
-        console.log('🔧 [DEBUG] ' + message);
-    }
+// Initialize marked for markdown parsing
+if (typeof marked !== 'undefined') {
+    marked.setOptions({
+        breaks: true,
+        gfm: true,
+        sanitize: false
+    });
 }
 
-// Initialize when page loads
+// Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    debugLog('Page loaded, starting initialization...');
+    console.log('🚀 PuffOff Chatbot - Starting initialization');
     initializeApp();
 });
 
 function initializeApp() {
-    debugLog('Starting app initialization...');
+    console.log('⚙️ Initializing PuffOff Chatbot...');
     
-    // Get elements
+    // Get DOM elements
     chatMessages = document.getElementById('chatMessages');
     chatInput = document.getElementById('chatInput');
     sendBtn = document.getElementById('sendBtn');
     scrollBtn = document.getElementById('scrollToBottom');
     
-    debugLog('Elements found: chatMessages=' + !!chatMessages + ', chatInput=' + !!chatInput + ', sendBtn=' + !!sendBtn);
+    // Debug: Check if elements exist
+    console.log('🔍 Element check:');
+    console.log('  - chatMessages:', !!chatMessages);
+    console.log('  - chatInput:', !!chatInput);
+    console.log('  - sendBtn:', !!sendBtn);
+    console.log('  - scrollBtn:', !!scrollBtn);
     
     if (!chatMessages || !chatInput || !sendBtn) {
-        console.error('❌ Missing critical elements!');
-        // Force show fallback mode immediately
-        updateConnectionStatus('offline');
-        showToast('Mode offline aktif - tetap bisa digunakan!', 'warning');
+        console.error('❌ Critical elements missing!');
+        showToast('Error: Chat elements not found. Please refresh the page.', 'error');
         return;
     }
     
-    // Setup
+    // Load settings and conversation history
     loadSettings();
     loadConversationHistory();
+    
+    // Setup event listeners
+    console.log('⚙️ Setting up event listeners...');
     setupEventListeners();
     
-    // IMMEDIATELY set to online mode - don't wait for API check
-    updateConnectionStatus('online');
-    debugLog('Status set to online immediately');
+    // Initialize API monitoring
+    setTimeout(function() {
+        checkAPIHealth();
+    }, 2000);
     
-    // Focus input
+    setTimeout(function() {
+        startAPIHealthMonitoring();
+    }, 3000);
+    
+    // Focus on input
     if (chatInput) {
         chatInput.focus();
-        chatInput.placeholder = 'Ketik pesan... (Always Online Mode)';
-        debugLog('Input focused and placeholder set');
+        console.log('🎯 Input focused');
+        chatInput.placeholder = 'Ketik pesan dan tekan Enter atau klik kirim...';
     }
     
-    // Enable send button state checking
-    updateSendButtonState();
-    
-    // Welcome message
+    // Show welcome message if no conversation history
     if (conversationHistory.length === 0) {
         setTimeout(function() {
-            debugLog('Showing welcome message...');
+            console.log('👋 Showing welcome message');
             showWelcomeMessage();
         }, 1000);
     }
     
-    // Test API in background (don't block UI)
-    setTimeout(function() {
-        debugLog('Testing API in background...');
-        testAPIConnection();
-    }, 2000);
+    // Update connection status
+    updateConnectionStatus('connecting');
     
-    debugLog('App initialization complete!');
-}
-
-function testAPIConnection() {
-    debugLog('Testing API connection...');
-    
-    tryAPICall('test').then(function(response) {
-        debugLog('API test successful: ' + !!response);
-        // Keep online status regardless
-        updateConnectionStatus('online');
-        showToast('🟢 AI connection verified!', 'success');
-    }).catch(function(error) {
-        debugLog('API test failed: ' + error.message);
-        // Still show online because we have fallback
-        updateConnectionStatus('online');
-        showToast('🔄 Local AI mode active', 'info');
-    });
+    console.log('✅ PuffOff Chatbot initialization complete!');
 }
 
 function setupEventListeners() {
-    debugLog('Setting up event listeners...');
-    
-    // Send button
+    // Send button click handler
     if (sendBtn) {
         sendBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            debugLog('Send button clicked!');
+            console.log('🔥 Send button clicked!');
             markUserInteraction();
             handleSendMessage();
         });
-        debugLog('Send button listener added');
+        console.log('✅ Send button event listener added');
     }
     
-    // Input handlers
+    // Input event handlers
     if (chatInput) {
+        // Input change handler
         chatInput.addEventListener('input', function() {
             markUserInteraction();
             autoResizeTextarea();
             updateSendButtonState();
         });
         
+        // Enter key handler
         chatInput.addEventListener('keypress', function(e) {
             markUserInteraction();
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                debugLog('Enter key pressed!');
+                console.log('🚀 Enter key pressed - calling handleSendMessage()');
                 handleSendMessage();
             }
         });
         
+        // Focus and click handlers
         chatInput.addEventListener('focus', markUserInteraction);
-        debugLog('Input listeners added');
+        chatInput.addEventListener('click', markUserInteraction);
+        
+        console.log('✅ Input event listeners added');
     }
     
-    // Prompt chips
-    var promptChips = document.querySelectorAll('.prompt-chip');
-    debugLog('Found ' + promptChips.length + ' prompt chips');
+    // Prompt chip handlers
+    setupPromptChips();
     
-    for (var i = 0; i < promptChips.length; i++) {
-        promptChips[i].addEventListener('click', function() {
-            var message = this.getAttribute('data-message');
-            debugLog('Prompt chip clicked: ' + message);
+    // Scroll detection
+    setupScrollDetection();
+    
+    // Keyboard shortcuts
+    setupKeyboardShortcuts();
+    
+    // Settings handlers
+    setupSettingsListeners();
+}
+
+function setupPromptChips() {
+    const promptChips = document.querySelectorAll('.prompt-chip');
+    console.log('🔘 Setting up', promptChips.length, 'prompt chips');
+    
+    promptChips.forEach(function(chip, index) {
+        chip.addEventListener('click', function() {
+            const message = this.getAttribute('data-message');
+            console.log('🔥 Prompt chip', index, 'clicked:', message);
             markUserInteraction();
             
             if (chatInput && message) {
@@ -161,47 +172,16 @@ function setupEventListeners() {
                 handleSendMessage();
             }
         });
-    }
-    debugLog('Prompt chip listeners added');
-    
-    // Scroll detection
-    if (chatMessages) {
-        chatMessages.addEventListener('scroll', function() {
-            var isAtBottom = this.scrollTop >= this.scrollHeight - this.clientHeight - 50;
-            if (scrollBtn) {
-                if (isAtBottom) {
-                    scrollBtn.classList.remove('show');
-                } else {
-                    scrollBtn.classList.add('show');
-                }
-            }
-        });
-        debugLog('Scroll listener added');
-    }
-    
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            if (chatInput) {
-                chatInput.focus();
-            }
-        }
-        
-        if (e.key === 'Escape') {
-            closeAllModals();
-        }
     });
-    debugLog('Keyboard listeners added');
     
-    debugLog('All event listeners setup complete');
+    console.log('✅ Prompt chip handlers added');
 }
 
 function markUserInteraction() {
     if (!hasUserInteracted) {
         hasUserInteracted = true;
         initAudioContext();
-        debugLog('User interaction marked');
+        console.log('👤 User interaction detected - audio enabled');
     }
 }
 
@@ -209,210 +189,201 @@ function initAudioContext() {
     if (!audioContext && hasUserInteracted) {
         try {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            debugLog('Audio context initialized');
+            console.log('🔊 Audio context initialized');
         } catch (error) {
-            debugLog('Audio context failed: ' + error.message);
+            console.log('Could not initialize audio context:', error);
         }
     }
 }
 
 function updateSendButtonState() {
     if (sendBtn && chatInput) {
-        var hasValue = chatInput.value.trim().length > 0;
-        var shouldEnable = hasValue && !isTyping;
-        sendBtn.disabled = !shouldEnable;
-        debugLog('Send button state: disabled=' + sendBtn.disabled + ', hasValue=' + hasValue + ', isTyping=' + isTyping);
+        const hasValue = chatInput.value.trim().length > 0;
+        sendBtn.disabled = !hasValue || isTyping;
     }
 }
 
 function updateConnectionStatus(status) {
-    debugLog('Updating connection status to: ' + status);
-    
-    var statusDot = document.querySelector('.status-dot');
-    var statusText = document.getElementById('connectionStatus');
-    var apiStatusText = document.getElementById('apiStatusText');
+    const statusDot = document.querySelector('.status-dot');
+    const statusText = document.getElementById('connectionStatus');
+    const apiStatusText = document.getElementById('apiStatusText');
     
     if (statusDot) {
         statusDot.className = 'status-dot ' + status;
-        debugLog('Status dot updated');
-    }
-    
-    var displayText = 'Always Online - Ready';
-    if (status === 'connecting') {
-        displayText = 'Connecting...';
-    } else if (status === 'offline') {
-        displayText = 'Backup Mode - Ready';
-    } else if (status === 'online') {
-        displayText = 'Always Online - Ready';
     }
     
     if (statusText) {
-        statusText.textContent = displayText;
-        debugLog('Status text updated to: ' + displayText);
+        switch(status) {
+            case 'online':
+                statusText.textContent = 'Online - AI Ready';
+                break;
+            case 'offline':
+                statusText.textContent = 'Offline - Local Mode';
+                break;
+            case 'connecting':
+                statusText.textContent = 'Connecting...';
+                break;
+            default:
+                statusText.textContent = 'Unknown';
+        }
     }
     
     if (apiStatusText) {
         apiStatusText.className = 'status-text ' + status;
-        apiStatusText.textContent = displayText;
-        debugLog('API status text updated');
+        apiStatusText.textContent = statusText ? statusText.textContent : status;
     }
 }
 
-// MAIN SEND FUNCTION - GUARANTEED TO WORK
-function handleSendMessage() {
-    debugLog('=== STARTING handleSendMessage ===');
+// Main message sending function
+async function handleSendMessage() {
+    console.log('🚀 [SEND] START handleSendMessage');
     
+    // Basic validation
     if (!chatInput || !chatMessages || !sendBtn) {
-        console.error('❌ Missing elements in handleSendMessage');
-        debugLog('Missing elements - aborting');
+        console.error('❌ [SEND] Missing DOM elements');
+        showToast('Error: Halaman tidak lengkap. Silakan refresh.', 'error');
         return;
     }
     
-    var message = chatInput.value.trim();
-    debugLog('User message: "' + message + '"');
+    const message = chatInput.value.trim();
+    console.log('📝 [SEND] Message:', message);
     
     if (!message) {
-        debugLog('Empty message - showing warning');
+        console.warn('⚠️ [SEND] Empty message');
         showToast('Silakan ketik pesan', 'warning');
         chatInput.focus();
         return;
     }
     
     if (isTyping) {
-        debugLog('Already typing - showing info');
-        showToast('Sedang memproses...', 'info');
+        console.warn('⚠️ [SEND] Already processing');
+        showToast('Tunggu sebentar...', 'warning');
         return;
     }
     
-    debugLog('Message validation passed, proceeding...');
-    
     try {
-        // Set typing state
+        // Mark as processing
         isTyping = true;
         sendBtn.disabled = true;
-        debugLog('Typing state set');
         
-        // Add user message immediately
-        debugLog('Adding user message to chat');
+        console.log('👤 [SEND] Adding user message');
         addMessage(message, true);
         
         // Clear input
         chatInput.value = '';
         autoResizeTextarea();
         updateSendButtonState();
-        debugLog('Input cleared');
         
         // Hide suggested prompts after first message
-        var suggestedPrompts = document.getElementById('suggestedPrompts');
-        if (suggestedPrompts) {
-            var userMessages = 0;
-            for (var i = 0; i < conversationHistory.length; i++) {
-                if (conversationHistory[i].isUser) {
-                    userMessages++;
-                }
-            }
-            if (userMessages === 1) {
-                suggestedPrompts.style.display = 'none';
-                debugLog('Suggested prompts hidden');
-            }
+        const suggestedPrompts = document.getElementById('suggestedPrompts');
+        if (suggestedPrompts && conversationHistory.filter(function(msg) { return msg.isUser; }).length === 1) {
+            suggestedPrompts.style.display = 'none';
         }
         
-        // Show typing indicator
-        debugLog('Showing typing indicator');
+        console.log('⏳ [SEND] Showing typing indicator');
         showTypingIndicator();
         
-        // Get response - THIS ALWAYS WORKS
-        debugLog('Getting bot response...');
-        getBotResponseAlwaysOnline(message).then(function(response) {
-            debugLog('Got bot response: ' + !!response);
-            hideTypingIndicator();
-            addMessage(response, false, true);
-            saveConversationHistory();
-            
-            // Reset state
-            isTyping = false;
-            sendBtn.disabled = false;
-            updateSendButtonState();
-            chatInput.focus();
-            debugLog('=== handleSendMessage COMPLETED SUCCESSFULLY ===');
-            
-        }).catch(function(error) {
-            console.error('❌ Error in getBotResponse:', error);
-            debugLog('Error in getBotResponse: ' + error.message);
-            hideTypingIndicator();
-            
-            // Emergency fallback - ALWAYS WORKS
-            var emergency = getEmergencyResponse();
-            addMessage(emergency, false);
-            
-            // Reset state
-            isTyping = false;
-            sendBtn.disabled = false;
-            updateSendButtonState();
-            chatInput.focus();
-            debugLog('=== handleSendMessage COMPLETED WITH FALLBACK ===');
-        });
+        console.log('🤖 [SEND] Getting bot response');
+        const botResponse = await getBotResponse(message);
+        
+        console.log('📥 [SEND] Response received:', !!botResponse);
+        
+        if (!botResponse) {
+            throw new Error('No response received');
+        }
+        
+        console.log('⏹️ [SEND] Hiding typing indicator');
+        hideTypingIndicator();
+        
+        console.log('🤖 [SEND] Adding bot message');
+        addMessage(botResponse, false, true);
+        
+        console.log('✅ [SEND] SUCCESS!');
+        showToast('Pesan terkirim!', 'success');
+        
+        // Save conversation
+        saveConversationHistory();
         
     } catch (error) {
-        console.error('❌ Unexpected error in handleSendMessage:', error);
-        debugLog('Unexpected error: ' + error.message);
-        
-        // Reset state
-        isTyping = false;
-        sendBtn.disabled = false;
-        updateSendButtonState();
+        console.error('❌ [SEND] Error:', error);
+        hideTypingIndicator();
         
         // Emergency response
-        var emergency = getEmergencyResponse();
+        const emergency = `# Sistem Bermasalah 😅
+
+Maaf ada gangguan teknis! Tapi tetap semangat bebas rokok ya!
+
+**Tips sementara:**
+- Tarik napas dalam-dalam
+- Minum air putih
+- Jalan-jalan sebentar
+
+Coba kirim pesan lagi! 💪`;
+        
         addMessage(emergency, false);
-        debugLog('Emergency response added');
+        showToast('Ada gangguan, coba lagi', 'error');
+    }
+    
+    // Reset state
+    isTyping = false;
+    sendBtn.disabled = false;
+    updateSendButtonState();
+    chatInput.focus();
+    
+    console.log('🏁 [SEND] END handleSendMessage');
+}
+
+// Enhanced getBotResponse with Vercel API integration
+async function getBotResponse(userMessage) {
+    console.log('🤖 [getBotResponse] START with:', userMessage);
+    
+    // Add realistic thinking delay
+    await new Promise(function(resolve) {
+        setTimeout(resolve, 800 + Math.random() * 1200);
+    });
+    
+    try {
+        console.log('📡 [API] Calling Vercel API...');
+        
+        // Try Vercel API first
+        const apiResponse = await callVercelAPI(userMessage);
+        
+        if (apiResponse && apiResponse.trim()) {
+            console.log('✅ [API] SUCCESS - Using Vercel API response');
+            updateConnectionStatus('online');
+            return apiResponse;
+        } else {
+            throw new Error('Empty response from Vercel API');
+        }
+        
+    } catch (error) {
+        console.log('❌ [API] Vercel API failed:', error.message);
+        
+        // Show user-friendly error message
+        handleAPIError(error);
+        updateConnectionStatus('offline');
+        
+        // Always fallback to local response
+        console.log('🔄 [FALLBACK] Using local intelligent response');
+        return getFallbackResponse(userMessage);
     }
 }
 
-// GUARANTEED response system
-function getBotResponseAlwaysOnline(userMessage) {
-    return new Promise(function(resolve) {
-        debugLog('Getting Always Online response for: ' + userMessage);
-        
-        // Add realistic delay for UX
-        setTimeout(function() {
-            // Try API first, but don't let it block
-            var apiPromise = tryAPICall(userMessage);
-            var fallbackPromise = new Promise(function(fallbackResolve) {
-                setTimeout(function() {
-                    fallbackResolve(getFallbackResponse(userMessage));
-                }, 3000); // 3 second timeout for API
-            });
-            
-            // Race between API and timeout
-            Promise.race([apiPromise, fallbackPromise]).then(function(response) {
-                if (response && response.trim()) {
-                    debugLog('Using response (API or fallback): ' + !!response);
-                    resolve(response);
-                } else {
-                    debugLog('Empty response, using emergency fallback');
-                    resolve(getFallbackResponse(userMessage));
-                }
-            }).catch(function(error) {
-                debugLog('Promise race failed, using fallback: ' + error.message);
-                resolve(getFallbackResponse(userMessage));
-            });
-            
-        }, 500 + Math.random() * 1000);
-    });
-}
-
-function tryAPICall(userMessage) {
-    return new Promise(function(resolve, reject) {
-        debugLog('Trying API call for: ' + userMessage);
-        
-        var controller = new AbortController();
-        var timeoutId = setTimeout(function() {
-            debugLog('API call timeout');
+// Main Vercel API call function with retry mechanism
+async function callVercelAPI(userMessage, retryCount) {
+    if (typeof retryCount === 'undefined') {
+        retryCount = 0;
+    }
+    
+    console.log('🎯 [API] Calling Vercel API (attempt ' + (retryCount + 1) + ')');
+    
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(function() {
             controller.abort();
         }, API_CONFIG.timeout);
         
-        fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
+        const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -422,246 +393,414 @@ function tryAPICall(userMessage) {
                 message: userMessage
             }),
             signal: controller.signal
-        }).then(function(response) {
-            clearTimeout(timeoutId);
-            debugLog('API response status: ' + response.status);
-            
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
-            }
-            
-            return response.json();
-        }).then(function(data) {
-            debugLog('API response data received: ' + !!data.reply);
-            
-            if (data.reply && data.reply.trim()) {
-                if (data.model) {
-                    debugLog('Model used: ' + data.model);
-                    showAPIStatus(data.modelType);
-                }
-                resolve(data.reply.trim());
-            } else {
-                reject(new Error('Empty API response'));
-            }
-        }).catch(function(error) {
-            clearTimeout(timeoutId);
-            debugLog('API call failed: ' + error.message);
-            reject(error);
         });
-    });
+        
+        clearTimeout(timeoutId);
+        
+        console.log('📡 [API] Response status:', response.status);
+        
+        // Handle HTTP errors
+        if (!response.ok) {
+            const errorText = await response.text().catch(function() {
+                return 'Unknown error';
+            });
+            console.error('❌ [API] HTTP error:', response.status, errorText);
+            throw new Error('HTTP ' + response.status + ': ' + errorText);
+        }
+        
+        const data = await response.json();
+        console.log('📥 [API] Response received:', !!data.reply);
+        
+        // Extract response
+        if (data.reply && data.reply.trim()) {
+            // Log additional info if available
+            if (data.model) {
+                console.log('🎯 [API] Model used: ' + data.model);
+                showAPIStatus(data.modelType, data.model);
+            }
+            if (data.usage) {
+                console.log('📊 [API] Token usage:', data.usage);
+            }
+            if (data.fallback) {
+                console.log('🔄 [API] Response is fallback');
+                showToast('🔄 Menggunakan respons backup', 'info');
+            }
+            
+            return data.reply.trim();
+        } else {
+            throw new Error('Empty or invalid response from API');
+        }
+        
+    } catch (error) {
+        console.log('❌ [API] Attempt ' + (retryCount + 1) + ' failed:', error.message);
+        
+        // Retry logic for certain errors
+        if (retryCount < API_CONFIG.maxRetries && 
+            (error.name === 'AbortError' || 
+             error.message.indexOf('network') !== -1 || 
+             error.message.indexOf('timeout') !== -1 ||
+             error.message.indexOf('fetch') !== -1)) {
+            
+            console.log('🔄 [API] Retrying in ' + ((retryCount + 1) * 2) + ' seconds...');
+            await new Promise(function(resolve) {
+                setTimeout(resolve, (retryCount + 1) * 2000);
+            });
+            return callVercelAPI(userMessage, retryCount + 1);
+        }
+        
+        throw error;
+    }
 }
 
-function showAPIStatus(modelType) {
-    var statusText = modelType === 'free' ? '🆓 Free AI' : 
-                     modelType === 'paid' ? '💎 Premium AI' : 
-                     '🤖 AI Active';
+function showAPIStatus(modelType, modelName) {
+    // Create or update API status indicator
+    let statusIndicator = document.querySelector('.api-status');
+    if (!statusIndicator) {
+        statusIndicator = document.createElement('div');
+        statusIndicator.className = 'api-status';
+        const chatHeader = document.querySelector('.chat-header');
+        if (chatHeader) {
+            chatHeader.appendChild(statusIndicator);
+        }
+    }
     
-    showToast(statusText, 'success');
-    debugLog('API status shown: ' + statusText);
+    statusIndicator.className = 'api-status ' + (modelType || 'free');
+    
+    const statusText = modelType === 'free' ? '🆓 Free AI' : 
+                      modelType === 'paid' ? '💎 Premium AI' : 
+                      '🤖 Backup Mode';
+    
+    statusIndicator.textContent = statusText;
+    
+    // Auto-hide after 3 seconds
+    setTimeout(function() {
+        if (statusIndicator) {
+            statusIndicator.style.opacity = '0';
+            setTimeout(function() {
+                if (statusIndicator && statusIndicator.parentNode) {
+                    statusIndicator.parentNode.removeChild(statusIndicator);
+                }
+            }, 300);
+        }
+    }, 3000);
 }
 
-// High-quality fallback responses - ALWAYS WORKS
+// Smart error handling with user-friendly messages
+function handleAPIError(error) {
+    const message = error.message.toLowerCase();
+    let toastMessage, toastType;
+    
+    if (message.indexOf('rate limit') !== -1 || message.indexOf('429') !== -1) {
+        toastMessage = '🕐 API sibuk, menggunakan respons lokal';
+        toastType = 'warning';
+    } else if (message.indexOf('credits') !== -1 || message.indexOf('402') !== -1) {
+        toastMessage = '💳 Credits API habis, mode offline aktif';
+        toastType = 'warning';
+    } else if (message.indexOf('timeout') !== -1 || message.indexOf('abort') !== -1) {
+        toastMessage = '⏱️ Koneksi lambat, respons cepat tersedia';
+        toastType = 'info';
+    } else if (message.indexOf('network') !== -1 || message.indexOf('fetch') !== -1) {
+        toastMessage = '🌐 Koneksi bermasalah, mode offline aktif';
+        toastType = 'warning';
+    } else if (message.indexOf('cors') !== -1) {
+        toastMessage = '🔒 Masalah CORS, menggunakan mode backup';
+        toastType = 'warning';
+    } else if (message.indexOf('500') !== -1) {
+        toastMessage = '🔧 Server bermasalah, mode backup aktif';
+        toastType = 'warning';
+    } else {
+        toastMessage = '🤖 AI backup mode - tetap bisa membantu!';
+        toastType = 'info';
+    }
+    
+    showToast(toastMessage, toastType);
+}
+
+// API Health monitoring
+async function checkAPIHealth() {
+    try {
+        updateConnectionStatus('connecting');
+        
+        const controller = new AbortController();
+        setTimeout(function() {
+            controller.abort();
+        }, 8000);
+        
+        const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: 'health check'
+            }),
+            signal: controller.signal
+        });
+        
+        if (response.ok) {
+            apiHealthStatus.isHealthy = true;
+            apiHealthStatus.consecutiveFailures = 0;
+            updateConnectionStatus('online');
+            console.log('✅ [HEALTH] Vercel API is healthy');
+            return true;
+        } else {
+            throw new Error('API health check failed: ' + response.status);
+        }
+        
+    } catch (error) {
+        apiHealthStatus.isHealthy = false;
+        apiHealthStatus.consecutiveFailures++;
+        updateConnectionStatus('offline');
+        console.log('⚠️ [HEALTH] Vercel API health check failed:', error.message);
+        return false;
+    } finally {
+        apiHealthStatus.lastCheck = new Date();
+    }
+}
+
+// Periodic health monitoring
+let healthCheckInterval;
+
+function startAPIHealthMonitoring() {
+    // Initial health check
+    checkAPIHealth();
+    
+    // Check every 3 minutes
+    healthCheckInterval = setInterval(async function() {
+        const wasHealthy = apiHealthStatus.isHealthy;
+        const isHealthy = await checkAPIHealth();
+        
+        // Show status change notifications
+        if (wasHealthy && !isHealthy) {
+            showToast('🟡 AI beralih ke mode backup', 'warning');
+        } else if (!wasHealthy && isHealthy) {
+            showToast('🟢 AI kembali online!', 'success');
+        }
+    }, 180000);
+}
+
+// Enhanced fallback responses with high quality
 function getFallbackResponse(userMessage) {
-    debugLog('Generating fallback response for: ' + userMessage);
+    console.log('🔄 [FALLBACK] Processing:', userMessage);
     
     if (!userMessage || typeof userMessage !== 'string') {
         userMessage = 'halo';
     }
     
-    var message = userMessage.toLowerCase().trim();
+    const message = userMessage.toLowerCase().trim();
     
-    // Greeting
-    if (message.indexOf('halo') !== -1 || message.indexOf('hai') !== -1 || 
-        message.indexOf('hello') !== -1 || message.indexOf('hi') !== -1 ||
-        message.indexOf('test') !== -1) {
-        return getWelcomeResponse();
+    // Greeting responses
+    if (message.indexOf('halo') !== -1 || message.indexOf('hai') !== -1 || message.indexOf('hello') !== -1 || message.indexOf('hi') !== -1) {
+        return `# Halo! Selamat datang di PuffBot! 👋
+
+Senang bertemu denganmu! Saya di sini untuk membantu perjalanan bebas rokok kamu.
+
+## Apa yang bisa saya bantu hari ini?
+- 🚫 Tips mengatasi keinginan merokok
+- ❤️ Informasi kesehatan dan manfaat berhenti
+- 💪 Motivasi harian untuk tetap konsisten
+- 💰 Perhitungan penghematan uang
+- 🧘 Teknik mengelola stress tanpa rokok
+
+[TIP]Coba tanyakan "Bagaimana cara mengatasi keinginan merokok?" atau pilih salah satu prompt di bawah![/TIP]
+
+**Yuk, mulai percakapan! Apa yang ingin kamu ketahui?** 😊`;
     }
     
-    // Craving
-    if (message.indexOf('keinginan') !== -1 || message.indexOf('craving') !== -1 || 
-        message.indexOf('ingin merokok') !== -1 || message.indexOf('pengen rokok') !== -1) {
-        return getCravingResponse();
+    // Smoking craving responses
+    if (message.indexOf('keinginan merokok') !== -1 || message.indexOf('ingin merokok') !== -1 || message.indexOf('craving') !== -1 || message.indexOf('ngidam') !== -1 || message.indexOf('pengen rokok') !== -1) {
+        return `# Tips Mengatasi Keinginan Merokok 🚫
+
+Hai! Aku paham banget gimana rasanya saat keinginan merokok muncul. Tenang, ini normal dan kamu pasti bisa mengatasinya!
+
+[TIP]Keinginan merokok biasanya hanya berlangsung 3-5 menit. Bertahan sebentar lagi![/TIP]
+
+## Teknik Segera (1-5 menit):
+- **Teknik 4-7-8**: Tarik napas 4 detik, tahan 7 detik, hembuskan 8 detik
+- **Minum air putih**: Hidrasi membantu mengurangi craving
+- **Gigit sesuatu**: Wortel, apel, atau permen bebas gula
+- **Ubah posisi**: Berdiri, jalan-jalan, atau stretch ringan
+
+## Pengalihan Jangka Pendek (5-15 menit):
+- 🎵 Dengarkan musik favorit atau podcast
+- 📱 Chat dengan teman atau keluarga
+- 🎮 Main game ringan di HP
+- 🧘 Meditasi atau mindfulness 2 menit
+- 🚶‍♂️ Jalan-jalan ke luar ruangan
+
+[MOTIVATION]Ingat, setiap kali kamu berhasil mengatasi keinginan merokok, kamu semakin kuat! Ini adalah latihan mental yang bikin kamu makin tangguh. 💪[/MOTIVATION]`;
     }
     
-    // Stress
-    if (message.indexOf('stress') !== -1 || message.indexOf('cemas') !== -1 || 
-        message.indexOf('tegang') !== -1 || message.indexOf('gelisah') !== -1) {
-        return getStressResponse();
+    // Stress management
+    if (message.indexOf('stress') !== -1 || message.indexOf('cemas') !== -1 || message.indexOf('tegang') !== -1 || message.indexOf('gelisah') !== -1) {
+        return `# Mengelola Stress Tanpa Rokok 🧘
+
+Wah, lagi stress ya? Wajar banget! Banyak orang yang biasanya ngerokok buat ngatasi stress. Tapi ada cara yang lebih sehat kok!
+
+[HEALTH]Stress adalah trigger utama keinginan merokok. Mari kelola dengan cara yang nggak merugikan tubuh![/HEALTH]
+
+## Teknik Relaksasi Cepat:
+- **Deep Breathing**: Napas perut dalam selama 5 menit
+- **Progressive Muscle Relaxation**: Tegang-rileks otot dari kaki sampai kepala
+- **Mindfulness 5-4-3-2-1**: 5 hal yang dilihat, 4 yang diraba, 3 yang didengar, 2 yang dicium, 1 yang dirasa
+
+## Aktivitas Anti-Stress Jangka Panjang:
+- 🚶‍♂️ **Jalan kaki**: 15-20 menit di taman atau area hijau
+- 🎵 **Musik**: Playlist yang bikin tenang atau energik sesuai mood
+- ✍️ **Journaling**: Tulis perasaan di notes HP atau buku kecil
+- 🛁 **Self-care**: Mandi hangat, skincare, atau me-time
+- 🤝 **Ngobrol**: Curhat sama orang terdekat
+
+[TIP]Stress itu normal dan manusiawi. Yang penting adalah cara kita respond ke stress tersebut dengan sehat![/TIP]`;
     }
     
-    // Health
-    if (message.indexOf('manfaat') !== -1 || message.indexOf('kesehatan') !== -1 || 
-        message.indexOf('alasan') !== -1) {
-        return getHealthResponse();
+    // Health benefits and motivation
+    if (message.indexOf('manfaat') !== -1 || message.indexOf('kenapa') !== -1 || message.indexOf('alasan') !== -1 || message.indexOf('kesehatan') !== -1) {
+        return `# Manfaat Luar Biasa Berhenti Merokok ❤️
+
+Keren banget kamu nanya tentang manfaatnya! Ini berarti kamu serius mau berubah ke hidup yang lebih sehat.
+
+[HEALTH]Tubuhmu mulai membaik dalam hitungan MENIT setelah rokok terakhir! Nggak percaya? Ini timelinenya:[/HEALTH]
+
+## Timeline Pemulihan Tubuh:
+- **20 menit**: Detak jantung dan tekanan darah turun
+- **12 jam**: Kadar karbon monoksida dalam darah normal
+- **2 minggu**: Sirkulasi membaik, fungsi paru meningkat
+- **1-9 bulan**: Batuk dan sesak napas berkurang drastis
+- **1 tahun**: Risiko penyakit jantung turun 50%
+
+## Manfaat yang Langsung Terasa:
+- 💰 **Finansial**: Hemat minimum 750rb per bulan (1 bungkus/hari)
+- 👃 **Penciuman**: Kembali normal dalam 2 minggu
+- 🦷 **Gigi**: Lebih putih dan nafas lebih segar
+- 🏃 **Stamina**: Energi meningkat untuk aktivitas harian
+- 😴 **Tidur**: Kualitas tidur jauh lebih baik
+
+[SUCCESS]Kamu sudah membuat keputusan terbaik untuk hidupmu! Setiap hari tanpa rokok adalah investasi kesehatan jangka panjang. 🌟[/SUCCESS]`;
     }
     
-    // Motivation
-    if (message.indexOf('motivasi') !== -1 || message.indexOf('semangat') !== -1 || 
-        message.indexOf('susah') !== -1 || message.indexOf('sulit') !== -1) {
-        return getMotivationResponse();
+    // Motivation and encouragement
+    if (message.indexOf('motivasi') !== -1 || message.indexOf('semangat') !== -1 || message.indexOf('inspirasi') !== -1 || message.indexOf('susah') !== -1 || message.indexOf('sulit') !== -1) {
+        return `# Motivasi Harian Bebas Rokok 💪
+
+Hey, aku tahu ini nggak mudah. Tapi fakta bahwa kamu di sini dan ngobrol sama aku udah menunjukkan betapa kuatnya tekad kamu!
+
+[MOTIVATION]Kamu lebih kuat dari kebiasaan lama! Setiap hari tanpa rokok adalah kemenangan besar yang patut dirayakan.[/MOTIVATION]
+
+## Quotes yang Bikin Semangat:
+> "Kekuatan nggak datang dari kemampuan fisik. Kekuatan datang dari tekad yang nggak bisa dikalahkan."
+
+> "Perubahan dimulai dari ujung zona nyaman kamu. Dan kamu udah melangkah!"
+
+## Ingat Alasan Kuat Kamu:
+- ❤️ **Kesehatan**: Hidup lebih lama dan berkualitas buat keluarga
+- 👨‍👩‍👧‍👦 **Keluarga**: Jadi role model yang baik untuk anak
+- 💰 **Finansial**: Uang buat investasi masa depan atau liburan
+- 🌱 **Prestasi Pribadi**: Membuktikan kamu bisa berubah
+- 🌍 **Lingkungan**: Turut jaga bumi dari polusi
+
+## Tips Mindset Harian:
+- Fokus pada **hari ini**, nggak usah mikir "selamanya"
+- Rayakan **small wins** - setiap jam, setiap hari tanpa rokok
+- Inget: Kamu nggak **kehilangan** sesuatu, tapi **mendapatkan** kesehatan
+
+[TIP]Bikin reminder di HP dengan quotes motivasi dan set alarm harian buat ngingetin diri sendiri betapa kerennya pencapaian kamu![/TIP]`;
     }
     
-    // Money
-    if (message.indexOf('uang') !== -1 || message.indexOf('hemat') !== -1 || 
-        message.indexOf('penghematan') !== -1 || message.indexOf('hitung') !== -1) {
-        return getMoneyResponse();
+    // Money calculation and savings
+    if (message.indexOf('uang') !== -1 || message.indexOf('hemat') !== -1 || message.indexOf('penghematan') !== -1 || message.indexOf('hitung') !== -1 || message.indexOf('biaya') !== -1 || message.indexOf('mahal') !== -1) {
+        return `# Kalkulator Penghematan PuffOff 💰
+
+Wah, ngomongin uang nih! Siap-siap terkejut sama angka penghematannya!
+
+[SUCCESS]Mari hitung berapa banyak uang yang udah dan akan kamu hemat dengan berhenti merokok![/SUCCESS]
+
+## Asumsi Perhitungan:
+- **Harga rokok**: Rp 25.000 per bungkus (rata-rata 2024)
+- **Konsumsi**: 1 bungkus per hari
+- **Biaya harian**: Rp 25.000
+
+## Perhitungan Penghematan:
+- **1 hari**: Rp 25.000
+- **1 minggu**: Rp 175.000 
+- **1 bulan**: Rp 750.000
+- **3 bulan**: Rp 2.250.000
+- **6 bulan**: Rp 4.500.000
+- **1 tahun**: Rp 9.125.000
+- **5 tahun**: Rp 45.625.000 😱
+
+## Investasi Alternatif dengan Rp 750.000/bulan:
+- 🏠 **DP Rumah**: Dalam 5 tahun terkumpul 45 juta!
+- 📚 **Pendidikan**: Kursus bahasa asing atau sertifikasi
+- 💎 **Emas**: Investasi yang nilainya cenderung naik
+- 📈 **Reksadana**: Investasi untuk masa depan
+- ✈️ **Liburan**: Trip ke luar negeri setiap tahun
+- 🚗 **Kendaraan**: Cicilan motor atau mobil bekas
+
+[TIP]Bikin rekening khusus "tabungan ex-rokok" dan transfer Rp 25.000 setiap hari! Lihat hasilnya dalam 1 bulan, dijamin motivasi makin kuat![/TIP]`;
     }
     
-    // Default
-    return getGeneralResponse();
+    // Default comprehensive response
+    return `# Halo! Saya PuffBot 🤖
+
+Terima kasih udah ngobrol sama aku! Aku siap banget membantu perjalanan bebas rokok kamu.
+
+## Yang bisa aku bantu:
+- 🚫 **Tips mengatasi keinginan merokok** (craving management)
+- ❤️ **Informasi manfaat kesehatan** dan timeline pemulihan tubuh
+- 💪 **Motivasi dan dukungan harian** saat kamu down
+- 💰 **Perhitungan penghematan uang** yang bikin termotivasi
+- 🎯 **Strategi berhenti merokok** yang terbukti efektif
+- 🧘 **Teknik mengelola stress** tanpa rokok
+
+## Tips Cepat Buat Kamu:
+- Ingat, keinginan merokok cuma bertahan 3-5 menit
+- Setiap hari tanpa rokok = investasi kesehatan jangka panjang
+- Kamu nggak sendirian dalam journey ini!
+
+[TIP]Coba tanyakan sesuatu yang spesifik seperti "Bagaimana cara mengatasi stress?" atau "Apa manfaat berhenti merokok?" biar aku bisa kasih info yang lebih detail![/TIP]
+
+**Apa yang pengen kamu ketahui hari ini?** 😊`;
 }
 
-function getWelcomeResponse() {
-    return '# Halo! PuffBot Always Online! 👋\n\n' +
-           'Senang bertemu denganmu! Saya **selalu siap** membantu perjalanan bebas rokok kamu.\n\n' +
-           '## Mode Always Online Aktif 🌐\n' +
-           '- ✅ **Response Guaranteed** - Selalu dapat jawaban\n' +
-           '- ⚡ **Fast Response** - Dalam hitungan detik\n' +
-           '- 🔄 **Smart Fallback** - Backup system ready\n' +
-           '- 💪 **Never Offline** - 24/7 ready to help\n\n' +
-           '## Yang bisa saya bantu:\n' +
-           '- 🚫 Tips mengatasi keinginan merokok\n' +
-           '- ❤️ Informasi kesehatan dan manfaat\n' +
-           '- 💪 Motivasi harian yang kuat\n' +
-           '- 💰 Perhitungan penghematan uang\n' +
-           '- 🧘 Teknik mengelola stress\n\n' +
-           '[TIP]Saya selalu online dan siap membantu! Coba tanyakan apapun tentang berhenti merokok![/TIP]\n\n' +
-           '**Apa yang ingin kamu ketahui hari ini?** 😊';
-}
-
-function getCravingResponse() {
-    return '# Tips Ampuh Mengatasi Keinginan Merokok! 🚫\n\n' +
-           'Keinginan merokok datang? **JANGAN PANIK!** Saya punya solusi yang terbukti efektif!\n\n' +
-           '[TIP]Ingat: Keinginan merokok hanya bertahan 3-5 menit. Kamu lebih kuat dari itu![/TIP]\n\n' +
-           '## 🔥 **Teknik INSTANT (30 detik - 2 menit):**\n' +
-           '- **Teknik 4-7-8**: Tarik napas 4 detik → Tahan 7 detik → Hembuskan 8 detik\n' +
-           '- **Cold Water Shock**: Cuci muka/leher dengan air dingin\n' +
-           '- **Bite & Chew**: Gigit jeruk, apel, atau es batu\n' +
-           '- **Move Your Body**: 10 jumping jacks atau push up\n\n' +
-           '## ⚡ **Pengalihan Cepat (2-10 menit):**\n' +
-           '- 📱 **Video Lucu**: Buka YouTube, TikTok, atau Instagram\n' +
-           '- 🎵 **Music Therapy**: Playlist energik atau calming\n' +
-           '- 🎮 **Quick Game**: Mobile game favorit\n' +
-           '- 💬 **Text Someone**: Chat teman atau keluarga\n' +
-           '- 🚶‍♂️ **Walk Around**: Keliling rumah atau kantor\n\n' +
-           '[MOTIVATION]Kamu sudah berhasil mengatasi keinginan sebelumnya. Kamu PASTI bisa lagi! 💪[/MOTIVATION]\n\n' +
-           '**Coba salah satu teknik di atas SEKARANG JUGA!**';
-}
-
-function getStressResponse() {
-    return '# Kelola Stress Tanpa Rokok - Always Works! 🧘\n\n' +
-           'Stress datang? **NORMAL!** Yang penting cara mengatasinya yang sehat!\n\n' +
-           '[HEALTH]Rokok tidak mengatasi stress, hanya menambah masalah. Mari gunakan cara yang benar-benar efektif![/HEALTH]\n\n' +
-           '## 🔥 **Anti-Stress Emergency Kit:**\n\n' +
-           '### **Level 1 - Quick Relief (1-3 menit):**\n' +
-           '- **Box Breathing**: 4 detik masuk → 4 detik tahan → 4 detik keluar → 4 detik tahan\n' +
-           '- **Cold Therapy**: Es di pergelangan tangan atau leher\n' +
-           '- **Grounding 5-4-3-2-1**: 5 yang dilihat, 4 yang diraba, 3 yang didengar, 2 yang dicium, 1 yang dirasa\n\n' +
-           '[TIP]Simpan list ini di HP! Next time stress datang, langsung buka dan pilih satu teknik![/TIP]\n\n' +
-           '**Kamu lebih kuat dari stress! 💪**';
-}
-
-function getHealthResponse() {
-    return '# Timeline Ajaib Pemulihan Tubuh! ❤️\n\n' +
-           'Setiap detik tanpa rokok = HEALING PROCESS! Ini buktinya:\n\n' +
-           '[HEALTH]Tubuhmu adalah mesin self-healing yang luar biasa. Mari lihat keajaibannya![/HEALTH]\n\n' +
-           '## 🕐 **Real-Time Recovery Timeline:**\n\n' +
-           '### **20 MENIT** ⏱️\n' +
-           '- ❤️ Detak jantung normal\n' +
-           '- 🩸 Tekanan darah turun\n' +
-           '- 🌡️ Suhu tangan & kaki naik\n\n' +
-           '### **24 JAM** 📅\n' +
-           '- 💀 Karbon monoksida HILANG dari darah\n' +
-           '- 🫀 Risiko serangan jantung mulai turun\n' +
-           '- 👃 Penciuman mulai membaik\n\n' +
-           '[SUCCESS]Setiap hari tanpa rokok = INVESTASI TERBAIK untuk masa depanmu! 🌟[/SUCCESS]\n\n' +
-           '**Tubuhmu sedang berterima kasih sekarang juga!**';
-}
-
-function getMotivationResponse() {
-    return '# Power Motivation - Kamu UNSTOPPABLE! 💪\n\n' +
-           'Merasa down? **WAJAR!** Tapi ingat, WINNERS never quit!\n\n' +
-           '[MOTIVATION]Kamu sudah memilih jalan yang tidak mudah, tapi itulah yang membuat kamu SPECIAL! 🌟[/MOTIVATION]\n\n' +
-           '## 🔥 **Daily Motivation Booster:**\n\n' +
-           '### **🏆 Achievement Unlocked:**\n' +
-           '- ✅ Kamu sudah membuat keputusan TERBAIK dalam hidup\n' +
-           '- ✅ Setiap detik tanpa rokok = LEVEL UP!\n' +
-           '- ✅ Kamu inspirasi untuk orang lain\n' +
-           '- ✅ Future you akan berterima kasih\n\n' +
-           '### **💎 Power Quotes:**\n' +
-           '> *"Kamu tidak berhenti merokok karena mudah. Kamu berhenti karena WORTH IT!"*\n\n' +
-           '[TIP]Setiap kali craving datang, baca ulang ini! Simpan di bookmark! 📌[/TIP]\n\n' +
-           '**Kamu tidak sendirian! WE BELIEVE IN YOU! 🙌**';
-}
-
-function getMoneyResponse() {
-    return '# Money Saved = Dreams Achieved! 💰\n\n' +
-           'Siap-siap terkejut dengan angka FANTASTIS ini!\n\n' +
-           '[SUCCESS]Setiap hari tanpa rokok = UANG MASUK TABUNGAN! 💎[/SUCCESS]\n\n' +
-           '## 💸 **Money Freedom Calculator:**\n\n' +
-           '### **🎯 Savings Breakdown:**\n' +
-           '- **1 hari**: Rp 25.000 (satu nasi padang enak!)\n' +
-           '- **1 minggu**: Rp 175.000 (shopping kecil!)\n' +
-           '- **1 bulan**: Rp 750.000 (gadget baru!)\n' +
-           '- **1 tahun**: Rp 9.125.000 (vacation abroad!)\n' +
-           '- **5 tahun**: Rp 45.625.000 (investasi property!) 🏠\n\n' +
-           '[TIP]Buat rekening terpisah "FREEDOM FUND" - transfer Rp 25k setiap hari![/TIP]\n\n' +
-           '**From cigarette slave to FINANCIAL FREEDOM! 🗽**';
-}
-
-function getGeneralResponse() {
-    return '# PuffBot Always Online - Ready to Help! 🤖\n\n' +
-           'Terima kasih sudah ngobrol sama saya! Mode Always Online aktif!\n\n' +
-           '## 🚀 **Popular Topics:**\n' +
-           '- "Tips mengatasi keinginan merokok"\n' +
-           '- "Apa manfaat berhenti merokok?"\n' +
-           '- "Motivasi berhenti merokok"\n' +
-           '- "Hitung penghematan uang"\n\n' +
-           '[TIP]Saya selalu online dan ready to help! 😊[/TIP]\n\n' +
-           '**What\'s on your mind today?** 💬';
-}
-
-function getEmergencyResponse() {
-    return '# Emergency Mode - Still Here! 🛡️\n\n' +
-           '**PuffBot tetap ALWAYS ONLINE** untuk kamu!\n\n' +
-           '### **🆘 Emergency Quit Smoking Kit:**\n' +
-           '1. **BREATHE**: 4 detik masuk - 4 detik keluar (5x)\n' +
-           '2. **MOVE**: Jumping jacks 10x\n' +
-           '3. **HYDRATE**: Minum air putih 2 gelas\n' +
-           '4. **DISTRACT**: Buka YouTube/musik 5 menit\n\n' +
-           '[MOTIVATION]Saya tetap 100% support kamu! 💪[/MOTIVATION]';
-}
-
-// Message formatting (same as before)
+// Message formatting
 function formatMessage(text) {
-    var formattedText = text;
+    let formattedText = text;
     
+    // Convert markdown to HTML if marked is available
     if (typeof marked !== 'undefined') {
         formattedText = marked.parse(formattedText);
     }
     
+    // Enhanced info boxes
+    formattedText = formattedText.replace(/\[INFO\](.*?)\[\/INFO\]/gs, '<div class="info-box"><strong>ℹ️ Informasi:</strong><br>$1</div>');
+    formattedText = formattedText.replace(/\[WARNING\](.*?)\[\/WARNING\]/gs, '<div class="warning-box"><strong>⚠️ Peringatan:</strong><br>$1</div>');
+    formattedText = formattedText.replace(/\[SUCCESS\](.*?)\[\/SUCCESS\]/gs, '<div class="success-box"><strong>✅ Berhasil:</strong><br>$1</div>');
     formattedText = formattedText.replace(/\[TIP\](.*?)\[\/TIP\]/gs, '<div class="tip-box"><strong>💡 Tips:</strong><br>$1</div>');
     formattedText = formattedText.replace(/\[MOTIVATION\](.*?)\[\/MOTIVATION\]/gs, '<div class="success-box"><strong>💪 Motivasi:</strong><br>$1</div>');
     formattedText = formattedText.replace(/\[HEALTH\](.*?)\[\/HEALTH\]/gs, '<div class="info-box"><strong>❤️ Kesehatan:</strong><br>$1</div>');
-    formattedText = formattedText.replace(/\[SUCCESS\](.*?)\[\/SUCCESS\]/gs, '<div class="success-box"><strong>✅ Berhasil:</strong><br>$1</div>');
     
     return formattedText;
 }
 
-// Add message function
+// Add message to chat
 function addMessage(content, isUser, showQuickReplies) {
-    if (typeof isUser === 'undefined') isUser = false;
-    if (typeof showQuickReplies === 'undefined') showQuickReplies = false;
+    if (typeof isUser === 'undefined') {
+        isUser = false;
+    }
+    if (typeof showQuickReplies === 'undefined') {
+        showQuickReplies = false;
+    }
     
-    debugLog('Adding message: isUser=' + isUser + ', content length=' + content.length);
+    console.log('📝 Adding message:', isUser ? 'User' : 'Bot', content.substring(0, 50) + '...');
     
-    var messageDiv = document.createElement('div');
+    const messageDiv = document.createElement('div');
     messageDiv.className = 'message ' + (isUser ? 'message-user' : 'message-bot') + ' new';
     
-    var bubbleDiv = document.createElement('div');
+    const bubbleDiv = document.createElement('div');
     bubbleDiv.className = 'message-bubble';
     
-    var contentDiv = document.createElement('div');
+    const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
     
     if (isUser) {
@@ -670,7 +809,7 @@ function addMessage(content, isUser, showQuickReplies) {
         contentDiv.innerHTML = formatMessage(content);
     }
     
-    var timeDiv = document.createElement('div');
+    const timeDiv = document.createElement('div');
     timeDiv.className = 'message-time';
     timeDiv.textContent = getCurrentTime();
     timeDiv.style.display = settings.showTimestamps ? 'block' : 'none';
@@ -678,20 +817,22 @@ function addMessage(content, isUser, showQuickReplies) {
     bubbleDiv.appendChild(contentDiv);
     bubbleDiv.appendChild(timeDiv);
     
-    // Quick replies
+    // Add quick replies for bot messages
     if (!isUser && showQuickReplies) {
-        var quickReplies = getQuickReplies(content);
+        const quickReplies = getQuickReplies(content);
         if (quickReplies.length > 0) {
-            var repliesDiv = document.createElement('div');
+            const repliesDiv = document.createElement('div');
             repliesDiv.className = 'quick-replies';
             
-            for (var i = 0; i < quickReplies.length; i++) {
-                var replyBtn = document.createElement('button');
+            quickReplies.forEach(function(reply) {
+                const replyBtn = document.createElement('button');
                 replyBtn.className = 'quick-reply';
-                replyBtn.textContent = quickReplies[i];
-                replyBtn.onclick = createQuickReplyHandler(quickReplies[i]);
+                replyBtn.textContent = reply;
+                replyBtn.onclick = function() {
+                    sendQuickMessage(reply);
+                };
                 repliesDiv.appendChild(replyBtn);
-            }
+            });
             
             bubbleDiv.appendChild(repliesDiv);
         }
@@ -700,57 +841,59 @@ function addMessage(content, isUser, showQuickReplies) {
     messageDiv.appendChild(bubbleDiv);
     chatMessages.appendChild(messageDiv);
     
-    // Store in history
+    // Store in conversation history
     conversationHistory.push({
         content: content,
         isUser: isUser,
         timestamp: new Date().toISOString()
     });
     
-    // Play sound
+    // Play notification sound
     if (!isUser && settings.soundEnabled) {
         playNotificationSound();
     }
     
-    // Auto scroll
+    // Auto scroll if enabled
     if (settings.autoScroll) {
         scrollToBottom();
     }
     
-    // Remove animation class
+    // Remove 'new' class after animation
     setTimeout(function() {
         messageDiv.classList.remove('new');
     }, 400);
-    
-    debugLog('Message added successfully');
 }
 
-function createQuickReplyHandler(reply) {
-    return function() {
-        sendQuickMessage(reply);
-    };
-}
-
+// Quick replies
 function getQuickReplies(botMessage) {
-    var message = botMessage.toLowerCase();
+    const message = botMessage.toLowerCase();
     
     if (message.indexOf('keinginan merokok') !== -1 || message.indexOf('craving') !== -1) {
-        return ['Tips darurat', 'Teknik napas', 'Aktivitas pengalih'];
+        return ['Latihan pernapasan', 'Aktivitas pengalih', 'Minta dukungan'];
     }
     
     if (message.indexOf('manfaat') !== -1 || message.indexOf('kesehatan') !== -1) {
-        return ['Timeline recovery', 'Manfaat finansial', 'Tips sehat'];
+        return ['Manfaat lainnya?', 'Timeline pemulihan', 'Tips kesehatan'];
     }
     
     if (message.indexOf('motivasi') !== -1 || message.indexOf('semangat') !== -1) {
-        return ['Quote inspiratif', 'Success story', 'Daily reminder'];
+        return ['Cerita sukses', 'Reminder harian', 'Komunitas support'];
     }
     
-    return ['Terima kasih', 'Bantuan lain', 'Tips lagi'];
+    if (message.indexOf('penghematan') !== -1 || message.indexOf('uang') !== -1) {
+        return ['Hitung detail', 'Investasi sehat', 'Target tabungan'];
+    }
+    
+    if (message.indexOf('stress') !== -1 || message.indexOf('cemas') !== -1) {
+        return ['Teknik relaksasi', 'Olahraga ringan', 'Musik tenang'];
+    }
+    
+    return ['Terima kasih', 'Tanya lagi', 'Bantuan lain'];
 }
 
+// Quick message sender
 function sendQuickMessage(message) {
-    debugLog('Quick message: ' + message);
+    console.log('⚡ Quick message:', message);
     markUserInteraction();
     
     if (chatInput) {
@@ -763,14 +906,14 @@ function sendQuickMessage(message) {
 
 // Typing indicator
 function showTypingIndicator() {
-    debugLog('Showing typing indicator');
-    var typingDiv = document.createElement('div');
+    console.log('⏳ Showing typing indicator');
+    const typingDiv = document.createElement('div');
     typingDiv.className = 'message message-bot';
     typingDiv.id = 'typing-indicator';
     
-    var typingBubble = document.createElement('div');
+    const typingBubble = document.createElement('div');
     typingBubble.className = 'typing-indicator';
-    typingBubble.innerHTML = '<span>PuffBot Always Online...</span><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+    typingBubble.innerHTML = '<span>PuffBot sedang mengetik</span><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
     
     typingDiv.appendChild(typingBubble);
     chatMessages.appendChild(typingDiv);
@@ -781,8 +924,8 @@ function showTypingIndicator() {
 }
 
 function hideTypingIndicator() {
-    debugLog('Hiding typing indicator');
-    var typingIndicator = document.getElementById('typing-indicator');
+    console.log('❌ Hiding typing indicator');
+    const typingIndicator = document.getElementById('typing-indicator');
     if (typingIndicator) {
         typingIndicator.remove();
     }
@@ -812,41 +955,65 @@ function scrollToBottom() {
     }
 }
 
-// Settings functions (simplified)
-function loadSettings() {
-    try {
-        var savedSettings = localStorage.getItem('puffoff_chat_settings');
-        if (savedSettings) {
-            var parsed = JSON.parse(savedSettings);
-            for (var key in parsed) {
-                if (parsed.hasOwnProperty(key)) {
-                    settings[key] = parsed[key];
-                }
+function setupScrollDetection() {
+    if (!chatMessages) return;
+    
+    chatMessages.addEventListener('scroll', function() {
+        const isAtBottom = this.scrollTop >= this.scrollHeight - this.clientHeight - 50;
+        if (scrollBtn) {
+            scrollBtn.classList.toggle('show', !isAtBottom);
+        }
+    });
+}
+
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + K to focus on input
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            if (chatInput) {
+                chatInput.focus();
             }
         }
+        
+        // Escape to close modals
+        if (e.key === 'Escape') {
+            closeAllModals();
+        }
+    });
+}
+
+// Settings functions
+function loadSettings() {
+    try {
+        const savedSettings = localStorage.getItem('puffoff_chat_settings');
+        if (savedSettings) {
+            const parsed = JSON.parse(savedSettings);
+            settings = Object.assign(settings, parsed);
+        }
         applySettings();
-        debugLog('Settings loaded');
     } catch (error) {
-        debugLog('Settings load failed: ' + error.message);
+        console.warn('Could not load settings:', error);
     }
 }
 
 function saveSettings() {
     try {
         localStorage.setItem('puffoff_chat_settings', JSON.stringify(settings));
-        debugLog('Settings saved');
     } catch (error) {
-        debugLog('Settings save failed: ' + error.message);
+        console.warn('Could not save settings:', error);
     }
 }
 
 function applySettings() {
+    // Apply theme
     document.body.className = settings.chatTheme === 'dark' ? 'dark-theme' : '';
     
-    var autoScrollCheckbox = document.getElementById('autoScroll');
-    var soundEnabledCheckbox = document.getElementById('soundEnabled');
-    var showTimestampsCheckbox = document.getElementById('showTimestamps');
-    var chatThemeSelect = document.getElementById('chatTheme');
+    // Update settings panel
+    const autoScrollCheckbox = document.getElementById('autoScroll');
+    const soundEnabledCheckbox = document.getElementById('soundEnabled');
+    const showTimestampsCheckbox = document.getElementById('showTimestamps');
+    const chatThemeSelect = document.getElementById('chatTheme');
     
     if (autoScrollCheckbox) autoScrollCheckbox.checked = settings.autoScroll;
     if (soundEnabledCheckbox) soundEnabledCheckbox.checked = settings.soundEnabled;
@@ -855,12 +1022,10 @@ function applySettings() {
 }
 
 function setupSettingsListeners() {
-    debugLog('Setting up settings listeners');
-    
-    var autoScrollCheckbox = document.getElementById('autoScroll');
-    var soundEnabledCheckbox = document.getElementById('soundEnabled');
-    var showTimestampsCheckbox = document.getElementById('showTimestamps');
-    var chatThemeSelect = document.getElementById('chatTheme');
+    const autoScrollCheckbox = document.getElementById('autoScroll');
+    const soundEnabledCheckbox = document.getElementById('soundEnabled');
+    const showTimestampsCheckbox = document.getElementById('showTimestamps');
+    const chatThemeSelect = document.getElementById('chatTheme');
     
     if (autoScrollCheckbox) {
         autoScrollCheckbox.addEventListener('change', function() {
@@ -894,44 +1059,59 @@ function setupSettingsListeners() {
 }
 
 function refreshMessageTimestamps() {
-    var timeElements = document.querySelectorAll('.message-time');
-    for (var i = 0; i < timeElements.length; i++) {
-        timeElements[i].style.display = settings.showTimestamps ? 'block' : 'none';
-    }
+    const timeElements = document.querySelectorAll('.message-time');
+    timeElements.forEach(function(element) {
+        element.style.display = settings.showTimestamps ? 'block' : 'none';
+    });
 }
 
 // Data persistence
 function saveConversationHistory() {
     try {
-        var recentHistory = conversationHistory.slice(-50);
+        // Only save last 50 messages to avoid localStorage bloat
+        const recentHistory = conversationHistory.slice(-50);
         localStorage.setItem('puffoff_conversation_history', JSON.stringify(recentHistory));
-        debugLog('Conversation saved');
     } catch (error) {
-        debugLog('Conversation save failed: ' + error.message);
+        console.warn('Could not save conversation history:', error);
     }
 }
 
 function loadConversationHistory() {
     try {
-        var saved = localStorage.getItem('puffoff_conversation_history');
+        const saved = localStorage.getItem('puffoff_conversation_history');
         if (saved) {
-            var history = JSON.parse(saved);
+            const history = JSON.parse(saved);
             conversationHistory = history;
             
-            for (var i = 0; i < conversationHistory.length; i++) {
-                var msg = conversationHistory[i];
+            // Restore messages to chat
+            conversationHistory.forEach(function(msg) {
                 addMessage(msg.content, msg.isUser, false);
-            }
-            debugLog('Conversation loaded: ' + conversationHistory.length + ' messages');
+            });
         }
     } catch (error) {
-        debugLog('Conversation load failed: ' + error.message);
+        console.warn('Could not load conversation history:', error);
     }
 }
 
+// Welcome message
 function showWelcomeMessage() {
-    debugLog('Showing welcome message');
-    var welcomeMessage = getWelcomeResponse();
+    const welcomeMessage = `# Selamat datang di PuffBot! 👋
+
+Halo! Saya **PuffBot**, asisten AI khusus untuk mendampingi perjalanan bebas rokok kamu.
+
+## Yang bisa saya bantu:
+
+- 🚫 **Tips mengatasi keinginan merokok** dan craving management
+- ❤️ **Informasi manfaat kesehatan** dan timeline pemulihan
+- 💪 **Motivasi dan dukungan harian** saat kamu merasa down
+- 💰 **Perhitungan penghematan uang** dari berhenti merokok
+- 🎯 **Strategi berhenti merokok** yang terbukti efektif
+- 🧘 **Teknik mengelola stress** tanpa rokok
+
+[TIP]Cobalah mengetik pertanyaan seperti "Bagaimana cara mengatasi keinginan merokok?" atau pilih prompt cepat di bawah![/TIP]
+
+**Apa yang ingin kamu tanyakan hari ini?** 😊`;
+    
     setTimeout(function() {
         addMessage(welcomeMessage, false, true);
     }, 500);
@@ -948,12 +1128,13 @@ function playNotificationSound() {
         
         if (!audioContext) return;
         
+        // Resume audio context if suspended
         if (audioContext.state === 'suspended') {
             audioContext.resume();
         }
         
-        var oscillator = audioContext.createOscillator();
-        var gainNode = audioContext.createGain();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
         
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
@@ -967,20 +1148,18 @@ function playNotificationSound() {
         
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.2);
-        
-        debugLog('Notification sound played');
     } catch (error) {
-        debugLog('Sound failed: ' + error.message);
+        console.log('Could not play notification sound:', error);
     }
 }
 
 // Toast notifications
 function showToast(message, type) {
-    if (typeof type === 'undefined') type = 'info';
+    if (typeof type === 'undefined') {
+        type = 'info';
+    }
     
-    debugLog('Toast: ' + message + ' (' + type + ')');
-    
-    var toast = document.getElementById('toast');
+    const toast = document.getElementById('toast');
     if (!toast) return;
     
     toast.textContent = message;
@@ -992,11 +1171,10 @@ function showToast(message, type) {
     }, 3000);
 }
 
-// Modal functions
+// Settings modal functions
 function toggleSettings() {
-    debugLog('Toggling settings');
-    var settingsPanel = document.getElementById('settingsPanel');
-    var overlay = document.getElementById('overlay');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('overlay');
     
     if (settingsPanel && overlay) {
         if (settingsPanel.classList.contains('show')) {
@@ -1011,30 +1189,30 @@ function toggleSettings() {
 }
 
 function closeAllModals() {
-    var settingsPanel = document.getElementById('settingsPanel');
-    var overlay = document.getElementById('overlay');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('overlay');
     
     if (settingsPanel) settingsPanel.classList.remove('show');
     if (overlay) overlay.classList.remove('show');
 }
 
-// Chat management
+// Chat management functions
 function clearChat() {
     if (confirm('Hapus semua percakapan? Data tidak dapat dikembalikan.')) {
-        debugLog('Clearing chat');
         if (chatMessages) {
             chatMessages.innerHTML = '';
         }
         conversationHistory = [];
         localStorage.removeItem('puffoff_conversation_history');
         
-        var suggestedPrompts = document.getElementById('suggestedPrompts');
+        // Show suggested prompts again
+        const suggestedPrompts = document.getElementById('suggestedPrompts');
         if (suggestedPrompts) {
             suggestedPrompts.style.display = 'flex';
         }
         
         showWelcomeMessage();
-        showToast('Chat cleared - Always Online ready!', 'info');
+        showToast('Chat berhasil dibersihkan', 'info');
     }
 }
 
@@ -1044,65 +1222,167 @@ function exportChat() {
         return;
     }
     
-    debugLog('Exporting chat');
-    var timestamp = new Date().toLocaleString('id-ID');
-    var textContent = 'PUFFOFF AI HELPER - ALWAYS ONLINE\n';
-    textContent += '=====================================\n';
-    textContent += 'Exported: ' + timestamp + '\n';
-    textContent += 'Total messages: ' + conversationHistory.length + '\n\n';
+    // Simple text export
+    const timestamp = new Date().toLocaleString('id-ID');
+    let textContent = 'PERCAKAPAN PUFFOFF AI HELPER\n';
+    textContent += '=================================\n';
+    textContent += 'Diekspor pada: ' + timestamp + '\n';
+    textContent += 'Total pesan: ' + conversationHistory.length + '\n\n';
 
-    for (var i = 0; i < conversationHistory.length; i++) {
-        var msg = conversationHistory[i];
-        var time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
+    conversationHistory.forEach(function(msg, index) {
+        const time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
             hour: '2-digit',
             minute: '2-digit'
         });
         
-        var sender = msg.isUser ? 'USER' : 'PUFFBOT';
-        var content = msg.content.replace(/\[.*?\]/g, '').replace(/#{1,6}\s*/g, '').replace(/\*\*(.*?)\*\*/g, '$1');
+        const sender = msg.isUser ? 'ANDA' : 'PUFFBOT';
+        const content = msg.content.replace(/\[.*?\]/g, '').replace(/#{1,6}\s*/g, '').replace(/\*\*(.*?)\*\*/g, '$1');
         
         textContent += '[' + time + '] ' + sender + ':\n' + content + '\n\n';
-    }
+    });
 
-    textContent += '=====================================\n';
-    textContent += 'PuffOff Always Online - Never Offline!\n';
+    textContent += '=================================\n';
+    textContent += 'Diekspor dari PuffOff AI Helper\n';
     
-    var dataBlob = new Blob([textContent], { type: 'text/plain' });
-    var url = URL.createObjectURL(dataBlob);
+    // Create download
+    const dataBlob = new Blob([textContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(dataBlob);
     
-    var link = document.createElement('a');
+    const link = document.createElement('a');
     link.href = url;
-    link.download = 'puffoff_always_online_' + new Date().toISOString().split('T')[0] + '.txt';
-    document.body.appendChild(link);
+    link.download = 'puffoff_chat_' + new Date().toISOString().split('T')[0] + '.txt';
     link.click();
-    document.body.removeChild(link);
     
     URL.revokeObjectURL(url);
-    showToast('Chat exported successfully!', 'success');
+    showToast('Chat berhasil diekspor!', 'success');
 }
 
-// Placeholder functions
+// Voice input functions (basic implementation)
 function toggleVoiceInput() {
-    showToast('Voice input coming soon!', 'info');
+    const voiceBtn = document.querySelector('.input-btn i.fa-microphone');
+    if (!voiceBtn) return;
+    
+    const button = voiceBtn.parentElement;
+    
+    if (!isVoiceRecording) {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            startVoiceRecognition(button);
+        } else {
+            showToast('Browser tidak mendukung voice recognition', 'warning');
+        }
+    } else {
+        stopVoiceRecognition(button);
+    }
 }
 
+function startVoiceRecognition(button) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'id-ID';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onstart = function() {
+        isVoiceRecording = true;
+        button.classList.add('voice-recording');
+        button.innerHTML = '<i class="fas fa-stop"></i>';
+        showToast('Mulai merekam suara...', 'info');
+    };
+    
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        if (chatInput) {
+            chatInput.value = transcript;
+            autoResizeTextarea();
+            updateSendButtonState();
+        }
+    };
+    
+    recognition.onerror = function(event) {
+        showToast('Error dalam voice recognition: ' + event.error, 'error');
+        stopVoiceRecognition(button);
+    };
+    
+    recognition.onend = function() {
+        stopVoiceRecognition(button);
+    };
+    
+    recognition.start();
+    window.currentRecognition = recognition;
+}
+
+function stopVoiceRecognition(button) {
+    isVoiceRecording = false;
+    button.classList.remove('voice-recording');
+    button.innerHTML = '<i class="fas fa-microphone"></i>';
+    
+    if (window.currentRecognition) {
+        window.currentRecognition.stop();
+        window.currentRecognition = null;
+    }
+    
+    showToast('Rekaman selesai', 'success');
+}
+
+// File attachment placeholder
 function attachFile() {
-    showToast('File upload coming soon!', 'info');
+    showToast('Fitur upload file akan segera hadir!', 'info');
 }
 
-// Auto-save conversation
+// Auto-save conversation periodically
 setInterval(function() {
     if (conversationHistory.length > 0) {
         saveConversationHistory();
     }
-}, 30000);
+}, 30000); // Save every 30 seconds
 
 // Save on page unload
 window.addEventListener('beforeunload', function() {
     saveConversationHistory();
 });
 
-// Global functions for HTML onclick handlers
+// Debug utilities for development
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    window.PUFFOFF_DEBUG = {
+        config: API_CONFIG,
+        testAPI: function(message) {
+            return callVercelAPI(message || "Hello, test message");
+        },
+        checkHealth: checkAPIHealth,
+        clearHistory: function() {
+            conversationHistory = [];
+            localStorage.removeItem('puffoff_conversation_history');
+            if (chatMessages) chatMessages.innerHTML = '';
+            showWelcomeMessage();
+            console.log('🗑️ Conversation history cleared');
+        },
+        showStats: function() {
+            console.log('📊 PuffOff Chatbot Stats:');
+            console.log('  - Messages:', conversationHistory.length);
+            console.log('  - API Health:', apiHealthStatus);
+            console.log('  - Settings:', settings);
+            console.log('  - Has User Interacted:', hasUserInteracted);
+        },
+        simulateAPIFailure: function() {
+            API_CONFIG.baseUrl = 'https://invalid-url.com';
+            console.log('🔧 Simulated API failure for testing fallback');
+        },
+        resetAPI: function() {
+            API_CONFIG.baseUrl = 'https://puffoff-api.vercel.app';
+            console.log('🔧 API URL reset to production');
+        }
+    };
+    
+    console.log('🔧 [DEBUG] PuffOff debug tools available in window.PUFFOFF_DEBUG');
+    console.log('🔧 [DEBUG] Available commands:');
+    console.log('  - PUFFOFF_DEBUG.testAPI("test message")');
+    console.log('  - PUFFOFF_DEBUG.checkHealth()');
+    console.log('  - PUFFOFF_DEBUG.clearHistory()');
+    console.log('  - PUFFOFF_DEBUG.showStats()');
+}
+
+// Global functions that might be called from HTML
 window.handleSendMessage = handleSendMessage;
 window.toggleSettings = toggleSettings;
 window.clearChat = clearChat;
@@ -1112,28 +1392,4 @@ window.attachFile = attachFile;
 window.scrollToBottom = scrollToBottom;
 window.closeAllModals = closeAllModals;
 
-// Final initialization log
-console.log('✅ PuffOff Always Online ChatBot loaded successfully!');
-console.log('🌐 Status: Always Online Mode Active');
-console.log('⚡ Response guaranteed - API or Local fallback');
-console.log('💪 Never offline - 24/7 ready to help!');
-console.log('🔧 Debug mode: ' + DEBUG_MODE);
-
-// Test function for debugging
-function testChatbot() {
-    debugLog('=== CHATBOT SELF TEST ===');
-    debugLog('Elements check:');
-    debugLog('- chatMessages: ' + !!chatMessages);
-    debugLog('- chatInput: ' + !!chatInput);
-    debugLog('- sendBtn: ' + !!sendBtn);
-    debugLog('Status: ' + (document.getElementById('connectionStatus') ? document.getElementById('connectionStatus').textContent : 'not found'));
-    debugLog('=== TEST COMPLETE ===');
-}
-
-// Expose test function globally
-window.testChatbot = testChatbot;
-
-// Auto-run test after 3 seconds
-setTimeout(function() {
-    testChatbot();
-}, 3000);
+console.log('✅ PuffOff Chatbot loaded successfully!');
