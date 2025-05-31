@@ -53,6 +53,7 @@ function initializeApp() {
     setupInputListeners();
     setupScrollDetection();
     setupKeyboardShortcuts();
+    setupClickListeners(); // Add click listeners for user interaction
     
     // Focus on input
     if (chatInput) {
@@ -68,6 +69,27 @@ function initializeApp() {
     }, 800);
     
     console.log('✅ Initialization complete!');
+}
+
+function setupClickListeners() {
+    // Add click listeners to mark user interaction
+    document.addEventListener('click', function() {
+        if (!hasUserInteracted) {
+            hasUserInteracted = true;
+            initAudioContext();
+            console.log('👤 User interaction detected via click - audio enabled');
+        }
+    }, { once: true });
+    
+    // Also listen for send button clicks
+    if (sendBtn) {
+        sendBtn.addEventListener('click', function() {
+            if (!hasUserInteracted) {
+                hasUserInteracted = true;
+                initAudioContext();
+            }
+        });
+    }
 }
 
 // Settings Management
@@ -282,10 +304,35 @@ function addMessage(content, isUser = false, showQuickReplies = false) {
     }, 400);
 }
 
+let audioContext = null;
+let hasUserInteracted = false;
+
+function initAudioContext() {
+    if (!audioContext && hasUserInteracted) {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            console.log('🔊 Audio context initialized');
+        } catch (error) {
+            console.log('Could not initialize audio context:', error);
+        }
+    }
+}
+
 function playNotificationSound() {
+    if (!settings.soundEnabled || !hasUserInteracted) return;
+    
     try {
-        // Create a simple notification sound using Web Audio API
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (!audioContext) {
+            initAudioContext();
+        }
+        
+        if (!audioContext) return;
+        
+        // Resume audio context if suspended
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
         
@@ -373,6 +420,11 @@ async function getBotResponse(userMessage) {
     
     try {
         console.log('📡 Making fetch request to API...');
+        
+        // Add timeout to prevent hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+        
         const response = await fetch('https://puffoff-api.vercel.app/api/chat', {
             method: 'POST',
             headers: {
@@ -381,12 +433,17 @@ async function getBotResponse(userMessage) {
             body: JSON.stringify({ 
                 message: userMessage,
                 history: conversationHistory.slice(-5) // Send last 5 messages for context
-            })
+            }),
+            signal: controller.signal
         });
         
+        clearTimeout(timeoutId);
+        
         console.log('📡 API Response status:', response.status);
+        console.log('📡 API Response ok:', response.ok);
         
         if (!response.ok) {
+            console.error('❌ HTTP error! status:', response.status);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
@@ -398,14 +455,24 @@ async function getBotResponse(userMessage) {
         console.log('⏳ Adding natural response delay...');
         await new Promise(resolve => setTimeout(resolve, 800));
         
-        const botResponse = data.reply || data.response || data.message || "Maaf, saya tidak dapat memberikan respons saat ini.";
-        console.log('🗣️ Final bot response:', botResponse.substring(0, 100) + '...');
+        const botResponse = data.reply || data.response || data.message || data.answer;
         
+        if (!botResponse) {
+            console.warn('⚠️ No valid response field found in API response:', data);
+            throw new Error('No valid response from API');
+        }
+        
+        console.log('🗣️ Final bot response:', botResponse.substring(0, 100) + '...');
         return botResponse;
         
     } catch (error) {
         console.error('❌ API Error details:', error);
-        console.log('🔄 Falling back to local responses...');
+        
+        if (error.name === 'AbortError') {
+            console.log('🔄 Request timeout - falling back to local responses...');
+        } else {
+            console.log('🔄 API error - falling back to local responses...');
+        }
         
         await new Promise(resolve => setTimeout(resolve, 1200));
         return getFallbackResponse(userMessage);
@@ -531,6 +598,11 @@ function getFallbackResponse(userMessage) {
 async function handleSendMessage() {
     console.log('🚀 handleSendMessage function called');
     
+    if (!hasUserInteracted) {
+        hasUserInteracted = true;
+        initAudioContext();
+    }
+    
     if (!chatInput) {
         console.error('❌ Chat input not found!');
         return;
@@ -546,6 +618,7 @@ async function handleSendMessage() {
     
     if (isTyping) {
         console.warn('⚠️ Bot is typing, please wait');
+        showToast('Tunggu sebentar, bot sedang mengetik...', 'warning');
         return;
     }
     
@@ -583,7 +656,8 @@ async function handleSendMessage() {
     } catch (error) {
         console.error('❌ Error in handleSendMessage:', error);
         hideTypingIndicator();
-        addMessage('[WARNING]Maaf, terjadi kesalahan. Silakan coba lagi.[/WARNING]', false);
+        addMessage('[WARNING]Maaf, terjadi kesalahan sistem. Silakan coba lagi dalam beberapa saat.[/WARNING]', false);
+        showToast('Terjadi kesalahan, silakan coba lagi', 'error');
     }
     
     isTyping = false;
@@ -594,6 +668,12 @@ async function handleSendMessage() {
 
 function sendQuickMessage(message) {
     console.log('⚡ Quick message:', message);
+    
+    if (!hasUserInteracted) {
+        hasUserInteracted = true;
+        initAudioContext();
+    }
+    
     chatInput.value = message;
     handleSendMessage();
 }
@@ -617,8 +697,18 @@ function autoResizeTextarea() {
 function setupInputListeners() {
     if (!chatInput) return;
     
+    // Mark user interaction for audio context
+    const markUserInteraction = () => {
+        if (!hasUserInteracted) {
+            hasUserInteracted = true;
+            initAudioContext();
+            console.log('👤 User interaction detected - audio enabled');
+        }
+    };
+    
     // Auto-resize textarea and enable/disable send button
     chatInput.addEventListener('input', function() {
+        markUserInteraction();
         console.log('📝 Input event triggered:', this.value.length, 'characters');
         
         autoResizeTextarea();
@@ -632,6 +722,7 @@ function setupInputListeners() {
 
     // Send message on Enter (but not Shift+Enter)
     chatInput.addEventListener('keypress', function(e) {
+        markUserInteraction();
         console.log('⌨️ Keypress:', e.key, 'Shift held:', e.shiftKey);
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -642,10 +733,15 @@ function setupInputListeners() {
 
     // Handle paste events
     chatInput.addEventListener('paste', function(e) {
+        markUserInteraction();
         setTimeout(() => {
             autoResizeTextarea();
         }, 10);
     });
+    
+    // Mark interaction on focus
+    chatInput.addEventListener('focus', markUserInteraction);
+    chatInput.addEventListener('click', markUserInteraction);
 }
 
 function setupScrollDetection() {
