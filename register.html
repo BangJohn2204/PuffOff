@@ -976,17 +976,22 @@
                 emailValidation.className = 'validation-message success';
             }
             
-            // Password validation
-            const passwordStrength = checkPasswordStrength(password);
-            if (passwordStrength < 3) {
+            // Password validation - hanya cek minimal 6 karakter
+            const passwordInput = document.getElementById('password');
+            if (password.length < 6) {
+                passwordInput.classList.add('invalid');
+                passwordInput.classList.remove('valid');
                 isValid = false;
+            } else {
+                passwordInput.classList.add('valid');
+                passwordInput.classList.remove('invalid');
             }
             
             // Confirm password validation
             const confirmPasswordInput = document.getElementById('confirmPassword');
             const confirmPasswordValidation = document.getElementById('confirmPasswordValidation');
             
-            if (password !== confirmPassword) {
+            if (password !== confirmPassword || confirmPassword.length === 0) {
                 confirmPasswordInput.classList.add('invalid');
                 confirmPasswordInput.classList.remove('valid');
                 confirmPasswordValidation.textContent = 'Password tidak cocok';
@@ -999,6 +1004,14 @@
                 confirmPasswordValidation.className = 'validation-message success';
             }
             
+            console.log('Validation result:', {
+                nameValid: fullName.length >= 2,
+                emailValid: emailPattern.test(email),
+                passwordValid: password.length >= 6,
+                confirmValid: password === confirmPassword && confirmPassword.length > 0,
+                overallValid: isValid
+            });
+            
             return isValid;
         }
 
@@ -1009,7 +1022,11 @@
             const isFormValid = validateForm();
             const isComplete = isFormValid && termsAccepted;
             
-            console.log('Form valid:', isFormValid, 'Terms accepted:', termsAccepted, 'Button enabled:', isComplete);
+            console.log('DEBUG UPDATE BUTTON:', {
+                formValid: isFormValid,
+                termsAccepted: termsAccepted,
+                buttonEnabled: isComplete
+            });
             
             // Remove all custom classes first
             registerBtn.classList.remove('disabled-form', 'disabled-terms');
@@ -1017,7 +1034,11 @@
             registerBtn.disabled = !isComplete;
             
             // Update button appearance and text based on state
-            if (!isFormValid && !termsAccepted) {
+            if (isComplete) {
+                btnText.textContent = 'Buat Akun';
+                btnText.style.color = 'white';
+                // Button is enabled, no special class needed
+            } else if (!isFormValid && !termsAccepted) {
                 btnText.textContent = 'Lengkapi form dan setujui syarat';
                 registerBtn.classList.add('disabled-form');
             } else if (!isFormValid) {
@@ -1026,15 +1047,27 @@
             } else if (!termsAccepted) {
                 btnText.textContent = 'Setujui syarat & ketentuan';
                 registerBtn.classList.add('disabled-terms');
-            } else {
-                btnText.textContent = 'Buat Akun';
-                // Button is enabled, no special class needed
             }
         }
 
         // Handle registration
         function handleRegister(event) {
             event.preventDefault();
+            
+            console.log('FORM SUBMITTED!');
+            console.log('Terms accepted:', termsAccepted);
+            console.log('Form valid:', validateForm());
+            
+            // Double check before processing
+            if (!termsAccepted) {
+                alert('Silakan setujui syarat & ketentuan terlebih dahulu.');
+                return false;
+            }
+            
+            if (!validateForm()) {
+                alert('Silakan lengkapi form dengan benar.');
+                return false;
+            }
             
             const registerBtn = document.getElementById('registerBtn');
             const btnText = document.getElementById('btnText');
