@@ -542,57 +542,19 @@ function getSimpleFallbackResponse(userMessage) {
     const msg = (userMessage || '').toLowerCase();
     
     if (msg.includes('halo') || msg.includes('hai') || msg.includes('hello')) {
-        return `# Halo! Selamat datang di PuffBot! 👋
-
-Saya siap membantu perjalanan bebas rokok kamu.
-
-**Yang bisa saya bantu:**
-- Tips mengatasi keinginan merokok
-- Motivasi harian
-- Informasi kesehatan
-- Perhitungan penghematan
-
-Apa yang ingin kamu tanyakan? 😊`;
+        return "# Halo! Selamat datang di PuffBot! 👋\n\nSaya siap membantu perjalanan bebas rokok kamu.\n\n**Yang bisa saya bantu:**\n- Tips mengatasi keinginan merokok\n- Motivasi harian\n- Informasi kesehatan\n- Perhitungan penghematan\n\nApa yang ingin kamu tanyakan? 😊";
     }
     
     if (msg.includes('rokok') || msg.includes('merokok') || msg.includes('craving')) {
-        return `# Tips Mengatasi Keinginan Merokok 🚫
-
-**Teknik Cepat:**
-- Tarik napas dalam 10 kali
-- Minum segelas air putih
-- Berdiri dan jalan-jalan 2 menit
-- Alihkan pikiran dengan aktivitas lain
-
-**Ingat:** Keinginan merokok hanya berlangsung 3-5 menit. Kamu pasti bisa mengatasinya! 💪`;
+        return "# Tips Mengatasi Keinginan Merokok 🚫\n\n**Teknik Cepat:**\n- Tarik napas dalam 10 kali\n- Minum segelas air putih\n- Berdiri dan jalan-jalan 2 menit\n- Alihkan pikiran dengan aktivitas lain\n\n**Ingat:** Keinginan merokok hanya berlangsung 3-5 menit. Kamu pasti bisa mengatasinya! 💪";
     }
     
     if (msg.includes('motivasi') || msg.includes('semangat')) {
-        return `# Motivasi Bebas Rokok 💪
-
-**Quotes Hari Ini:**
-> "Kamu lebih kuat dari keinginan merokok"
-
-**Ingat Alasanmu:**
-- Kesehatan yang lebih baik
-- Hemat uang untuk masa depan
-- Menjadi role model keluarga
-- Napas lebih lega dan segar
-
-Setiap hari tanpa rokok adalah kemenangan! 🌟`;
+        return "# Motivasi Bebas Rokok 💪\n\n**Quotes Hari Ini:**\n> \"Kamu lebih kuat dari keinginan merokok\"\n\n**Ingat Alasanmu:**\n- Kesehatan yang lebih baik\n- Hemat uang untuk masa depan\n- Menjadi role model keluarga\n- Napas lebih lega dan segar\n\nSetiap hari tanpa rokok adalah kemenangan! 🌟";
     }
     
     // Default response
-    return `# PuffBot Siap Membantu! 🤖
-
-Halo! Saya di sini untuk membantu perjalanan bebas rokok kamu.
-
-**Coba tanyakan:**
-- "Bagaimana mengatasi keinginan merokok?"
-- "Butuh motivasi"
-- "Apa manfaat berhenti merokok?"
-
-Ada yang bisa saya bantu? 😊`;
+    return "# PuffBot Siap Membantu! 🤖\n\nHalo! Saya di sini untuk membantu perjalanan bebas rokok kamu.\n\n**Coba tanyakan:**\n- \"Bagaimana mengatasi keinginan merokok?\"\n- \"Butuh motivasi\"\n- \"Apa manfaat berhenti merokok?\"\n\nAda yang bisa saya bantu? 😊";
 }
 
 // Fallback Responses yang PASTI selalu return response
