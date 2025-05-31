@@ -959,11 +959,47 @@
             sendMessage();
         }
 
-        // Get bot response (comprehensive implementation)
+        // Get bot response using real PuffOff API
         async function getBotResponse(userMessage) {
+            console.log('🤖 Calling PuffOff API with message:', userMessage);
+            
+            try {
+                const response = await fetch('https://puffoff-api.vercel.app/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        message: userMessage 
+                    })
+                });
+                
+                console.log('📡 API Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ API Response received:', data);
+                
+                // Return the API response or fallback message
+                return data.reply || data.response || data.message || "Maaf, saya tidak dapat memberikan respons saat ini.";
+                
+            } catch (error) {
+                console.error('❌ API Error:', error);
+                
+                // Fallback to local responses if API fails
+                return getFallbackResponse(userMessage);
+            }
+        }
+
+        // Fallback responses when API is not available
+        function getFallbackResponse(userMessage) {
+            console.log('🔄 Using fallback response for:', userMessage);
             const message = userMessage.toLowerCase();
             
-            // PuffOff specific responses
+            // PuffOff specific fallback responses
             if (message.includes('keinginan merokok') || message.includes('ingin merokok') || message.includes('craving')) {
                 return `# Tips Mengatasi Keinginan Merokok 🚫
 
@@ -1054,102 +1090,19 @@ Dengan Rp 750.000 per bulan, kamu bisa:
 [TIP]Buat jar khusus "uang rokok" dan lihat sendiri hasilnya dalam 1 bulan![/TIP]`;
             }
             
-            if (message.includes('komunitas') || message.includes('dukungan') || message.includes('support')) {
-                return `# Komunitas PuffOff Support 👥
-
-[INFO]Kamu tidak sendirian dalam perjalanan ini! Bergabung dengan komunitas yang saling mendukung.[/INFO]
-
-## Fitur Komunitas:
-- 💬 **Forum Diskusi**: Berbagi cerita dan tips
-- 🏆 **Challenge Mingguan**: Kompetisi sehat
-- 📱 **Buddy System**: Partner saling support
-- 🎯 **Group Goals**: Target bersama
-
-## Cara Bergabung:
-1. Kunjungi tab "Komunitas"
-2. Pilih grup yang sesuai
-3. Perkenalkan diri
-4. Mulai berbagi pengalaman
-
-## Tips Berinteraksi:
-- ✅ **Jujur** tentang perjuanganmu
-- ✅ **Supportif** ke member lain
-- ✅ **Aktif** berbagi tips dan motivasi
-- ✅ **Respect** perbedaan pendapat
-
-[SUCCESS]Bersama-sama kita lebih kuat! 🤝[/SUCCESS]`;
-            }
-            
-            if (message.includes('target') || message.includes('goal') || message.includes('rencana')) {
-                return `# Setting Target Bebas Rokok 🎯
-
-[TIP]Target yang jelas dan terukur akan membantu kamu tetap fokus pada tujuan![/TIP]
-
-## Framework SMART Goals:
-- **Specific**: "Bebas rokok total"
-- **Measurable**: "0 batang per hari"
-- **Achievable**: Sesuai kondisi personal
-- **Relevant**: Untuk kesehatan dan keluarga
-- **Time-bound**: Target waktu jelas
-
-## Milestone Suggestions:
-- 🗓️ **3 hari**: Nikotin mulai keluar dari tubuh
-- 🗓️ **1 minggu**: Penciuman membaik
-- 🗓️ **2 minggu**: Sirkulasi darah normal
-- 🗓️ **1 bulan**: Fungsi paru meningkat
-- 🗓️ **3 bulan**: Risiko infeksi turun
-- 🗓️ **1 tahun**: Risiko jantung turun drastis
-
-## Reward System:
-- 🎁 **3 hari**: Beli makanan favorit
-- 🎁 **1 minggu**: Nonton film di bioskop
-- 🎁 **1 bulan**: Beli baju baru
-- 🎁 **3 bulan**: Weekend getaway
-- 🎁 **1 tahun**: Liburan impian
-
-[MOTIVATION]Setiap target yang tercapai adalah bukti kekuatanmu! 🌟[/MOTIVATION]`;
-            }
-            
-            if (message.includes('stress') || message.includes('cemas') || message.includes('anxiety')) {
-                return `# Mengelola Stress Tanpa Rokok 🧘
-
-[WARNING]Stress adalah trigger utama keinginan merokok. Mari atasi dengan cara yang lebih sehat![/WARNING]
-
-## Teknik Relaksasi:
-- **Deep Breathing**: 4-7-8 technique
-- **Progressive Muscle Relaxation**: Tegang-lepas otot
-- **Mindfulness**: Fokus pada moment sekarang
-- **Visualization**: Bayangkan tempat tenang
-
-## Aktivitas Anti-Stress:
-- 🚶 **Jalan kaki**: 10-15 menit di udara segar
-- 🎵 **Musik**: Dengarkan lagu favorit
-- ✍️ **Journaling**: Tulis perasaan dan pikiran
-- 🎨 **Creative outlet**: Menggambar, memasak, dll
-
-## Olahraga Ringan:
-- Yoga 15 menit
-- Stretching di meja kerja
-- Naik turun tangga
-- Push-up 10x
-
-## Support System:
-- Call/text teman dekat
-- Curhat ke keluarga
-- Konsultasi profesional jika perlu
-
-[HEALTH]Stress management yang baik = hidup yang lebih sehat dan bahagia! 😊[/HEALTH]`;
-            }
-            
-            // Default responses
+            // Default fallback responses
             const responses = [
-                `Halo! Saya PuffBot, siap membantu perjalanan bebas rokok kamu. Ada yang bisa saya bantu? 😊`,
+                `Halo! Saya PuffBot, siap membantu perjalanan bebas rokok kamu. Ada yang bisa saya bantu? 😊
+
+[TIP]Coba tanyakan tentang tips mengatasi keinginan merokok, manfaat kesehatan, atau motivasi harian![/TIP]`,
                 
-                `Pertanyaan yang menarik! Saya akan berusaha memberikan jawaban terbaik untuk mendukung perjalanan bebas rokok kamu.`,
+                `Terima kasih sudah berbagi! Setiap langkah dalam perjalanan bebas rokok adalah kemajuan yang berarti. 💪
+
+[INFO]Saya bisa membantu dengan tips praktis, motivasi, atau informasi kesehatan.[/INFO]`,
                 
-                `Terima kasih sudah berbagi! Setiap langkah kecil dalam perjalanan bebas rokok adalah kemajuan yang berarti. 💪`,
-                
-                `Saya senang bisa membantu! Ingat, kamu tidak sendirian dalam perjalanan ini. Komunitas PuffOff selalu siap mendukung! 🤝`
+                `Pertanyaan yang menarik! Saya akan berusaha memberikan jawaban terbaik untuk mendukung perjalanan bebas rokok kamu.
+
+[MOTIVATION]Ingat, kamu tidak sendirian dalam perjalanan ini![/MOTIVATION]`
             ];
             
             return responses[Math.floor(Math.random() * responses.length)];
