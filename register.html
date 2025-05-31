@@ -347,12 +347,18 @@
             transition: all 0.3s ease;
             flex-shrink: 0;
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            background: white;
         }
 
         .custom-checkbox:hover {
             border-color: #667eea;
             background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.05);
+        }
+
+        .custom-checkbox:active {
+            transform: scale(0.95);
         }
 
         .custom-checkbox.checked {
@@ -370,6 +376,21 @@
 
         .custom-checkbox.checked i {
             opacity: 1;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .terms-checkbox:hover {
+            background: rgba(102, 126, 234, 0.02);
         }
 
         .terms-checkbox a {
@@ -904,7 +925,7 @@
             return strength;
         }
 
-        // Form validation - TIDAK termasuk terms checkbox
+        // Form validation - HANYA validate jika user sudah mulai mengisi
         function validateForm() {
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -919,72 +940,94 @@
             
             let isValid = true;
             
-            // Name validation
+            // Name validation - HANYA tampilkan error jika user sudah mulai mengetik
             const nameInput = document.getElementById('fullName');
             const nameValidation = document.getElementById('nameValidation');
             const nameValid = fullName.length >= 2;
             
-            if (!nameValid) {
+            if (fullName.length > 0 && !nameValid) {
                 nameInput.classList.add('invalid');
                 nameInput.classList.remove('valid');
                 nameValidation.textContent = 'Nama harus minimal 2 karakter';
                 nameValidation.className = 'validation-message error';
                 isValid = false;
-            } else {
+            } else if (fullName.length > 0 && nameValid) {
                 nameInput.classList.add('valid');
                 nameInput.classList.remove('invalid');
                 nameValidation.textContent = '✓ Nama valid';
                 nameValidation.className = 'validation-message success';
+            } else {
+                // Kosong - tidak tampilkan apa-apa
+                nameInput.classList.remove('valid', 'invalid');
+                nameValidation.textContent = '';
+                nameValidation.className = 'validation-message';
+                if (fullName.length === 0) isValid = false;
             }
             
-            // Email validation
+            // Email validation - HANYA tampilkan error jika user sudah mulai mengetik
             const emailInput = document.getElementById('email');
             const emailValidation = document.getElementById('emailValidation');
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const emailValid = emailPattern.test(email);
             
-            if (!emailValid) {
+            if (email.length > 0 && !emailValid) {
                 emailInput.classList.add('invalid');
                 emailInput.classList.remove('valid');
                 emailValidation.textContent = 'Format email tidak valid';
                 emailValidation.className = 'validation-message error';
                 isValid = false;
-            } else {
+            } else if (email.length > 0 && emailValid) {
                 emailInput.classList.add('valid');
                 emailInput.classList.remove('invalid');
                 emailValidation.textContent = '✓ Email valid';
                 emailValidation.className = 'validation-message success';
+            } else {
+                // Kosong - tidak tampilkan apa-apa
+                emailInput.classList.remove('valid', 'invalid');
+                emailValidation.textContent = '';
+                emailValidation.className = 'validation-message';
+                if (email.length === 0) isValid = false;
             }
             
-            // Password validation - minimal 6 karakter
+            // Password validation - HANYA tampilkan error jika user sudah mulai mengetik
             const passwordInput = document.getElementById('password');
             const passwordValid = password.length >= 6;
             
-            if (!passwordValid) {
+            if (password.length > 0 && !passwordValid) {
                 passwordInput.classList.add('invalid');
                 passwordInput.classList.remove('valid');
                 isValid = false;
-            } else {
+            } else if (password.length > 0 && passwordValid) {
                 passwordInput.classList.add('valid');
                 passwordInput.classList.remove('invalid');
+            } else {
+                // Kosong - tidak tampilkan apa-apa
+                passwordInput.classList.remove('valid', 'invalid');
+                if (password.length === 0) isValid = false;
             }
             
-            // Confirm password validation
+            // Confirm password validation - HANYA tampilkan error jika user sudah mulai mengetik
             const confirmPasswordInput = document.getElementById('confirmPassword');
             const confirmPasswordValidation = document.getElementById('confirmPasswordValidation');
             const confirmValid = (password === confirmPassword && confirmPassword.length > 0);
             
-            if (!confirmValid) {
+            if (confirmPassword.length > 0 && !confirmValid) {
                 confirmPasswordInput.classList.add('invalid');
                 confirmPasswordInput.classList.remove('valid');
                 confirmPasswordValidation.textContent = 'Password tidak cocok';
                 confirmPasswordValidation.className = 'validation-message error';
                 isValid = false;
-            } else {
+            } else if (confirmPassword.length > 0 && confirmValid) {
                 confirmPasswordInput.classList.add('valid');
                 confirmPasswordInput.classList.remove('invalid');
                 confirmPasswordValidation.textContent = '✓ Password cocok';
                 confirmPasswordValidation.className = 'validation-message success';
+            } else {
+                // Kosong - tidak tampilkan apa-apa
+                confirmPasswordInput.classList.remove('valid', 'invalid');
+                confirmPasswordValidation.textContent = '';
+                confirmPasswordValidation.className = 'validation-message';
+                if (confirmPassword.length === 0) isValid = false;
             }
             
             console.log('=== VALIDATION RESULTS ===');
