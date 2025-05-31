@@ -1094,31 +1094,340 @@ Dengan Rp 750.000 per bulan, kamu bisa:
             }
         }
 
-        // Export chat
+        // Export chat with format options
         function exportChat() {
             if (conversationHistory.length === 0) {
                 showNotification('Tidak ada percakapan untuk diekspor', 'warning');
                 return;
             }
             
+            // Show format selection modal
+            showExportModal();
+        }
+
+        // Show export format selection modal
+        function showExportModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10001;
+                backdrop-filter: blur(5px);
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: white;
+                border-radius: 20px;
+                padding: 30px;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                animation: modalSlideUp 0.3s ease;
+            `;
+            
+            // Add animation keyframes
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes modalSlideUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px) scale(0.95);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            modalContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <h3 style="color: #1f2937; margin-bottom: 8px; font-size: 1.3rem;">📤 Export Chat</h3>
+                    <p style="color: #6b7280; font-size: 0.9rem;">Pilih format file yang diinginkan</p>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button onclick="exportAsText()" style="
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        border: none;
+                        padding: 16px 20px;
+                        border-radius: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: transform 0.2s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        📄 Export sebagai Text (.txt)
+                    </button>
+                    
+                    <button onclick="exportAsHTML()" style="
+                        background: white;
+                        color: #667eea;
+                        border: 2px solid #667eea;
+                        padding: 16px 20px;
+                        border-radius: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    " onmouseover="this.style.background='#667eea'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#667eea'">
+                        🌐 Export sebagai HTML
+                    </button>
+                    
+                    <button onclick="exportAsJSON()" style="
+                        background: #f8fafc;
+                        color: #374151;
+                        border: 1px solid #e2e8f0;
+                        padding: 16px 20px;
+                        border-radius: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    " onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f8fafc'">
+                        ⚙️ Export sebagai JSON (Advanced)
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="closeExportModal()" style="
+                        background: transparent;
+                        color: #6b7280;
+                        border: none;
+                        padding: 8px 16px;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                    ">
+                        ✕ Batal
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Store modal reference globally
+            window.currentExportModal = modal;
+            
+            // Close on backdrop click
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeExportModal();
+                }
+            });
+        }
+
+        // Close export modal
+        function closeExportModal() {
+            if (window.currentExportModal) {
+                window.currentExportModal.style.opacity = '0';
+                window.currentExportModal.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    document.body.removeChild(window.currentExportModal);
+                    window.currentExportModal = null;
+                }, 200);
+            }
+        }
+
+        // Export as readable text format
+        function exportAsText() {
+            const timestamp = new Date().toLocaleString('id-ID');
+            let textContent = `PERCAKAPAN PUFFOFF AI HELPER
+=================================
+Diekspor pada: ${timestamp}
+Total pesan: ${conversationHistory.length}
+
+`;
+
+            conversationHistory.forEach((msg, index) => {
+                const time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const sender = msg.isUser ? 'ANDA' : 'PUFFBOT';
+                const content = msg.content.replace(/\[.*?\]/g, '').replace(/#{1,6}\s*/g, '').replace(/\*\*(.*?)\*\*/g, '$1');
+                
+                textContent += `[${time}] ${sender}:
+${content}
+
+`;
+            });
+
+            textContent += `
+=================================
+Diekspor dari PuffOff AI Helper
+https://puffoff.app
+`;
+
+            downloadFile(textContent, `puffoff_chat_${new Date().toISOString().split('T')[0]}.txt`, 'text/plain');
+            closeExportModal();
+            showNotification('Chat berhasil diekspor sebagai file teks!', 'success');
+        }
+
+        // Export as HTML format
+        function exportAsHTML() {
+            const timestamp = new Date().toLocaleString('id-ID');
+            let htmlContent = `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percakapan PuffOff AI Helper</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .message {
+            margin: 15px 0;
+            display: flex;
+        }
+        .message-user {
+            justify-content: flex-end;
+        }
+        .message-bot {
+            justify-content: flex-start;
+        }
+        .message-bubble {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+        }
+        .message-user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+        .message-bot .message-bubble {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .timestamp {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 8px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Percakapan PuffOff AI Helper</h1>
+        <p>Diekspor pada: ${timestamp}</p>
+        <p>Total pesan: ${conversationHistory.length}</p>
+    </div>
+    
+    <div class="conversation">`;
+
+            conversationHistory.forEach((msg, index) => {
+                const time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const messageClass = msg.isUser ? 'message-user' : 'message-bot';
+                const cleanContent = msg.content
+                    .replace(/\[INFO\](.*?)\[\/INFO\]/gs, '<div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>ℹ️ Informasi:</strong><br>$1</div>')
+                    .replace(/\[TIP\](.*?)\[\/TIP\]/gs, '<div style="background: #faf5ff; border-left: 4px solid #8b5cf6; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>💡 Tips:</strong><br>$1</div>')
+                    .replace(/\[SUCCESS\](.*?)\[\/SUCCESS\]/gs, '<div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>✅ Berhasil:</strong><br>$1</div>')
+                    .replace(/\[WARNING\](.*?)\[\/WARNING\]/gs, '<div style="background: #fefce8; border-left: 4px solid #f59e0b; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>⚠️ Peringatan:</strong><br>$1</div>')
+                    .replace(/\[MOTIVATION\](.*?)\[\/MOTIVATION\]/gs, '<div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>💪 Motivasi:</strong><br>$1</div>')
+                    .replace(/\[HEALTH\](.*?)\[\/HEALTH\]/gs, '<div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; margin: 8px 0; border-radius: 6px;"><strong>❤️ Kesehatan:</strong><br>$1</div>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/#{1,6}\s*(.*?)$/gm, '<h3>$1</h3>')
+                    .replace(/\n/g, '<br>');
+                
+                htmlContent += `
+        <div class="message ${messageClass}">
+            <div class="message-bubble">
+                <div class="message-content">${cleanContent}</div>
+                <div class="timestamp">${time}</div>
+            </div>
+        </div>`;
+            });
+
+            htmlContent += `
+    </div>
+    
+    <div class="footer">
+        Diekspor dari PuffOff AI Helper<br>
+        <a href="https://puffoff.app" style="color: #667eea;">https://puffoff.app</a>
+    </div>
+</body>
+</html>`;
+
+            downloadFile(htmlContent, `puffoff_chat_${new Date().toISOString().split('T')[0]}.html`, 'text/html');
+            closeExportModal();
+            showNotification('Chat berhasil diekspor sebagai file HTML!', 'success');
+        }
+
+        // Export as JSON (original format)
+        function exportAsJSON() {
             const chatData = {
                 exported_at: new Date().toISOString(),
                 app: 'PuffOff AI Helper',
+                version: '1.0',
                 conversation_count: conversationHistory.length,
                 conversations: conversationHistory
             };
             
             const dataStr = JSON.stringify(chatData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            downloadFile(dataStr, `puffoff_chat_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+            closeExportModal();
+            showNotification('Chat berhasil diekspor sebagai file JSON!', 'success');
+        }
+
+        // Generic file download function
+        function downloadFile(content, filename, mimeType) {
+            const dataBlob = new Blob([content], { type: mimeType });
             const url = URL.createObjectURL(dataBlob);
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = `puffoff_chat_${new Date().toISOString().split('T')[0]}.json`;
+            link.download = filename;
             link.click();
             
             URL.revokeObjectURL(url);
-            showNotification('Chat berhasil diekspor!', 'success');
         }
 
         // Attach file (placeholder)
