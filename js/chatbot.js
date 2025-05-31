@@ -511,11 +511,6 @@ function getQuickReplies(botMessage) {
 async function getBotResponse(userMessage) {
     console.log('🤖 Starting getBotResponse with message:', userMessage);
     
-    // SELALU gunakan fallback untuk testing - hapus komentar ini setelah API fixed
-    console.log('🔄 Using fallback response for testing...');
-    return getFallbackResponse(userMessage);
-    
-    
     try {
         console.log('📡 Making fetch request to API...');
         
@@ -565,7 +560,7 @@ async function getBotResponse(userMessage) {
             throw new Error('Invalid JSON response from API');
         }
         
-        const botResponse = data.reply || data.response || data.message || data.answer || data.text;
+        const botResponse = data.reply || data.response || data.message || data.answer || data.text || data.content;
         
         if (!botResponse) {
             console.warn('⚠️ No valid response field found in API response');
@@ -592,7 +587,6 @@ async function getBotResponse(userMessage) {
         await new Promise(resolve => setTimeout(resolve, 800));
         return getFallbackResponse(userMessage);
     }
-    
 }
 
 // Fallback Responses yang lebih comprehensive
