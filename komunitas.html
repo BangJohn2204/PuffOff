@@ -1,53 +1,901 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>Komunitas - PuffOff</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    body {
-      padding-bottom: 60px;
-    }
-    .ui.bottom.fixed.menu {
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-    .ui.bottom.fixed.menu .item {
-      flex-shrink: 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komunitas - PuffOff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .community-stats {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-btn:not(.active) {
+            color: #6b7280;
+        }
+
+        .tab-btn:not(.active):hover {
+            background: #f1f5f9;
+            color: #374151;
+        }
+
+        .create-post-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .create-post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .post-header {
+            padding: 16px 20px 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .username {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.95rem;
+        }
+
+        .post-time {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .post-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-motivation {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-question {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-tips {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .post-content {
+            padding: 0 20px 16px;
+        }
+
+        .post-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            line-height: 1.4;
+        }
+
+        .post-excerpt {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin: 12px 0;
+            border-radius: 8px;
+        }
+
+        .post-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid #f1f5f9;
+            background: #fafbfc;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .action-btn:hover {
+            background: #f1f5f9;
+            color: #374151;
+        }
+
+        .action-btn.liked {
+            color: #ef4444;
+        }
+
+        .action-btn.liked i {
+            color: #ef4444;
+        }
+
+        .more-btn {
+            color: #6b7280;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .more-btn:hover {
+            background: #f1f5f9;
+            color: #374151;
+        }
+
+        .replies-section {
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .reply-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border-left: 3px solid #667eea;
+        }
+
+        .reply-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .reply-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .reply-username {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.85rem;
+        }
+
+        .reply-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .reply-content {
+            color: #4b5563;
+            line-height: 1.5;
+            font-size: 0.85rem;
+        }
+
+        .load-more-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .load-more-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: #f8fafc;
+        }
+
+        .floating-create {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-create:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f1f5f9;
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .category-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .chip {
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border: 2px solid #e5e7eb;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .chip.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6b7280;
+            transition: color 0.3s ease;
+            padding: 8px;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #d1d5db;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .trending-topics {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .trending-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .trending-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .trending-item:last-child {
+            border-bottom: none;
+        }
+
+        .trending-text {
+            flex: 1;
+            font-size: 0.85rem;
+            color: #374151;
+        }
+
+        .trending-count {
+            font-size: 0.75rem;
+            color: #6b7280;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px 12px;
+            }
+            
+            .header {
+                padding: 20px 16px;
+            }
+            
+            .post-card {
+                margin-bottom: 12px;
+            }
+            
+            .action-group {
+                gap: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>👥 Komunitas PuffOff</h1>
+            <p>Berbagi cerita, tips, dan dukungan bersama</p>
+        </div>
 
-<!-- Konten Komunitas -->
-<div class="ui container komunitas" style="margin-top: 40px; max-width: 700px;">
-  <h2 class="ui header center aligned komunitas">Forum Komunitas PuffOff 💬</h2>
+        <!-- Community Stats -->
+        <div class="community-stats">
+            <div class="stat-item">
+                <span class="stat-number">2,847</span>
+                <div class="stat-label">Anggota</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">156</span>
+                <div class="stat-label">Post Hari Ini</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">1,293</span>
+                <div class="stat-label">Sukses Stories</div>
+            </div>
+        </div>
 
-  <form class="ui form" id="postForm">
-    <div class="field">
-      <textarea id="postInput" rows="3" placeholder="Tulis pesan atau curhat kamu..."></textarea>
-    </div>
-    <button class="ui green button" type="submit">Kirim</button>
-  </form>
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('trending')">
+                <i class="fas fa-fire"></i> Trending
+            </button>
+            <button class="tab-btn" onclick="switchTab('recent')">
+                <i class="fas fa-clock"></i> Terbaru
+            </button>
+            <button class="tab-btn" onclick="switchTab('motivasi')">
+                <i class="fas fa-heart"></i> Motivasi
+            </button>
+            <button class="tab-btn" onclick="switchTab('my-posts')">
+                <i class="fas fa-user"></i> Saya
+            </button>
+        </div>
 
-  <h4 class="ui dividing header">Postingan Terbaru</h4>
-  <div class="ui comments" id="postList"></div>
-</div>
+        <!-- Trending Topics (Visible on trending tab) -->
+        <div id="trending-section" class="trending-topics">
+            <div class="trending-title">🔥 Topik Trending</div>
+            <div class="trending-item">
+                <div class="trending-text">#30HariBebas</div>
+                <div class="trending-count">234 posts</div>
+            </div>
+            <div class="trending-item">
+                <div class="trending-text">#TipsSehat</div>
+                <div class="trending-count">189 posts</div>
+            </div>
+            <div class="trending-item">
+                <div class="trending-text">#CeritaMotivasi</div>
+                <div class="trending-count">156 posts</div>
+            </div>
+            <div class="trending-item">
+                <div class="trending-text">#BukanPerokok</div>
+                <div class="trending-count">97 posts</div>
+            </div>
+        </div>
 
-<!-- Navbar bawah -->
-<div class="ui bottom fixed menu green inverted">
-  <div class="ui container">
-    <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
-    <a class="item" href="progress.html"><i class="chart bar icon"></i>Progres</a>
-    <a class="item" href="chatbot.html"><i class="comments icon"></i>Chatbot</a>
-    <a class="item active" href="komunitas.html"><i class="users icon"></i>Komunitas</a>
-    <a class="item" href="target.html"><i class="target icon"></i>Target</a>
-    <a class="item" href="profile.html"><i class="user icon"></i>Profil</a>
-  </div>
-</div>
+        <!-- Create Post Button -->
+        <button class="create-post-btn" onclick="openCreateModal()">
+            <i class="fas fa-plus"></i> Buat Post Baru
+        </button>
 
-<script src="js/komunitas.js"></script>
-</body>
-</html>
+        <!-- Posts Container -->
+        <div id="posts-container">
+            <!-- Post 1: Success Story -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">AR</div>
+                        <div class="user-details">
+                            <div class="username">Andi Rahman</div>
+                            <div class="post-time">2 jam yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-success">Success Story</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">🎉 Akhirnya 100 hari bebas rokok!</div>
+                    <div class="post-excerpt">
+                        Halo teman-teman! Hari ini genap 100 hari saya bebas dari rokok. Perjalanan yang tidak mudah, tapi dengan dukungan kalian semua, akhirnya berhasil! Sharing tips yang membantu saya...
+                    </div>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23ecfdf5'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='24' fill='%2310b981' text-anchor='middle' dominant-baseline='middle'%3E🎉 100 Days Milestone! 🎉%3C/text%3E%3C/svg%3E" alt="100 Days Milestone" class="post-image">
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <i class="far fa-heart"></i>
+                            <span>47</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>12</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>5</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+                <div class="replies-section" style="display: none;">
+                    <div class="reply-card">
+                        <div class="reply-header">
+                            <div class="reply-avatar">SM</div>
+                            <div class="reply-username">Sari Mulyani</div>
+                            <div class="reply-time">1 jam lalu</div>
+                        </div>
+                        <div class="reply-content">
+                            Selamat bang! Inspiratif banget. Bisa sharing tips untuk melewati minggu pertama?
+                        </div>
+                    </div>
+                    <div class="reply-card">
+                        <div class="reply-header">
+                            <div class="reply-avatar">DK</div>
+                            <div class="reply-username">Doni Kurniawan</div>
+                            <div class="reply-time">45 menit lalu</div>
+                        </div>
+                        <div class="reply-content">
+                            Mantap! Saya baru 20 hari, semoga bisa kayak abang. Terima kasih motivasinya! 💪
+                        </div>
+                    </div>
+                    <button class="load-more-btn" onclick="loadMoreReplies(this)">
+                        Lihat 9 balasan lainnya
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post 2: Question -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">LP</div>
+                        <div class="user-details">
+                            <div class="username">Linda Permata</div>
+                            <div class="post-time">4 jam yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-question">Pertanyaan</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">❓ Bagaimana mengatasi stress tanpa rokok?</div>
+                    <div class="post-excerpt">
+                        Halo semua, saya baru mulai program berhenti merokok hari ke-3. Masalahnya kalau lagi stress kerja, reflek pengen nyari rokok. Ada yang punya tips alternatif yang efektif?
+                    </div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <i class="far fa-heart"></i>
+                            <span>23</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>18</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>2</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post 3: Tips -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">RH</div>
+                        <div class="user-details">
+                            <div class="username">Rudi Hartono</div>
+                            <div class="post-time">6 jam yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-tips">Tips & Trick</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">💡 5 Teknik Pernapasan untuk Mengatasi Craving</div>
+                    <div class="post-excerpt">
+                        Setelah 8 bulan bebas rokok, saya mau share teknik pernapasan yang sangat membantu saat ada keinginan merokok. Teknik 4-7-8 adalah yang paling efektif untuk saya...
+                    </div>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn liked" onclick="toggleLike(this)">
+                            <i class="fas fa-heart"></i>
+                            <span>89</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleReplies(this)">
+                            <i class="far fa-comment"></i>
+                            <span>31</span>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(this)">
+                            <i class="fas fa-share"></i>
+                            <span>15</span>
+                        </button>
+                    </div>
+                    <button class="more-btn" onclick="showMoreOptions(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post 4: Motivation -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-avatar">NK</div>
+                        <div class="user-details">
+                            <div class="username">Novi Kartika</div>
+                            <div class="post-time">1 hari yang lalu</div>
+                        </div>
+                        <div class="post-badge badge-motivation">Motivasi</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-title">🌟 Motivasi Pagi: Kamu Lebih Kuat Dari Yang Kamu Kira!</div>
+                    <div class="post-excerpt">
+                        "Setiap hari tanpa rokok
