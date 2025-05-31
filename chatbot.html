@@ -1,628 +1,917 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Chatbot - PuffOff</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-  <!-- Marked.js untuk markdown parsing -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-  <!-- Highlight.js untuk syntax highlighting (optional untuk kode) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  
-  <style>
-    body { 
-      padding-bottom: 60px; 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f8f9fa;
-    }
-    .ui.bottom.fixed.menu { 
-      overflow-x: auto; 
-      white-space: nowrap; 
-    }
-    .ui.bottom.fixed.menu .item { 
-      flex-shrink: 0; 
-    }
-    
-    #chat-area {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    
-    /* Styling untuk pesan bot */
-    .bot-message {
-      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-      border: 1px solid #e9ecef;
-      border-left: 4px solid #28a745;
-      border-radius: 16px 16px 16px 4px;
-      padding: 16px 20px;
-      margin: 12px 0;
-      margin-right: 15%;
-      box-shadow: 0 2px 12px rgba(40, 167, 69, 0.1);
-      position: relative;
-    }
-    
-    .user-message {
-      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-      color: white;
-      border-radius: 16px 16px 4px 16px;
-      padding: 16px 20px;
-      margin: 12px 0;
-      margin-left: 15%;
-      box-shadow: 0 2px 12px rgba(0, 123, 255, 0.2);
-      position: relative;
-    }
-    
-    /* Avatar dan nama */
-    .message-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    
-    .avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-    
-    .bot-avatar {
-      background: #28a745;
-      color: white;
-    }
-    
-    .user-avatar {
-      background: rgba(255,255,255,0.2);
-      color: white;
-    }
-    
-    /* Konten pesan */
-    .message-content {
-      line-height: 1.6;
-      font-size: 15px;
-    }
-    
-    .message-content h1, .message-content h2, .message-content h3 {
-      color: #2c3e50;
-      margin-top: 20px;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-    
-    .message-content h1 {
-      font-size: 1.5em;
-      border-bottom: 3px solid #3498db;
-      padding-bottom: 8px;
-    }
-    
-    .message-content h2 {
-      font-size: 1.3em;
-      border-bottom: 2px solid #3498db;
-      padding-bottom: 6px;
-    }
-    
-    .message-content h3 {
-      font-size: 1.1em;
-      color: #3498db;
-    }
-    
-    .message-content ul, .message-content ol {
-      margin: 16px 0;
-      padding-left: 24px;
-    }
-    
-    .message-content li {
-      margin: 8px 0;
-      line-height: 1.7;
-    }
-    
-    .message-content li::marker {
-      color: #3498db;
-      font-weight: bold;
-    }
-    
-    .message-content p {
-      margin: 12px 0;
-      text-align: justify;
-    }
-    
-    .message-content blockquote {
-      border-left: 4px solid #3498db;
-      margin: 20px 0;
-      padding: 16px 20px;
-      background: #f8f9fa;
-      font-style: italic;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .message-content strong {
-      color: #2c3e50;
-      font-weight: 600;
-    }
-    
-    .message-content em {
-      color: #495057;
-      font-style: italic;
-    }
-    
-    /* Tabel untuk data */
-    .message-content table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    .message-content th, .message-content td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid #dee2e6;
-    }
-    
-    .message-content th {
-      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-      color: white;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.85em;
-      letter-spacing: 0.5px;
-    }
-    
-    .message-content tr:nth-child(even) {
-      background: #f8f9fa;
-    }
-    
-    .message-content tr:hover {
-      background: #e3f2fd;
-      transition: background 0.2s ease;
-    }
-    
-    /* Code blocks */
-    .message-content pre {
-      background: #2d3748;
-      color: #e2e8f0;
-      padding: 20px;
-      border-radius: 12px;
-      margin: 20px 0;
-      overflow-x: auto;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    
-    .message-content code {
-      background: #f1f3f4;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-family: 'Courier New', Monaco, monospace;
-      font-size: 0.9em;
-      color: #d63384;
-      border: 1px solid #e9ecef;
-    }
-    
-    .message-content pre code {
-      background: transparent;
-      padding: 0;
-      color: #e2e8f0;
-      border: none;
-    }
-    
-    /* Info boxes dengan ikon */
-    .info-box {
-      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-      border: 1px solid #2196f3;
-      border-left: 5px solid #2196f3;
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin: 20px 0;
-      position: relative;
-      box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
-    }
-    
-    .warning-box {
-      background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 20%);
-      border: 1px solid #ff9800;
-      border-left: 5px solid #ff9800;
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin: 20px 0;
-      position: relative;
-      box-shadow: 0 2px 8px rgba(255, 152, 0, 0.1);
-    }
-    
-    .success-box {
-      background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-      border: 1px solid #4caf50;
-      border-left: 5px solid #4caf50;
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin: 20px 0;
-      position: relative;
-      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
-    }
-    
-    .tip-box {
-      background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-      border: 1px solid #9c27b0;
-      border-left: 5px solid #9c27b0;
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin: 20px 0;
-      position: relative;
-      box-shadow: 0 2px 8px rgba(156, 39, 176, 0.1);
-    }
-    
-    /* Separator/divider */
-    .divider {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #3498db, transparent);
-      margin: 24px 0;
-      border-radius: 2px;
-    }
-    
-    /* Highlight text */
-    .highlight {
-      background: linear-gradient(120deg, #fff3cd 0%, #ffeaa7 100%);
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid #f39c12;
-    }
-    
-    /* Typing indicator */
-    .typing-indicator {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 20px;
-      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-      border: 1px solid #e9ecef;
-      border-left: 4px solid #6c757d;
-      border-radius: 16px 16px 16px 4px;
-      margin: 12px 0;
-      margin-right: 15%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .typing-dots {
-      display: flex;
-      gap: 6px;
-    }
-    
-    .typing-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #3498db;
-      animation: typing 1.4s infinite ease-in-out;
-    }
-    
-    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-    
-    @keyframes typing {
-      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-      40% { transform: scale(1); opacity: 1; }
-    }
-    
-    /* Timestamp */
-    .timestamp {
-      font-size: 0.75em;
-      opacity: 0.7;
-      margin-top: 8px;
-      text-align: right;
-    }
-    
-    /* Scroll to bottom button */
-    .scroll-bottom {
-      position: fixed;
-      bottom: 120px;
-      right: 30px;
-      background: #3498db;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-      display: none;
-      z-index: 100;
-      transition: all 0.3s ease;
-    }
-    
-    .scroll-bottom:hover {
-      background: #2980b9;
-      transform: translateY(-2px);
-    }
-    
-    /* Responsif */
-    @media (max-width: 768px) {
-      .user-message, .bot-message, .typing-indicator {
-        margin-left: 5%;
-        margin-right: 5%;
-      }
-      
-      .message-content {
-        font-size: 14px;
-      }
-      
-      .message-content table {
-        font-size: 0.85em;
-      }
-      
-      .message-content th, .message-content td {
-        padding: 10px 8px;
-      }
-      
-      .avatar {
-        width: 24px;
-        height: 24px;
-        font-size: 12px;
-      }
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Helper - PuffOff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Input area styling */
-    .ui.form {
-      background: white;
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
-      margin-top: 16px;
-    }
-    
-    .ui.form input {
-      border-radius: 25px !important;
-      padding: 12px 20px !important;
-      border: 2px solid #e9ecef !important;
-      font-size: 15px !important;
-    }
-    
-    .ui.form input:focus {
-      border-color: #3498db !important;
-      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1) !important;
-    }
-    
-    .ui.form button {
-      border-radius: 25px !important;
-      padding: 12px 24px !important;
-      font-weight: 600 !important;
-      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
-      border: none !important;
-    }
-    
-    .ui.form button:hover {
-      background: linear-gradient(135deg, #2980b9 0%, #1f4e79 100%) !important;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3) !important;
-    }
-  </style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            max-height: calc(100vh - 200px);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bot-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .bot-status {
+            flex: 1;
+        }
+
+        .bot-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .bot-online {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message-bot {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: 20px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message-user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 8px;
+        }
+
+        .message-bot .message-bubble {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .message-content {
+            line-height: 1.6;
+        }
+
+        .message-content h1, .message-content h2, .message-content h3 {
+            color: #1f2937;
+            margin: 12px 0 8px;
+            font-weight: 600;
+        }
+
+        .message-content h1 { font-size: 1.3em; }
+        .message-content h2 { font-size: 1.1em; }
+        .message-content h3 { font-size: 1em; }
+
+        .message-content ul, .message-content ol {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .message-content li {
+            margin: 6px 0;
+        }
+
+        .message-content strong {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .message-content em {
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        .message-content blockquote {
+            border-left: 4px solid #667eea;
+            margin: 16px 0;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        .message-user .message-time {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px 20px 20px 8px;
+            max-width: 80%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-reply {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .quick-reply:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .suggested-prompts {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .suggested-prompts::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .suggested-prompts::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 2px;
+        }
+
+        .suggested-prompts::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+
+        .prompt-chip {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.8rem;
+            color: #374151;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-chip:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input {
+            width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 12px 50px 12px 20px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+            resize: none;
+            min-height: 24px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-actions {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .input-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f1f5f9;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-btn:hover {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .send-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .scroll-to-bottom {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        .scroll-to-bottom.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .scroll-to-bottom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-boxes {
+            margin: 16px 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-left: 4px solid #10b981;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            border-left: 4px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6b7280;
+            transition: color 0.3s ease;
+            padding: 8px;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .message-bubble {
+                max-width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="ui container" style="margin-top: 40px; max-width: 900px;">
-  <h2 class="ui header center aligned">
-    <i class="robot icon"></i>
-    AI Chatbot PuffOff
-    <div class="sub header">Asisten virtual yang siap membantu Anda</div>
-  </h2>
-  
-  <div class="ui segment" id="chat-area" style="height: 500px; overflow-y: auto; padding: 24px;"></div>
-  
-  <form class="ui form" id="chatForm">
-    <div class="ui action input fluid">
-      <input type="text" id="userInput" placeholder="Ketik pertanyaan atau pesan Anda di sini..." autocomplete="off" required />
-      <button class="ui blue button" type="submit">
-        <i class="paper plane icon"></i>
-        Kirim
-      </button>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>AI Helper 🤖</h1>
+            <p>Asisten pintar untuk perjalanan bebas rokokmu</p>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="bot-avatar">🤖</div>
+                <div class="bot-status">
+                    <div class="bot-name">PuffBot</div>
+                    <div class="bot-online">
+                        <div class="status-dot"></div>
+                        Online
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn" onclick="clearChat()" title="Bersihkan Chat">
+                        <i class="fas fa-broom"></i>
+                    </button>
+                    <button class="action-btn" onclick="exportChat()" title="Export Chat">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be added here -->
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="chat-input-area">
+                <!-- Suggested Prompts -->
+                <div class="suggested-prompts" id="suggestedPrompts">
+                    <div class="prompt-chip" onclick="sendQuickMessage('Bagaimana cara mengatasi keinginan merokok?')">
+                        🚫 Tips mengatasi keinginan merokok
+                    </div>
+                    <div class="prompt-chip" onclick="sendQuickMessage('Apa manfaat berhenti merokok?')">
+                        ❤️ Manfaat berhenti merokok
+                    </div>
+                    <div class="prompt-chip" onclick="sendQuickMessage('Motivasi untuk tetap bebas rokok')">
+                        💪 Motivasi harian
+                    </div>
+                    <div class="prompt-chip" onclick="sendQuickMessage('Cara menghitung penghematan uang')">
+                        💰 Hitung penghematan
+                    </div>
+                </div>
+
+                <!-- Input Container -->
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea
+                            id="chatInput"
+                            class="chat-input"
+                            placeholder="Ketik pesan kamu di sini..."
+                            rows="1"
+                        ></textarea>
+                        <div class="input-actions">
+                            <button class="input-btn" onclick="attachFile()" title="Attach File">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll to Bottom Button -->
+        <button class="scroll-to-bottom" id="scrollToBottom" onclick="scrollToBottom()">
+            <i class="fas fa-chevron-down"></i>
+        </button>
     </div>
-  </form>
-</div>
 
-<button class="scroll-bottom" id="scrollButton" onclick="scrollToBottom()">
-  <i class="chevron down icon"></i>
-</button>
-
-<div class="ui bottom fixed menu green inverted">
-  <div class="ui container">
-    <a class="item" href="home.html"><i class="home icon"></i>Beranda</a>
-    <a class="item" href="progress.html"><i class="chart bar icon"></i>Progres</a>
-    <a class="item active" href="chatbot.html"><i class="comments icon"></i>Chatbot</a>
-    <a class="item" href="komunitas.html"><i class="users icon"></i>Komunitas</a>
-    <a class="item" href="target.html"><i class="target icon"></i>Target</a>
-    <a class="item" href="profile.html"><i class="user icon"></i>Profil</a>
-  </div>
-</div>
-
-<script>
-const chatArea = document.getElementById("chat-area");
-const scrollButton = document.getElementById("scrollButton");
-
-// Konfigurasi marked untuk markdown
-if (typeof marked !== 'undefined') {
-  marked.setOptions({
-    breaks: true,
-    gfm: true,
-    sanitize: false,
-    highlight: function(code, lang) {
-      if (typeof hljs !== 'undefined' && lang && hljs.getLanguage(lang)) {
-        try {
-          return hljs.highlight(code, { language: lang }).value;
-        } catch (err) {}
-      }
-      return code;
-    }
-  });
-}
-
-// Fungsi untuk memformat pesan dengan dukungan markdown dan formatting khusus
-function formatMessage(text) {
-  let formattedText = text;
-  
-  // Konversi markdown ke HTML
-  if (typeof marked !== 'undefined') {
-    formattedText = marked.parse(formattedText);
-  }
-  
-  // Format info boxes dengan ikon
-  formattedText = formattedText.replace(/\[INFO\](.*?)\[\/INFO\]/gs, '<div class="info-box"><strong>ℹ️ Informasi:</strong><br>$1</div>');
-  formattedText = formattedText.replace(/\[WARNING\](.*?)\[\/WARNING\]/gs, '<div class="warning-box"><strong>⚠️ Peringatan:</strong><br>$1</div>');
-  formattedText = formattedText.replace(/\[SUCCESS\](.*?)\[\/SUCCESS\]/gs, '<div class="success-box"><strong>✅ Berhasil:</strong><br>$1</div>');
-  formattedText = formattedText.replace(/\[TIP\](.*?)\[\/TIP\]/gs, '<div class="tip-box"><strong>💡 Tips:</strong><br>$1</div>');
-  
-  // Format highlight text
-  formattedText = formattedText.replace(/\=\=(.*?)\=\=/g, '<span class="highlight">$1</span>');
-  
-  // Format divider
-  formattedText = formattedText.replace(/---/g, '<div class="divider"></div>');
-  
-  return formattedText;
-}
-
-function getCurrentTime() {
-  return new Date().toLocaleTimeString('id-ID', { 
-    hour: '2-digit', 
-    minute: '2-digit' 
-  });
-}
-
-function appendMessage(sender, text, isTyping = false) {
-  const msg = document.createElement("div");
-  
-  if (sender === "user") {
-    msg.classList.add("user-message");
-    msg.innerHTML = `
-      <div class="message-header">
-        <div class="avatar user-avatar">👤</div>
-        <span>Anda</span>
-      </div>
-      <div class="message-content">${text}</div>
-      <div class="timestamp">${getCurrentTime()}</div>
-    `;
-  } else {
-    if (isTyping) {
-      msg.classList.add("typing-indicator");
-      msg.innerHTML = `
-        <div class="avatar bot-avatar">🤖</div>
-        <strong>PuffBot sedang mengetik</strong>
-        <div class="typing-dots">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="progress.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Progress</span>
+            </a>
+            <a href="chatbot.html" class="nav-item active">
+                <i class="fas fa-robot"></i>
+                <span>AI Helper</span>
+            </a>
+            <a href="komunitas.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Komunitas</span>
+            </a>
+            <a href="target.html" class="nav-item">
+                <i class="fas fa-bullseye"></i>
+                <span>Target</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
         </div>
-      `;
-    } else {
-      msg.classList.add("bot-message");
-      const formattedText = formatMessage(text);
-      msg.innerHTML = `
-        <div class="message-header">
-          <div class="avatar bot-avatar">🤖</div>
-          <span>PuffBot</span>
-        </div>
-        <div class="message-content">${formattedText}</div>
-        <div class="timestamp">${getCurrentTime()}</div>
-      `;
-    }
-  }
-  
-  chatArea.appendChild(msg);
-  scrollToBottom();
-  
-  // Highlight code jika ada
-  if (!isTyping && typeof hljs !== 'undefined') {
-    msg.querySelectorAll('pre code').forEach((block) => {
-      hljs.highlightElement(block);
-    });
-  }
-}
+    </div>
 
-function scrollToBottom() {
-  chatArea.scrollTop = chatArea.scrollHeight;
-  scrollButton.style.display = 'none';
-}
+    <script>
+        // Initialize marked for markdown parsing
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                sanitize: false
+            });
+        }
 
-// Show/hide scroll button
-chatArea.addEventListener('scroll', function() {
-  if (chatArea.scrollTop < chatArea.scrollHeight - chatArea.clientHeight - 100) {
-    scrollButton.style.display = 'block';
-  } else {
-    scrollButton.style.display = 'none';
-  }
-});
+        // Global variables
+        let conversationHistory = [];
+        let isTyping = false;
 
-async function sendMessage(event) {
-  event.preventDefault();
-  const input = document.getElementById("userInput");
-  const text = input.value.trim();
-  if (!text) return;
-  
-  appendMessage("user", text);
-  input.value = "";
-  
-  // Tampilkan typing indicator
-  appendMessage("bot", "", true);
-  
-  try {
-    const res = await fetch("https://puffoff-api.vercel.app/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text })
-    });
-    const data = await res.json();
-    
-    // Hapus typing indicator
-    chatArea.lastChild.remove();
-    
-    // Tampilkan respons yang diformat
-    appendMessage("bot", data.reply || "Maaf, saya tidak dapat memberikan respons saat ini. Silakan coba lagi.");
-  } catch (err) {
-    // Hapus typing indicator
-    chatArea.lastChild.remove();
-    appendMessage("bot", "[WARNING]Terjadi kesalahan koneksi. Pastikan koneksi internet Anda stabil dan coba lagi.[/WARNING]");
-  }
-}
+        // DOM elements
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const scrollBtn = document.getElementById('scrollToBottom');
 
-document.getElementById("chatForm").addEventListener("submit", sendMessage);
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            
+            // Update send button state
+            sendBtn.disabled = !this.value.trim();
+        });
 
-// Auto-focus pada input
-document.getElementById("userInput").focus();
+        // Send message on Enter (but not Shift+Enter)
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
 
-// Welcome message
-setTimeout(() => {
-  const welcomeMessage = `
-# Selamat datang! 👋
+        // Scroll detection
+        chatMessages.addEventListener('scroll', function() {
+            const isAtBottom = this.scrollTop >= this.scrollHeight - this.clientHeight - 50;
+            scrollBtn.classList.toggle('show', !isAtBottom);
+        });
 
-Halo! Saya **PuffBot**, asisten virtual Anda yang siap membantu dengan berbagai pertanyaan dan kebutuhan.
+        // Format message with enhanced markdown support
+        function formatMessage(text) {
+            let formattedText = text;
+            
+            // Convert markdown to HTML
+            if (typeof marked !== 'undefined') {
+                formattedText = marked.parse(formattedText);
+            }
+            
+            // Enhanced info boxes
+            formattedText = formattedText.replace(/\[INFO\](.*?)\[\/INFO\]/gs, '<div class="info-box"><strong>ℹ️ Informasi:</strong><br>$1</div>');
+            formattedText = formattedText.replace(/\[WARNING\](.*?)\[\/WARNING\]/gs, '<div class="warning-box"><strong>⚠️ Peringatan:</strong><br>$1</div>');
+            formattedText = formattedText.replace(/\[SUCCESS\](.*?)\[\/SUCCESS\]/gs, '<div class="success-box"><strong>✅ Berhasil:</strong><br>$1</div>');
+            formattedText = formattedText.replace(/\[TIP\](.*?)\[\/TIP\]/gs, '<div class="tip-box"><strong>💡 Tips:</strong><br>$1</div>');
+            
+            // Format special PuffOff content
+            formattedText = formattedText.replace(/\[MOTIVATION\](.*?)\[\/MOTIVATION\]/gs, '<div class="success-box"><strong>💪 Motivasi:</strong><br>$1</div>');
+            formattedText = formattedText.replace(/\[HEALTH\](.*?)\[\/HEALTH\]/gs, '<div class="info-box"><strong>❤️ Kesehatan:</strong><br>$1</div>');
+            
+            return formattedText;
+        }
 
-## Apa yang bisa saya bantu?
+        // Get current time
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString('id-ID', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
 
-- 💬 **Percakapan umum** - Chat santai atau diskusi berbagai topik
-- 📚 **Informasi & pengetahuan** - Fakta, penjelasan, dan pembelajaran
-- 💡 **Tips & saran** - Rekomendasi untuk berbagai situasi
-- 🔍 **Pencarian informasi** - Membantu mencari jawaban yang Anda butuhkan
-- 📝 **Bantuan penulisan** - Membantu menyusun teks, email, atau dokumen
-- 🧮 **Perhitungan sederhana** - Matematik dasar dan konversi
-- 🎯 **Perencanaan** - Membantu menyusun rencana atau strategi
+        // Add message to chat
+        function addMessage(content, isUser = false, showQuickReplies = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'message-user' : 'message-bot'}`;
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'message-bubble';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (isUser) {
+                contentDiv.textContent = content;
+            } else {
+                contentDiv.innerHTML = formatMessage(content);
+            }
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getCurrentTime();
+            
+            bubbleDiv.appendChild(contentDiv);
+            bubbleDiv.appendChild(timeDiv);
+            
+            // Add quick replies for bot messages
+            if (!isUser && showQuickReplies) {
+                const quickReplies = getQuickReplies(content);
+                if (quickReplies.length > 0) {
+                    const repliesDiv = document.createElement('div');
+                    repliesDiv.className = 'quick-replies';
+                    
+                    quickReplies.forEach(reply => {
+                        const replyBtn = document.createElement('button');
+                        replyBtn.className = 'quick-reply';
+                        replyBtn.textContent = reply;
+                        replyBtn.onclick = () => sendQuickMessage(reply);
+                        repliesDiv.appendChild(replyBtn);
+                    });
+                    
+                    bubbleDiv.appendChild(repliesDiv);
+                }
+            }
+            
+            messageDiv.appendChild(bubbleDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Store in conversation history
+            conversationHistory.push({
+                content,
+                isUser,
+                timestamp: new Date().toISOString()
+            });
+            
+            scrollToBottom();
+        }
 
----
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message message-bot';
+            typingDiv.id = 'typing-indicator';
+            
+            const typingBubble = document.createElement('div');
+            typingBubble.className = 'typing-indicator';
+            typingBubble.innerHTML = `
+                <span>PuffBot sedang mengetik</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            
+            typingDiv.appendChild(typingBubble);
+            chatMessages.appendChild(typingDiv);
+            scrollToBottom();
+        }
 
-[TIP]Untuk hasil terbaik, berikan pertanyaan yang jelas dan spesifik. Saya akan berusaha memberikan jawaban yang terstruktur dan mudah dipahami![/TIP]
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
 
-**Silakan mulai dengan mengetik pertanyaan atau topik yang ingin Anda diskusikan!** 😊
-  `;
-  
-  appendMessage("bot", welcomeMessage);
-}, 800);
-</script>
-</body>
-</html>
+        // Get contextual quick replies
+        function getQuickReplies(botMessage) {
+            const message = botMessage.toLowerCase();
+            
+            if (message.includes('keinginan merokok') || message.includes('craving')) {
+                return ['Latihan pernapasan', 'Aktivitas pengalih', 'Minta dukungan'];
+            }
+            
+            if (message.includes('manfaat') || message.includes('kesehatan')) {
+                return ['Manfaat lainnya?', 'Timeline pemulihan', 'Tips kesehatan'];
+            }
+            
+            if (message.includes('motivasi') || message.includes('semangat')) {
+                return ['Cerita sukses', 'Reminder harian', 'Komunitas support'];
+            }
+            
+            if (message.includes('penghematan') || message.includes('uang')) {
+                return ['Hitung detail', 'Investasi sehat', 'Target tabungan'];
+            }
+            
+            return ['Terima kasih', 'Tanya lagi', 'Bantuan lain'];
+        }
+
+        // Send message
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message || isTyping) return;
+            
+            // Add user message
+            addMessage(message, true);
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            sendBtn.disabled = true;
+            isTyping = true;
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+                
+                // Hide typing indicator
+                hideTypingIndicator();
+                
+                // Get bot response
+                const response = await getBotResponse(message);
+                addMessage(response, false, true);
+                
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('[WARNING]Maaf, terjadi kesalahan koneksi. Silakan coba lagi.[/WARNING]', false);
+            }
+            
+            isTyping = false;
+            chatInput.focus();
+        }
+
+        // Send quick message
+        function sendQuickMessage(message) {
+            chatInput.value = message;
+            sendMessage();
+        }
+
+        // Get bot response (mock implementation)
+        async function getBotResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            // PuffOff specific responses
+            if (message.includes('keinginan merokok') || message.includes('ingin merokok') || message.includes('craving')) {
+                return `# Tips Mengatasi Keinginan Merokok 🚫
+
+[TIP]Keinginan merokok biasanya hanya berlangsung 3-5 menit. Kamu bisa mengatasinya![/TIP]
+
+## Teknik Segera:
+- **Teknik 4-7-8**: Tarik napas 4 detik, tahan 7 detik, hembuskan 8 detik
+- **Minum air putih**: Hidrasi membantu mengurangi craving
+- **Gigit sesuatu**: Wortel, apel, atau permen bebas gula
+- **Ubah posisi**: Berdiri, jalan-jalan, atau stretch
+
+## Pengalihan Jangka Pendek:
+- 🎵 Dengarkan musik favorit
+- 📱 Chat dengan teman atau keluarga
+- 🎮
