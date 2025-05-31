@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda - PuffOff</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>PuffOff - Bebas Rokok Bersama</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -20,188 +20,316 @@
         }
 
         .container {
-            max-width: 400px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 20px;
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            margin-bottom: 30px;
+            padding-top: 20px;
         }
 
-        .welcome-text {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d3748;
+        .greeting {
+            font-size: 1.2rem;
             margin-bottom: 8px;
+            opacity: 0.9;
         }
 
-        .welcome-subtitle {
-            color: #4a5568;
-            font-size: 16px;
-            line-height: 1.5;
+        .main-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
         }
 
-        .streak-number {
-            color: #48bb78;
-            font-weight: 800;
-            font-size: 18px;
+        .streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: white;
             border-radius: 16px;
-            padding: 20px 15px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
 
         .stat-icon {
-            font-size: 24px;
-            margin-bottom: 10px;
-            display: block;
+            font-size: 2rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .stat-icon.days { color: #4299e1; }
-        .stat-icon.cigarettes { color: #ed8936; }
-        .stat-icon.money { color: #48bb78; }
-
         .stat-value {
-            font-size: 22px;
-            font-weight: 800;
-            color: #2d3748;
-            margin-bottom: 5px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
         }
 
         .stat-label {
-            font-size: 12px;
-            color: #718096;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
-        .quick-actions {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .section {
+            background: white;
             border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
         .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
         }
 
-        .actions-grid {
+        .section-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+
+        .emergency-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .emergency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .emergency-btn:active {
+            transform: scale(0.98);
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#667eea 0deg, #667eea 252deg, #e5e7eb 252deg, #e5e7eb 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .progress-circle::before {
+            content: '';
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+        }
+
+        .progress-text {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .progress-percentage {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .progress-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .daily-checkin {
+            text-align: center;
+        }
+
+        .mood-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .mood-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .mood-btn:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
+        .mood-btn.selected {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .quote-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+            margin-top: 16px;
+        }
+
+        .quote-text {
+            font-style: italic;
+            color: #374151;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .quick-actions {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
 
         .action-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
+            background: white;
+            border: 2px solid #e5e7eb;
             border-radius: 12px;
-            padding: 15px 10px;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            padding: 16px 12px;
+            text-align: center;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #374151;
         }
 
         .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            color: white;
-            text-decoration: none;
+            border-color: #667eea;
+            background: #f8fafc;
+            transform: translateY(-2px);
         }
 
-        .action-btn i {
-            font-size: 20px;
+        .action-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 8px;
         }
 
-        .progress-ring {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 20px auto;
+        .action-label {
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
-        .progress-ring-circle {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(#48bb78 0deg, #48bb78 72deg, #e2e8f0 72deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .progress-ring-circle::before {
-            content: '';
-            position: absolute;
-            width: 80%;
-            height: 80%;
-            background: white;
-            border-radius: 50%;
-        }
-
-        .progress-content {
-            position: relative;
-            z-index: 1;
+        .milestone-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 2px solid #f59e0b;
             text-align: center;
         }
 
-        .progress-days {
-            font-size: 28px;
-            font-weight: 800;
-            color: #2d3748;
-            line-height: 1;
+        .milestone-icon {
+            font-size: 2rem;
+            color: #f59e0b;
+            margin-bottom: 12px;
         }
 
-        .progress-label {
-            font-size: 10px;
-            color: #718096;
-            font-weight: 600;
-            text-transform: uppercase;
+        .milestone-title {
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .milestone-desc {
+            color: #b45309;
+            margin-bottom: 12px;
+        }
+
+        .milestone-progress {
+            background: rgba(245, 158, 11, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .milestone-progress-bar {
+            height: 100%;
+            background: #f59e0b;
+            width: 70%;
+            transition: width 0.3s ease;
         }
 
         .bottom-nav {
@@ -209,9 +337,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            background: white;
+            border-top: 1px solid #e5e7eb;
             padding: 12px 0;
             z-index: 1000;
         }
@@ -228,267 +355,328 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
             text-decoration: none;
-            color: #718096;
+            color: #6b7280;
             transition: color 0.3s ease;
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
+            padding: 8px;
         }
 
         .nav-item.active {
             color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        .nav-item:hover {
-            color: #667eea;
-            text-decoration: none;
         }
 
         .nav-item i {
-            font-size: 18px;
+            font-size: 1.2rem;
+            margin-bottom: 4px;
         }
 
-        .motivational-quote {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: center;
-            border-left: 4px solid #48bb78;
-        }
-
-        .quote-text {
-            font-style: italic;
-            color: #4a5568;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
-
-        .quote-author {
-            font-size: 12px;
-            color: #718096;
-            font-weight: 600;
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 15px;
+                padding: 16px;
             }
             
             .stats-grid {
-                gap: 10px;
+                grid-template-columns: 1fr;
             }
             
-            .stat-card {
-                padding: 15px 10px;
+            .main-title {
+                font-size: 1.8rem;
             }
             
-            .actions-grid {
-                gap: 8px;
+            .quick-actions {
+                grid-template-columns: 1fr;
             }
-            
-            .action-btn {
-                padding: 12px 8px;
-                font-size: 11px;
-            }
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .celebration {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .celebration::before {
-            content: '🎉';
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            font-size: 20px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Welcome Header -->
-        <div class="header celebration">
-            <div class="welcome-text">Selamat datang, John! 👋</div>
-            <div class="welcome-subtitle">
-                Kamu sudah bebas rokok selama <span class="streak-number">5 hari</span><br>
-                Lanjutkan perjalanan sehatmu!
+        <!-- Header -->
+        <div class="header">
+            <div class="greeting">Selamat pagi, <strong>Ahmad!</strong> 👋</div>
+            <h1 class="main-title">Hari yang Produktif</h1>
+            <div class="streak-badge">
+                <i class="fas fa-fire"></i>
+                <span>Streak 7 Hari</span>
             </div>
-            
-            <!-- Progress Ring -->
-            <div class="progress-ring">
-                <div class="progress-ring-circle">
-                    <div class="progress-content">
-                        <div class="progress-days">5</div>
-                        <div class="progress-label">Hari</div>
-                    </div>
+        </div>
+
+        <!-- Emergency Button -->
+        <button class="emergency-btn" onclick="handleEmergency()">
+            <i class="fas fa-exclamation-triangle"></i>
+            Butuh Bantuan Sekarang!
+        </button>
+
+        <!-- Next Milestone -->
+        <div class="milestone-card">
+            <div class="milestone-icon">🎯</div>
+            <div class="milestone-title">Target Berikutnya: 2 Minggu</div>
+            <div class="milestone-desc">Kamu sudah 70% menuju target 2 minggu bebas rokok!</div>
+            <div class="milestone-progress">
+                <div class="milestone-progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Hari Bebas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value">Rp 210K</div>
+                <div class="stat-label">Dihemat</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚫</div>
+                <div class="stat-value">84</div>
+                <div class="stat-label">Rokok Dihindari</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-value">78%</div>
+                <div class="stat-label">Health Score</div>
+            </div>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-chart-pie"></i>
+                Progress Hari Ini
+            </div>
+            <div class="progress-circle">
+                <div class="progress-text">
+                    <div class="progress-percentage">70%</div>
+                    <div class="progress-label">Target Tercapai</div>
                 </div>
             </div>
         </div>
 
-        <!-- Statistics -->
-        <div class="stats-grid">
-            <div class="stat-card pulse">
-                <i class="fas fa-calendar-check stat-icon days"></i>
-                <div class="stat-value">5</div>
-                <div class="stat-label">Hari Bebas</div>
+        <!-- Daily Check-in -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-heart"></i>
+                Check-in Harian
             </div>
-            <div class="stat-card">
-                <i class="fas fa-smoking-ban stat-icon cigarettes"></i>
-                <div class="stat-value">100</div>
-                <div class="stat-label">Rokok Dihindari</div>
+            <div class="daily-checkin">
+                <p style="color: #6b7280; margin-bottom: 16px;">Bagaimana perasaanmu hari ini?</p>
+                <div class="mood-buttons">
+                    <button class="mood-btn" onclick="selectMood(this, 'great')">😄</button>
+                    <button class="mood-btn" onclick="selectMood(this, 'good')">😊</button>
+                    <button class="mood-btn" onclick="selectMood(this, 'okay')">😐</button>
+                    <button class="mood-btn" onclick="selectMood(this, 'bad')">😕</button>
+                    <button class="mood-btn" onclick="selectMood(this, 'terrible')">😢</button>
+                </div>
+                <div class="quote-card">
+                    <div class="quote-text">"Setiap hari tanpa rokok adalah kemenangan kecil yang membawa kamu lebih dekat ke kehidupan yang lebih sehat."</div>
+                    <div class="quote-author">- PuffOff Team</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-coins stat-icon money"></i>
-                <div class="stat-value">150K</div>
-                <div class="stat-label">Uang Disimpan</div>
-            </div>
-        </div>
-
-        <!-- Motivational Quote -->
-        <div class="motivational-quote">
-            <div class="quote-text">"Setiap hari tanpa rokok adalah kemenangan kecil yang membawa pada kesuksesan besar."</div>
-            <div class="quote-author">- Tim PuffOff</div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="quick-actions">
+        <div class="section">
             <div class="section-title">
-                <i class="fas fa-bolt"></i>
-                Akses Cepat
+                <i class="section-icon fas fa-bolt"></i>
+                Aksi Cepat
             </div>
-            <div class="actions-grid">
+            <div class="quick-actions">
+                <a href="progress.html" class="action-btn">
+                    <div class="action-icon">📊</div>
+                    <div class="action-label">Lapor Progress</div>
+                </a>
+                <a href="chatbot.html" class="action-btn">
+                    <div class="action-icon">🤖</div>
+                    <div class="action-label">Chat AI Helper</div>
+                </a>
                 <a href="target.html" class="action-btn">
-                    <i class="fas fa-bullseye"></i>
-                    Target
-                </a>
-                <a href="komunitas.html" class="action-btn">
-                    <i class="fas fa-users"></i>
-                    Komunitas
-                </a>
-                <a href="tips.html" class="action-btn">
-                    <i class="fas fa-lightbulb"></i>
-                    Tips
+                    <div class="action-icon">🎯</div>
+                    <div class="action-label">Lihat Target</div>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - SAMA DENGAN PROGRESS PAGE -->
     <div class="bottom-nav">
         <div class="nav-container">
             <a href="home.html" class="nav-item active">
                 <i class="fas fa-home"></i>
-                Beranda
+                <span>Beranda</span>
             </a>
             <a href="progress.html" class="nav-item">
-                <i class="fas fa-chart-line"></i>
-                Progres
+                <i class="fas fa-chart-bar"></i>
+                <span>Progress</span>
             </a>
             <a href="chatbot.html" class="nav-item">
                 <i class="fas fa-robot"></i>
-                Chatbot
+                <span>AI Helper</span>
             </a>
             <a href="komunitas.html" class="nav-item">
                 <i class="fas fa-users"></i>
-                Komunitas
+                <span>Komunitas</span>
+            </a>
+            <a href="target.html" class="nav-item">
+                <i class="fas fa-bullseye"></i>
+                <span>Target</span>
             </a>
             <a href="profile.html" class="nav-item">
                 <i class="fas fa-user"></i>
-                Profil
+                <span>Profil</span>
             </a>
         </div>
     </div>
 
     <script>
-        // Simple animations and interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate stats on load
-            const statCards = document.querySelectorAll('.stat-card');
-            statCards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    card.style.transition = 'all 0.6s ease';
-                    
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 100);
-                }, index * 200);
+        // Mood selection
+        function selectMood(button, mood) {
+            // Remove selected class from all buttons
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('selected');
             });
-
-            // Update progress ring based on days
-            const days = 5;
-            const maxDays = 30; // Target for first month
-            const percentage = (days / maxDays) * 360;
-            const progressRing = document.querySelector('.progress-ring-circle');
-            progressRing.style.background = `conic-gradient(#48bb78 0deg, #48bb78 ${percentage}deg, #e2e8f0 ${percentage}deg)`;
-
-            // Add click feedback to action buttons
-            const actionBtns = document.querySelectorAll('.action-btn');
-            actionBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                });
-            });
-
-            // Dynamic greeting based on time
-            const currentHour = new Date().getHours();
-            let greeting = 'Selamat datang';
             
-            if (currentHour < 12) {
-                greeting = 'Selamat pagi';
-            } else if (currentHour < 17) {
-                greeting = 'Selamat siang';
-            } else {
-                greeting = 'Selamat malam';
-            }
+            // Add selected class to clicked button
+            button.classList.add('selected');
             
-            document.querySelector('.welcome-text').textContent = `${greeting}, John! 👋`;
-        });
-
-        // Add some interactive features
-        function celebrateMilestone() {
-            const header = document.querySelector('.header');
-            header.style.animation = 'pulse 0.6s ease-in-out';
-            setTimeout(() => {
-                header.style.animation = '';
-            }, 600);
+            // Store mood and show feedback
+            localStorage.setItem('todayMood', mood);
+            showNotification('Mood tersimpan! Tetap semangat! 💪', 'success');
+            
+            // Update quote based on mood
+            updateQuoteBasedOnMood(mood);
         }
 
-        // Simulate milestone celebration for demo
-        setTimeout(celebrateMilestone, 2000);
+        // Update quote based on selected mood
+        function updateQuoteBasedOnMood(mood) {
+            const quotes = {
+                great: {
+                    text: "Energi positifmu hari ini luar biasa! Terus pertahankan semangat bebas rokok ini.",
+                    author: "- Stay Strong"
+                },
+                good: {
+                    text: "Hari yang baik untuk terus melanjutkan perjalanan sehatmu tanpa rokok.",
+                    author: "- Keep Going"
+                },
+                okay: {
+                    text: "Hari biasa-biasa saja? Tidak apa-apa. Yang penting kamu tetap konsisten tanpa rokok.",
+                    author: "- One Day at a Time"
+                },
+                bad: {
+                    text: "Hari yang berat? Ingatlah bahwa tidak merokok adalah satu hal positif yang sudah kamu lakukan hari ini.",
+                    author: "- Every Step Counts"
+                },
+                terrible: {
+                    text: "Hari yang sangat sulit? Kamu tidak sendirian. Tim PuffOff dan komunitas selalu siap membantumu.",
+                    author: "- We're Here for You"
+                }
+            };
+
+            const quoteCard = document.querySelector('.quote-card');
+            const selectedQuote = quotes[mood];
+            
+            if (selectedQuote) {
+                quoteCard.innerHTML = `
+                    <div class="quote-text">${selectedQuote.text}</div>
+                    <div class="quote-author">${selectedQuote.author}</div>
+                `;
+            }
+        }
+
+        // Handle emergency button
+        function handleEmergency() {
+            const emergencyOptions = [
+                "🧘 Latihan Pernapasan 2 Menit",
+                "🚶 Jalan Kaki Sebentar",
+                "💧 Minum Air Putih",
+                "📱 Chat dengan Komunitas",
+                "🎵 Dengarkan Musik Favorit"
+            ];
+            
+            const randomOption = emergencyOptions[Math.floor(Math.random() * emergencyOptions.length)];
+            
+            if (confirm(`Butuh bantuan mengatasi keinginan merokok?\n\nSaran: ${randomOption}\n\nApakah kamu ingin mencoba sekarang?`)) {
+                showNotification('Kamu bisa melakukannya! 💪 Ingat tujuanmu.', 'success');
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#667eea'};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 600;
+                max-width: 300px;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Load saved mood on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedMood = localStorage.getItem('todayMood');
+            if (savedMood) {
+                const moodButtons = {
+                    'great': 0,
+                    'good': 1, 
+                    'okay': 2,
+                    'bad': 3,
+                    'terrible': 4
+                };
+                
+                const buttonIndex = moodButtons[savedMood];
+                if (buttonIndex !== undefined) {
+                    const button = document.querySelectorAll('.mood-btn')[buttonIndex];
+                    button.classList.add('selected');
+                    updateQuoteBasedOnMood(savedMood);
+                }
+            }
+            
+            // Animate stats on load
+            animateStats();
+        });
+
+        // Animate statistics
+        function animateStats() {
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach((stat, index) => {
+                setTimeout(() => {
+                    stat.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        stat.style.transform = 'scale(1)';
+                    }, 200);
+                }, index * 100);
+            });
+        }
     </script>
 </body>
 </html>
