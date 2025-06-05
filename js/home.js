@@ -1,4 +1,4 @@
-
+// Global variables
 let currentHealthLevel = 4;
 let notificationCounter = 0;
 let isLevelChanging = false;
