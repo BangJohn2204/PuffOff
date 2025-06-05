@@ -1,4 +1,1783 @@
-/* Reset dan Base Styles */
+/* Standing Human Figure */
+.avatar-body {
+    position: relative;
+    width: 180px;
+    height: 320px;
+    margin: 0 auto;
+    z-index: 1;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 15px 35px rgba(0,0,0,0.2));
+    animation: gentle-sway 4s ease-in-out infinite;
+}
+
+@keyframes gentle-sway {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(2px) rotate(0.5deg); }
+    75% { transform: translateX(-2px) rotate(-0.5deg); }
+}
+
+/* Head */
+.avatar-head {
+    width: 60px;
+    height: 75px;
+    border-radius: 50% 50% 45% 45%;
+    background: 
+        radial-gradient(ellipse at 35% 25%, #fde68a, #fbbf24),
+        linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    margin: 0 auto 8px;
+    position: relative;
+    box-shadow: 
+        0 12px 30px rgba(251, 191, 36, 0.4),
+        inset 0 5px 15px rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    transition: all 0.6s ease;
+    animation: head-movement 6s ease-in-out infinite;
+}
+
+@keyframes head-movement {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Hair */
+.avatar-head::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 10%;
+    width: 80%;
+    height: 30px;
+    background: radial-gradient(ellipse at 50% 100%, #8b4513, #654321);
+    border-radius: 50% 50% 20% 20%;
+    z-index: 1;
+}
+
+/* Face Features */
+.face-features {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 60%;
+    z-index: 2;
+}
+
+.eyes {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    z-index: 3;
+}
+
+.eye {
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at center, #ffffff 0%, #f8fafc 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        inset 0 2px 4px rgba(0,0,0,0.15),
+        0 2px 6px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    animation: eye-blink 5s ease-in-out infinite;
+}
+
+@keyframes eye-blink {
+    0%, 90%, 100% { height: 12px; }
+    95% { height: 2px; }
+}
+
+.pupil {
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle at 35% 25%, #4a5568, #1a202c);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+    animation: pupil-movement 8s ease-in-out infinite;
+}
+
+@keyframes pupil-movement {
+    0%, 100% { transform: translate(-50%, -50%); }
+    25% { transform: translate(-45%, -50%); }
+    75% { transform: translate(-55%, -50%); }
+}
+
+.pupil::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    width: 2px;
+    height: 2px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+}
+
+/* Nose */
+.nose {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 8px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.2));
+    border-radius: 2px;
+}
+
+/* Mouth */
+.mouth {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 8px;
+    border-radius: 0 0 16px 16px;
+    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3);
+    animation: mouth-movement 7s ease-in-out infinite;
+}
+
+@keyframes mouth-movement {
+    0%, 100% { transform: translateX(-50%) scaleY(1); }
+    50% { transform: translateX(-50%) scaleY(1.1); }
+}
+
+/* Mouth expressions */
+.mouth.very-sad {
+    background: linear-gradient(0deg, #ef4444 0%, #dc2626 100%);
+    border-radius: 16px 16px 0 0;
+    transform: translateX(-50%) rotate(180deg);
+    width: 20px;
+    height: 10px;
+}
+
+.mouth.sad {
+    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+    border-radius: 8px;
+    height: 4px;
+    width: 18px;
+}
+
+.mouth.neutral {
+    background: linear-gradient(90deg, #eab308 0%, #ca8a04 100%);
+    border-radius: 2px;
+    height: 3px;
+    width: 14px;
+}
+
+.mouth.happy {
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+    border-radius: 0 0 12px 12px;
+    height: 6px;
+    width: 16px;
+}
+
+.mouth.very-happy {
+    background: linear-gradient(180deg, #059669 0%, #047857 100%);
+    border-radius: 0 0 20px 20px;
+    height: 10px;
+    width: 22px;
+}
+
+/* Health Aura */
+.health-aura {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.2) 40%, transparent 70%);
+    animation: pulse-aura 3s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.health-aura.active {
+    opacity: 1;
+}
+
+@keyframes pulse-aura {
+    0%, 100% { 
+        transform: scale(1); 
+        opacity: 0.4; 
+    }
+    50% { 
+        transform: scale(1.2); 
+        opacity: 0.8; 
+    }
+}
+
+/* Neck */
+.avatar-neck {
+    width: 25px;
+    height: 20px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    margin: 0 auto 5px;
+    border-radius: 8px;
+    box-shadow: 
+        0 4px 12px rgba(251, 191, 36, 0.3),
+        inset 0 2px 6px rgba(255, 255, 255, 0.2);
+    animation: neck-pulse 3s ease-in-out infinite;
+}
+
+@keyframes neck-pulse {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.05); }
+}
+
+/* Torso */
+.avatar-torso {
+    width: 100px;
+    height: 140px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(30, 64, 175, 0.3) 100%);
+    margin: 0 auto 8px;
+    border-radius: 25px 25px 35px 35px;
+    position: relative;
+    box-shadow: 
+        0 12px 30px rgba(59, 130, 246, 0.3),
+        inset 0 6px 15px rgba(255, 255, 255, 0.2);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    animation: breathing 4s ease-in-out infinite;
+}
+
+@keyframes breathing {
+    0%, 100% { transform: scaleY(1) scaleX(1); }
+    50% { transform: scaleY(1.03) scaleX(1.01); }
+}
+
+/* Ribcage */
+.ribcage {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 100px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 40px 40px 20px 20px;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+}
+
+.ribcage::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    right: 10px;
+    height: 60px;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(255, 255, 255, 0.2) 8px,
+        rgba(255, 255, 255, 0.2) 10px
+    );
+    border-radius: 20px;
+}
+
+/* Organ System */
+.organ-system {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Lungs */
+.lungs {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    transition: all 0.6s ease;
+    z-index: 3;
+}
+
+.lung {
+    width: 25px;
+    height: 45px;
+    border-radius: 12px 12px 20px 20px;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        inset 0 4px 12px rgba(0,0,0,0.2),
+        0 6px 18px rgba(239, 68, 68, 0.3);
+    animation: lung-breathing 4s ease-in-out infinite;
+}
+
+@keyframes lung-breathing {
+    0%, 100% { 
+        transform: scaleY(1) scaleX(1);
+        box-shadow: inset 0 4px 12px rgba(0,0,0,0.2), 0 6px 18px rgba(239, 68, 68, 0.3);
+    }
+    50% { 
+        transform: scaleY(1.08) scaleX(1.03);
+        box-shadow: inset 0 4px 12px rgba(0,0,0,0.1), 0 8px 25px rgba(239, 68, 68, 0.4);
+    }
+}
+
+.lung::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 20%;
+    width: 60%;
+    height: 70%;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.2) 0px,
+            rgba(255, 255, 255, 0.2) 2px,
+            transparent 2px,
+            transparent 6px
+        );
+    border-radius: 8px;
+}
+
+.lung::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 15px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
+    border-radius: 3px;
+}
+
+.lungs.healthy .lung {
+    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+    box-shadow: 
+        inset 0 4px 12px rgba(0,0,0,0.1),
+        0 8px 25px rgba(16, 185, 129, 0.5),
+        0 0 30px rgba(16, 185, 129, 0.3);
+    animation: lung-breathing-healthy 4s ease-in-out infinite;
+}
+
+@keyframes lung-breathing-healthy {
+    0%, 100% { 
+        transform: scaleY(1) scaleX(1);
+        box-shadow: inset 0 4px 12px rgba(0,0,0,0.1), 0 8px 25px rgba(16, 185, 129, 0.5);
+    }
+    50% { 
+        transform: scaleY(1.1) scaleX(1.05);
+        box-shadow: inset 0 4px 12px rgba(0,0,0,0.05), 0 12px 35px rgba(16, 185, 129, 0.6);
+    }
+}
+
+.lungs.moderate .lung {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+    box-shadow: 
+        inset 0 4px 12px rgba(0,0,0,0.15),
+        0 8px 22px rgba(245, 158, 11, 0.4);
+}
+
+/* Heart */
+.heart {
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 28px;
+    position: relative;
+    transition: all 0.6s ease;
+    z-index: 4;
+    animation: heartbeat 1.2s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { 
+        transform: translateX(-50%) scale(1);
+    }
+    14% { 
+        transform: translateX(-50%) scale(1.15);
+    }
+    28% { 
+        transform: translateX(-50%) scale(1);
+    }
+    42% { 
+        transform: translateX(-50%) scale(1.15);
+    }
+    70% { 
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+.heart-chambers {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.chamber {
+    position: absolute;
+    width: 15px;
+    height: 20px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+    border-radius: 7px 7px 0 7px;
+    box-shadow: 
+        0 4px 12px rgba(0,0,0,0.3),
+        inset 0 2px 6px rgba(255, 255, 255, 0.2);
+    transition: all 0.6s ease;
+}
+
+.left-chamber {
+    left: 1px;
+    transform: rotate(-45deg);
+    animation: chamber-pulse-left 1.2s ease-in-out infinite;
+}
+
+.right-chamber {
+    right: 1px;
+    transform: rotate(45deg);
+    animation: chamber-pulse-right 1.2s ease-in-out infinite;
+}
+
+@keyframes chamber-pulse-left {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    14%, 42% { transform: rotate(-45deg) scale(1.1); }
+}
+
+@keyframes chamber-pulse-right {
+    0%, 100% { transform: rotate(45deg) scale(1); }
+    14%, 42% { transform: rotate(45deg) scale(1.1); }
+}
+
+.heart::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3));
+    border-radius: 1px;
+}
+
+.heart::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 8px;
+    background: linear-gradient(180deg, #ef4444, #dc2626);
+    border-radius: 2px;
+}
+
+.heart.healthy .chamber {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 40%, #b91c1c 100%);
+    box-shadow: 
+        0 4px 15px rgba(0,0,0,0.2),
+        0 0 20px rgba(239, 68, 68, 0.6),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Blood Vessels */
+.blood-vessels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all 0.6s ease;
+    z-index: 2;
+}
+
+.vessel {
+    position: absolute;
+    background: 
+        linear-gradient(90deg, 
+            rgba(239, 68, 68, 0.7) 0%, 
+            rgba(59, 130, 246, 0.7) 50%, 
+            rgba(239, 68, 68, 0.7) 100%);
+    border-radius: 3px;
+    animation: blood-flow 3s linear infinite;
+    box-shadow: 
+        0 2px 6px rgba(0,0,0,0.2),
+        inset 0 1px 2px rgba(255,255,255,0.3);
+    transition: all 0.6s ease;
+}
+
+@keyframes blood-flow {
+    0% { 
+        background-position: 0% 50%;
+        opacity: 0.6;
+    }
+    50% { 
+        background-position: 100% 50%;
+        opacity: 0.9;
+    }
+    100% { 
+        background-position: 200% 50%;
+        opacity: 0.6;
+    }
+}
+
+.vessel-1 {
+    top: 30px;
+    left: 20px;
+    width: 28px;
+    height: 3px;
+    transform: rotate(15deg);
+}
+
+.vessel-2 {
+    top: 50px;
+    right: 18px;
+    width: 22px;
+    height: 3px;
+    transform: rotate(-20deg);
+}
+
+.vessel-3 {
+    bottom: 45px;
+    left: 25px;
+    width: 32px;
+    height: 3px;
+    transform: rotate(25deg);
+}
+
+.vessel-4 {
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 20px;
+}
+
+.blood-vessels.healthy .vessel {
+    background: 
+        linear-gradient(90deg, 
+            rgba(239, 68, 68, 0.8) 0%, 
+            rgba(16, 185, 129, 0.8) 50%, 
+            rgba(239, 68, 68, 0.8) 100%);
+    animation-duration: 2s;
+    box-shadow: 
+        0 2px 8px rgba(16, 185, 129, 0.3),
+        inset 0 1px 3px rgba(255,255,255,0.4);
+}
+
+/* Arms */
+.avatar-arms {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -50px;
+    padding: 0 -10px;
+    position: relative;
+    z-index: 1;
+    animation: arm-sway 5s ease-in-out infinite;
+}
+
+@keyframes arm-sway {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+.arm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.4s ease;
+}
+
+.shoulder {
+    width: 24px;
+    height: 32px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    border-radius: 12px;
+    box-shadow: 
+        0 6px 18px rgba(251, 191, 36, 0.4),
+        inset 0 4px 12px rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    position: relative;
+    animation: shoulder-movement 6s ease-in-out infinite;
+}
+
+@keyframes shoulder-movement {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-1px) rotate(2deg); }
+    66% { transform: translateY(1px) rotate(-2deg); }
+}
+
+.forearm {
+    width: 18px;
+    height: 45px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    border-radius: 9px;
+    margin-top: 4px;
+    box-shadow: 
+        0 4px 15px rgba(251, 191, 36, 0.3),
+        inset 0 3px 8px rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    position: relative;
+    animation: forearm-movement 7s ease-in-out infinite;
+}
+
+@keyframes forearm-movement {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-1px); }
+}
+
+.left-arm {
+    transform: rotate(-8deg);
+    animation: left-arm-swing 8s ease-in-out infinite;
+}
+
+.right-arm {
+    transform: rotate(8deg);
+    animation: right-arm-swing 8s ease-in-out infinite;
+}
+
+@keyframes left-arm-swing {
+    0%, 100% { transform: rotate(-8deg); }
+    50% { transform: rotate(-12deg); }
+}
+
+@keyframes right-arm-swing {
+    0%, 100% { transform: rotate(8deg); }
+    50% { transform: rotate(12deg); }
+}
+
+/* Legs */
+.avatar-legs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 5px;
+    animation: leg-shift 6s ease-in-out infinite;
+}
+
+@keyframes leg-shift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(1px); }
+}
+
+.leg {
+    width: 20px;
+    height: 50px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    border-radius: 10px 10px 8px 8px;
+    box-shadow: 
+        0 4px 15px rgba(251, 191, 36, 0.3),
+        inset 0 3px 8px rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    position: relative;
+    animation: leg-movement 5s ease-in-out infinite;
+}
+
+@keyframes leg-movement {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.02); }
+}
+
+/* Feet */
+.avatar-feet {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.foot {
+    width: 15px;
+    height: 8px;
+    background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+    border-radius: 4px 8px 2px 2px;
+    box-shadow: 
+        0 2px 8px rgba(146, 64, 14, 0.3),
+        inset 0 1px 3px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Health Indicators */
+.health-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    z-index: 10;
+}
+
+.indicator {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border-radius: 20px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 
+        0 6px 20px rgba(0,0,0,0.15),
+        inset 0 2px 6px rgba(255,255,255,0.8),
+        inset 0 -2px 6px rgba(0,0,0,0.05);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    min-width: 60px;
+    animation: indicator-pulse 3s ease-in-out infinite;
+}
+
+@keyframes indicator-pulse {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-1px); }
+}
+
+.indicator:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0,0,0,0.2),
+        inset 0 2px 8px rgba(255,255,255,0.9);
+}
+
+.indicator i {
+    font-size: 1rem;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    animation: icon-glow 2s ease-in-out infinite;
+}
+
+@keyframes icon-glow {
+    0%, 100% { filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); }
+    50% { filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2)); }
+}
+
+.oxygen-level {
+    color: #0ea5e9;
+    border-left: 4px solid #0ea5e9;
+}
+
+.heart-rate {
+    color: #ef4444;
+    border-left: 4px solid #ef4444;
+}
+
+/* Health Level Classes */
+.avatar-body.health-level-1 .mouth {
+    background: linear-gradient(0deg, #ef4444 0%, #dc2626 100%);
+    border-radius: 16px 16px 0 0;
+    transform: translateX(-50%) rotate(180deg);
+    width: 20px;
+    height: 10px;
+}
+
+.avatar-body.health-level-1 .pupil {
+    transform: translate(-70%, -70%);
+    background: radial-gradient(circle at 35% 25%, #ef4444, #991b1b);
+}
+
+.avatar-body.health-level-1 .avatar-head {
+    background: 
+        radial-gradient(ellipse at 35% 25%, #fca5a5, #f87171),
+        linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.avatar-body.health-level-1 .avatar-torso {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.4) 0%, rgba(153, 27, 27, 0.4) 100%);
+}
+
+.avatar-body.health-level-1 .health-aura {
+    opacity: 0;
+}
+
+.avatar-body.health-level-2 .mouth {
+    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+    border-radius: 8px;
+    height: 4px;
+    width: 18px;
+}
+
+.avatar-body.health-level-2 .pupil {
+    transform: translate(-60%, -60%);
+}
+
+.avatar-body.health-level-2 .avatar-torso {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.4) 0%, rgba(180, 83, 9, 0.4) 100%);
+}
+
+.avatar-body.health-level-3 .mouth {
+    background: linear-gradient(90deg, #eab308 0%, #ca8a04 100%);
+    border-radius: 2px;
+    height: 3px;
+    width: 14px;
+}
+
+.avatar-body.health-level-3 .pupil {
+    transform: translate(-50%, -50%);
+}
+
+.avatar-body.health-level-3 .avatar-torso {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.4) 0%, rgba(161, 98, 7, 0.4) 100%);
+}
+
+.avatar-body.health-level-4 .mouth {
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+    border-radius: 0 0 12px 12px;
+    height: 6px;
+    width: 16px;
+}
+
+.avatar-body.health-level-4 .pupil {
+    transform: translate(-40%, -40%);
+}
+
+.avatar-body.health-level-4 .avatar-torso {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(29, 78, 216, 0.4) 100%);
+}
+
+.avatar-body.health-level-4 .health-aura {
+    opacity: 0.7;
+}
+
+.avatar-body.health-level-5 .mouth {
+    background: linear-gradient(180deg, #059669 0%, #047857 100%);
+    border-radius: 0 0 20px 20px;
+    height: 10px;
+    width: 22px;
+}
+
+.avatar-body.health-level-5 .pupil {
+    transform: translate(-30%, -30%);
+}
+
+.avatar-body.health-level-5 .avatar-torso {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.5) 0%, rgba(4, 120, 87, 0.5) 100%);
+}
+
+.avatar-body.health-level-5 .health-aura {
+    opacity: 1;
+}
+
+/* Section Styles */
+.section {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Enhanced Health Info */
+.health-info {
+    text-align: left;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.health-level {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.health-label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.health-status {
+    font-weight: 700;
+    color: #10b981;
+    font-size: 1.1rem;
+}
+
+.health-level-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.health-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.health-bar {
+    flex: 1;
+    height: 16px;
+    background: #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+    border-radius: 8px;
+    width: 75%;
+    transition: all 0.6s ease;
+    position: relative;
+}
+
+.health-sparkle {
+    position: absolute;
+    top: 2px;
+    left: 10%;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+.health-percentage {
+    font-weight: 700;
+    color: #10b981;
+    min-width: 40px;
+}
+
+.health-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.health-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: #6b7280;
+    position: relative;
+}
+
+.health-item i {
+    color: #667eea;
+    width: 20px;
+    font-size: 1rem;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+.status-indicator.poor {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+.status-indicator.moderate {
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.status-indicator.healthy {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+/* Professional Controls */
+.avatar-controls {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    border: 2px solid #d1d5db;
+    border-radius: 16px;
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    min-width: 100px;
+}
+
+.control-btn i {
+    font-size: 1.2rem;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.control-btn.primary {
+    background: linear-gradient(135deg, #667eea, #5a67d8);
+    color: white;
+    border-color: #667eea;
+}
+
+.control-btn.primary:hover {
+    background: linear-gradient(135deg, #5a67d8, #4c51bf);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.decrease-btn:hover {
+    background: linear-gradient(135deg, #fecaca, #fca5a5);
+    border-color: #f87171;
+    color: #dc2626;
+}
+
+.btn-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.control-btn:hover .btn-effect {
+    left: 100%;
+}
+
+/* Notification Demo Styles */
+.notification-section {
+    background: linear-gradient(135deg, #fef7cd 0%, #fef3c7 100%);
+    border: 2px solid #f59e0b;
+}
+
+.notification-demo {
+    text-align: center;
+}
+
+.demo-description {
+    color: #92400e;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.show-notification-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 16px 32px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+}
+
+.show-notification-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+    background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.show-notification-btn:active {
+    transform: scale(0.98);
+}
+
+.btn-ripple {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.show-notification-btn:hover .btn-ripple {
+    left: 100%;
+}
+
+.notification-types {
+    color: #b45309;
+    font-style: italic;
+}
+
+/* Push Notification System */
+.push-notification-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20000;
+    pointer-events: none;
+}
+
+.push-notification {
+    background: white;
+    margin: 20px auto 0;
+    max-width: 400px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    border-left: 6px solid #10b981;
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.push-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.push-notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 8px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.notification-app-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-app-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.notification-app-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.9rem;
+}
+
+.notification-time {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notification-close:hover {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.notification-content {
+    padding: 12px 20px 20px;
+}
+
+.notification-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.notification-message {
+    color: #6b7280;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Notification Variants */
+.push-notification.success {
+    border-left-color: #10b981;
+}
+
+.push-notification.success::before {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.push-notification.warning {
+    border-left-color: #f59e0b;
+}
+
+.push-notification.warning::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.push-notification.info {
+    border-left-color: #3b82f6;
+}
+
+.push-notification.info::before {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.push-notification.achievement {
+    border-left-color: #8b5cf6;
+}
+
+.push-notification.achievement::before {
+    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+}
+
+/* Toast Notification */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 350px;
+}
+
+.toast {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-left: 4px solid #10b981;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.error {
+    border-left-color: #ef4444;
+}
+
+.toast.warning {
+    border-left-color: #f59e0b;
+}
+
+.toast.info {
+    border-left-color: #3b82f6;
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+    min-width: 20px;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+}
+
+.toast-message {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.toast-close:hover {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+/* Daily Check-in */
+.daily-checkin {
+    text-align: center;
+}
+
+.mood-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+}
+
+.mood-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #e5e7eb;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.mood-btn:hover {
+    transform: scale(1.1);
+    border-color: #667eea;
+}
+
+.mood-btn.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.quote-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    border-left: 4px solid #667eea;
+    margin-top: 16px;
+}
+
+.quote-text {
+    font-style: italic;
+    color: #374151;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.quote-author {
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.action-btn {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #374151;
+}
+
+.action-btn:hover {
+    border-color: #667eea;
+    background: #f8fafc;
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin-bottom: 8px;
+}
+
+.action-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Progress Circle */
+.progress-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(#667eea 0deg, #667eea 252deg, #e5e7eb 252deg, #e5e7eb 360deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    position: relative;
+    transition: transform 0.5s ease;
+}
+
+.progress-circle::before {
+    content: '';
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+}
+
+.progress-text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.progress-percentage {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.progress-label {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .container {
+        padding: 16px 12px;
+    }
+    
+    .header {
+        padding: 20px 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .main-title {
+        font-size: 1.8rem;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .mood-buttons {
+        gap: 8px;
+    }
+    
+    .mood-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .avatar-body {
+        width: 120px;
+        height: 200px;
+    }
+    
+    .avatar-controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .control-btn {
+        min-width: 80%;
+    }
+    
+    .health-indicators {
+        bottom: 10px;
+        left: 10px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .indicator {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        min-width: 50px;
+    }
+    
+    .indicator i {
+        font-size: 0.9rem;
+    }
+    
+    .toast-container {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+    
+    .push-notification {
+        margin: 10px;
+        max-width: none;
+    }
+    
+    /* Responsive untuk Bottom Nav */
+    .bottom-nav {
+        padding: 6px 8px 16px 8px;
+    }
+    
+    .nav-item {
+        min-width: 50px;
+        padding: 6px 8px;
+    }
+    
+    .nav-item i {
+        font-size: 1.1rem;
+        margin-bottom: 2px;
+    }
+    
+    .nav-item span {
+        font-size: 0.65rem;
+    }
+    
+    /* Responsive untuk Milestone */
+    .milestone-card {
+        padding: 20px;
+    }
+    
+    .milestone-header {
+        gap: 12px;
+    }
+    
+    .milestone-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .milestone-title {
+        font-size: 1.2rem;
+    }
+    
+    .milestone-desc {
+        font-size: 0.9rem;
+    }
+    
+    .milestone-progress-bar {
+        height: 16px;
+    }
+    
+    .milestone-percentage {
+        font-size: 0.8rem;
+        right: 12px;
+    }
+    
+    .milestone-motivational {
+        padding: 15px;
+    }
+    
+    .milestone-message {
+        font-size: 1rem;
+    }
+    
+    .milestone-encouragement {
+        font-size: 0.85rem;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mood-buttons {
+        gap: 6px;
+    }
+    
+    .mood-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .avatar-body {
+        width: 100px;
+        height: 180px;
+    }
+    
+    .health-indicators {
+        bottom: 5px;
+        left: 5px;
+        gap: 6px;
+    }
+    
+    .indicator {
+        padding: 4px 8px;
+        font-size: 0.65rem;
+        min-width: 45px;
+    }
+    
+    .indicator i {
+        font-size: 0.8rem;
+    }
+    
+    .nav-item {
+        min-width: 45px;
+        padding: 4px 6px;
+    }
+    
+    .nav-item i {
+        font-size: 1rem;
+    }
+    
+    .nav-item span {
+        font-size: 0.6rem;
+    }
+    
+    .milestone-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .milestone-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .milestone-title {
+        font-size: 1.1rem;
+    }
+    
+    .milestone-desc {
+        font-size: 0.85rem;
+    }
+}/* Reset dan Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -19,7 +1798,91 @@ body {
     padding: 20px 16px;
 }
 
-/* Header */
+/* Bottom Navigation Bar - FIXED Purple Theme */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 8px 0 20px 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 8px 16px 20px 16px;
+}
+
+.bottom-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #a855f7, #c084fc);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #6b7280;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    min-width: 60px;
+    position: relative;
+}
+
+.nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    color: #8b5cf6;
+    transform: translateY(-2px);
+}
+
+.nav-item.active {
+    color: #8b5cf6;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+}
+
+.nav-item.active i {
+    transform: scale(1.1);
+}
+
+.nav-item.active span {
+    font-weight: 600;
+}
+
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #8b5cf6;
+    border-radius: 50%;
+}
+
+/* Enhanced Header */
 .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -71,6 +1934,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 12px;
+    position: relative;
+    overflow: hidden;
 }
 
 .emergency-btn:hover {
@@ -279,1031 +2144,82 @@ body {
     50% { transform: scale(1.2); }
 }
 
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Avatar Section - Standing Human Figure */
+.avatar-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    border: 3px solid #0ea5e9;
     position: relative;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 25px 60px rgba(14, 165, 233, 0.4);
 }
 
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+.avatar-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, rgba(59, 130, 246, 0.1) 0deg, rgba(139, 92, 246, 0.1) 120deg, rgba(16, 185, 129, 0.1) 240deg, rgba(59, 130, 246, 0.1) 360deg);
+    animation: rotate-background 30s linear infinite;
+    pointer-events: none;
 }
 
-.stat-card::before {
+.avatar-section::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    bottom: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.3) 100%);
+    pointer-events: none;
+    z-index: 1;
 }
 
-.stat-icon {
-    font-size: 2rem;
-    margin-bottom: 12px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.stat-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 4px;
-    transition: all 0.3s ease;
-}
-
-.stat-label {
-    color: #6b7280;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.stat-card:hover .stat-value {
-    transform: scale(1.1);
-    color: #667eea;
-}
-
-/* Avatar Health System */
-.avatar-controls {
-    display: flex;
-    gap: 8px;
-    margin-left: auto;
-}
-
-.avatar-control-btn {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-}
-
-.avatar-control-btn.decrease {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-}
-
-.avatar-control-btn.increase {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-}
-
-.avatar-control-btn.notification {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-}
-
-.avatar-control-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+@keyframes rotate-background {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .avatar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
 }
 
 .avatar-display {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.health-aura {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
-    opacity: 0;
-    animation: aura-pulse 2s ease-in-out infinite;
-    pointer-events: none;
-}
-
-.health-aura.active {
-    opacity: 1;
-}
-
-@keyframes aura-pulse {
-    0%, 100% { transform: scale(1); opacity: 0.3; }
-    50% { transform: scale(1.1); opacity: 0.6; }
-}
-
-.avatar-body {
-    width: 80px;
-    height: 100px;
-    position: relative;
-    transition: all 0.5s ease;
-}
-
-.head {
-    width: 50px;
-    height: 50px;
-    background: #fbbf24;
-    border-radius: 50%;
-    position: relative;
-    margin: 0 auto 10px;
-    border: 3px solid #f59e0b;
-}
-
-.eyes {
-    display: flex;
-    justify-content: space-between;
-    position: absolute;
-    top: 15px;
-    left: 12px;
-    right: 12px;
-}
-
-.eye {
-    width: 8px;
-    height: 8px;
-    background: #1f2937;
-    border-radius: 50%;
-}
-
-.mouth {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 8px;
-    border-radius: 0 0 16px 16px;
-    transition: all 0.3s ease;
-}
-
-.mouth.very-sad {
-    border: 2px solid #ef4444;
-    border-top: none;
-    transform: translateX(-50%) rotate(180deg);
-}
-
-.mouth.sad {
-    border: 2px solid #f59e0b;
-    border-top: none;
-    transform: translateX(-50%) rotate(180deg);
-    width: 12px;
-    height: 6px;
-}
-
-.mouth.neutral {
-    width: 12px;
-    height: 2px;
-    background: #6b7280;
-    border-radius: 2px;
-}
-
-.mouth.happy {
-    border: 2px solid #10b981;
-    border-top: none;
-}
-
-.mouth.very-happy {
-    border: 2px solid #059669;
-    border-top: none;
-    width: 20px;
-    height: 10px;
-}
-
-.body {
-    width: 40px;
-    height: 50px;
-    background: #e5e7eb;
-    border-radius: 20px 20px 8px 8px;
-    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+    border-radius: 30px;
+    padding: 40px 30px;
+    margin-bottom: 25px;
+    box-shadow: 
+        inset 0 4px 20px rgba(0,0,0,0.1),
+        0 20px 50px rgba(14, 165, 233, 0.4),
+        0 0 100px rgba(102, 126, 234, 0.2);
     position: relative;
     overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    min-height: 400px;
 }
 
-.lungs {
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 15px;
-    background: #ef4444;
-    border-radius: 8px 8px 0 0;
-    transition: all 0.5s ease;
-}
-
-.lungs::before {
+.avatar-display::before {
     content: '';
     position: absolute;
-    top: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 8px;
-    background: #dc2626;
-}
-
-.lungs.poor {
-    background: #ef4444;
-    animation: lungs-struggle 2s ease-in-out infinite;
-}
-
-.lungs.moderate {
-    background: #f59e0b;
-    animation: lungs-improve 3s ease-in-out infinite;
-}
-
-.lungs.healthy {
-    background: #10b981;
-    animation: lungs-healthy 4s ease-in-out infinite;
-}
-
-@keyframes lungs-struggle {
-    0%, 100% { transform: translateX(-50%) scale(0.8); }
-    50% { transform: translateX(-50%) scale(1.1); }
-}
-
-@keyframes lungs-improve {
-    0%, 100% { transform: translateX(-50%) scale(0.9); }
-    50% { transform: translateX(-50%) scale(1.05); }
-}
-
-@keyframes lungs-healthy {
-    0%, 100% { transform: translateX(-50%) scale(1); }
-    50% { transform: translateX(-50%) scale(1.02); }
-}
-
-.heart {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 12px;
-    background: #ef4444;
-    border-radius: 50%;
-    transition: all 0.5s ease;
-}
-
-.heart.healthy {
-    background: #ef4444;
-    animation: heart-beat 1.5s ease-in-out infinite;
-}
-
-@keyframes heart-beat {
-    0%, 100% { transform: translateX(-50%) scale(1); }
-    25% { transform: translateX(-50%) scale(1.1); }
-    50% { transform: translateX(-50%) scale(1); }
-    75% { transform: translateX(-50%) scale(1.05); }
-}
-
-/* Health Level Variants */
-.avatar-body.health-level-1 .head {
-    background: #fca5a5;
-    border-color: #ef4444;
-}
-
-.avatar-body.health-level-2 .head {
-    background: #fed7aa;
-    border-color: #f59e0b;
-}
-
-.avatar-body.health-level-3 .head {
-    background: #fde68a;
-    border-color: #eab308;
-}
-
-.avatar-body.health-level-4 .head {
-    background: #bbf7d0;
-    border-color: #10b981;
-}
-
-.avatar-body.health-level-5 .head {
-    background: #a7f3d0;
-    border-color: #059669;
-}
-
-.health-info {
-    width: 100%;
-    max-width: 320px;
-}
-
-.health-status-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.health-level-badge {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.health-status {
-    font-weight: 700;
-    font-size: 1.1rem;
-}
-
-.health-progress {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.health-progress-bar {
-    flex: 1;
-    height: 12px;
-    background: #f3f4f6;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.health-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #10b981, #059669);
-    border-radius: 6px;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.health-percentage {
-    font-weight: 700;
-    color: #10b981;
-    min-width: 40px;
-    text-align: right;
-}
-
-.health-details {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.health-detail-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-}
-
-.status-indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.status-indicator.poor {
-    background: #ef4444;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
-}
-
-.status-indicator.moderate {
-    background: #f59e0b;
-    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
-}
-
-.status-indicator.healthy {
-    background: #10b981;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-}
-
-.health-metrics {
-    display: flex;
-    justify-content: space-around;
-    padding: 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-}
-
-.health-metric {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #374151;
-}
-
-.health-metric i {
-    color: #667eea;
-}
-
-/* Section Styles */
-.section {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    border: 1px solid #e5e7eb;
-}
-
-.section-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 20px;
-}
-
-.section-icon {
-    font-size: 1.5rem;
-    color: #667eea;
-}
-
-/* Progress Circle */
-.progress-circle {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: conic-gradient(#667eea 0deg, #667eea 252deg, #e5e7eb 252deg, #e5e7eb 360deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    position: relative;
-}
-
-.progress-circle::before {
-    content: '';
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: white;
-    position: absolute;
-}
-
-.progress-text {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-}
-
-.progress-percentage {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #667eea;
-}
-
-.progress-label {
-    font-size: 0.8rem;
-    color: #6b7280;
-}
-
-/* Daily Check-in */
-.daily-checkin {
-    text-align: center;
-}
-
-.mood-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin: 16px 0;
-    flex-wrap: wrap;
-}
-
-.mood-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid #e5e7eb;
-    background: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-.mood-btn:hover {
-    transform: scale(1.1);
-    border-color: #667eea;
-}
-
-.mood-btn.selected {
-    background: #667eea;
-    border-color: #667eea;
-    color: white;
-}
-
-.quote-card {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    border-left: 4px solid #667eea;
-    margin-top: 16px;
-}
-
-.quote-text {
-    font-style: italic;
-    color: #374151;
-    margin-bottom: 8px;
-    line-height: 1.5;
-}
-
-.quote-author {
-    color: #6b7280;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-/* Quick Actions */
-.quick-actions {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-}
-
-.action-btn {
-    background: white;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 16px 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    color: #374151;
-}
-
-.action-btn:hover {
-    border-color: #667eea;
-    background: #f8fafc;
-    transform: translateY(-2px);
-}
-
-.action-icon {
-    font-size: 1.5rem;
-    color: #667eea;
-    margin-bottom: 8px;
-}
-
-.action-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-/* Bottom Navigation - FIXED */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    border-top: 1px solid #e5e7eb;
-    padding: 12px 0;
-    z-index: 1000;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.nav-container {
-    max-width: 500px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0 16px;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #6b7280;
-    transition: all 0.3s ease;
-    padding: 8px;
-    border-radius: 12px;
-    position: relative;
-}
-
-.nav-item:hover {
-    color: #667eea;
-    transform: translateY(-2px);
-}
-
-.nav-item.active {
-    color: #667eea;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-}
-
-.nav-item.active::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    background: #667eea;
-    border-radius: 50%;
-}
-
-.nav-item i {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-    transition: all 0.3s ease;
-}
-
-.nav-item span {
-    font-size: 0.7rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.nav-item.active i {
-    transform: scale(1.1);
-}
-
-.nav-item.active span {
-    font-weight: 600;
-}
-
-/* Push Notification Container */
-.push-notification-container {
-    position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 20000;
+    bottom: 0;
+    background: radial-gradient(ellipse at 50% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 60%);
     pointer-events: none;
 }
 
-.push-notification {
-    background: white;
-    margin: 20px auto 0;
-    max-width: 400px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    transform: translateY(-100px);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    pointer-events: auto;
+/* Standing Human Figure */
+.avatar-body {
     position: relative;
-    overflow: hidden;
-}
-
-.push-notification.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.push-notification.success {
-    border-left: 6px solid #10b981;
-}
-
-.push-notification.warning {
-    border-left: 6px solid #f59e0b;
-}
-
-.push-notification.info,
-.push-notification.achievement {
-    border-left: 6px solid #3b82f6;
-}
-
-.notification-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px 8px;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.notification-app-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.notification-app-icon {
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.notification-app-name {
-    font-weight: 600;
-    color: #1f2937;
-    font-size: 0.9rem;
-}
-
-.notification-time {
-    color: #6b7280;
-    font-size: 0.8rem;
-}
-
-.notification-close {
-    background: none;
-    border: none;
-    color: #9ca3af;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-.notification-close:hover {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-.notification-content {
-    padding: 12px 20px 20px;
-}
-
-.notification-title {
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 8px;
-    font-size: 1rem;
-}
-
-.notification-icon {
-    font-size: 1.5rem;
-    margin-right: 8px;
-    vertical-align: middle;
-}
-
-.notification-message {
-    color: #6b7280;
-    line-height: 1.5;
-    font-size: 0.9rem;
-}
-
-/* Toast Container */
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 10000;
-    max-width: 350px;
-}
-
-/* Responsive Design */
-@media (max-width: 480px) {
-    .container {
-        padding: 16px 12px;
-    }
-    
-    .header {
-        padding: 20px 16px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    
-    .main-title {
-        font-size: 1.8rem;
-    }
-    
-    .quick-actions {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    
-    .mood-buttons {
-        gap: 8px;
-    }
-    
-    .mood-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
-    }
-    
-    .milestone-card {
-        padding: 20px;
-    }
-    
-    .milestone-header {
-        gap: 12px;
-    }
-    
-    .milestone-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.5rem;
-    }
-    
-    .milestone-title {
-        font-size: 1.2rem;
-    }
-    
-    .milestone-desc {
-        font-size: 0.9rem;
-    }
-    
-    .milestone-progress-bar {
-        height: 16px;
-    }
-    
-    .milestone-percentage {
-        font-size: 0.8rem;
-        right: 12px;
-    }
-    
-    .milestone-motivational {
-        padding: 15px;
-    }
-    
-    .milestone-message {
-        font-size: 1rem;
-    }
-    
-    .milestone-encouragement {
-        font-size: 0.85rem;
-        flex-direction: column;
-        gap: 4px;
-    }
-    
-    /* Avatar responsive */
-    .avatar-controls {
-        gap: 6px;
-    }
-    
-    .avatar-control-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
-    }
-    
-    .avatar-container {
-        gap: 16px;
-    }
-    
-    .avatar-body {
-        width: 70px;
-        height: 90px;
-    }
-    
-    .head {
-        width: 45px;
-        height: 45px;
-    }
-    
-    .body {
-        width: 35px;
-        height: 45px;
-    }
-    
-    .health-info {
-        max-width: 100%;
-    }
-    
-    .health-details {
-        gap: 6px;
-    }
-    
-    .health-detail-item {
-        font-size: 0.85rem;
-    }
-    
-    .health-metrics {
-        padding: 10px;
-    }
-    
-    .health-metric {
-        font-size: 0.85rem;
-    }
-    
-    /* Push notification responsive */
-    .push-notification {
-        margin: 10px 16px 0;
-        max-width: none;
-    }
-    
-    .notification-header {
-        padding: 12px 16px 6px;
-    }
-    
-    .notification-content {
-        padding: 8px 16px 16px;
-    }
-    
-    .notification-title {
-        font-size: 0.95rem;
-    }
-    
-    .notification-message {
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 360px) {
-    .mood-buttons {
-        gap: 6px;
-    }
-    
-    .mood-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
-    }
-    
-    .milestone-header {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-    }
-    
-    .milestone-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
-    }
-    
-    .milestone-title {
-        font-size: 1.1rem;
-    }
-    
-    .milestone-desc {
-        font-size: 0.85rem;
-    }
-    
-    /* Avatar extra small screens */
-    .avatar-controls {
-        flex-wrap: wrap;
-        gap: 4px;
-    }
-    
-    .avatar-control-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.8rem;
-    }
-    
-    .section-title {
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    
-    .avatar-body {
-        width: 60px;
-        height: 80px;
-    }
-    
-    .head {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .body {
-        width: 30px;
-        height: 40px;
-    }
-    
-    .health-detail-item {
-        font-size: 0.8rem;
-    }
-    
-    .health-metric {
-        font-size: 0.8rem;
-        gap: 4px;
-    }
-}
+    width: 180px;
+    height: 320px;
+    margin: 0 auto;
+    z-index: 1;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 15px 35px rgba(0,0,0,0.2));
