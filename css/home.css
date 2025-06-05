@@ -1,4 +1,4 @@
-/* Reset dan Base Styless */
+/* Reset dan Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -342,6 +342,383 @@ body {
     color: #667eea;
 }
 
+/* Avatar Health System */
+.avatar-controls {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.avatar-control-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.avatar-control-btn.decrease {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.avatar-control-btn.increase {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.avatar-control-btn.notification {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+}
+
+.avatar-control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar-display {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.health-aura {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+    opacity: 0;
+    animation: aura-pulse 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.health-aura.active {
+    opacity: 1;
+}
+
+@keyframes aura-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.6; }
+}
+
+.avatar-body {
+    width: 80px;
+    height: 100px;
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+.head {
+    width: 50px;
+    height: 50px;
+    background: #fbbf24;
+    border-radius: 50%;
+    position: relative;
+    margin: 0 auto 10px;
+    border: 3px solid #f59e0b;
+}
+
+.eyes {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 15px;
+    left: 12px;
+    right: 12px;
+}
+
+.eye {
+    width: 8px;
+    height: 8px;
+    background: #1f2937;
+    border-radius: 50%;
+}
+
+.mouth {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 8px;
+    border-radius: 0 0 16px 16px;
+    transition: all 0.3s ease;
+}
+
+.mouth.very-sad {
+    border: 2px solid #ef4444;
+    border-top: none;
+    transform: translateX(-50%) rotate(180deg);
+}
+
+.mouth.sad {
+    border: 2px solid #f59e0b;
+    border-top: none;
+    transform: translateX(-50%) rotate(180deg);
+    width: 12px;
+    height: 6px;
+}
+
+.mouth.neutral {
+    width: 12px;
+    height: 2px;
+    background: #6b7280;
+    border-radius: 2px;
+}
+
+.mouth.happy {
+    border: 2px solid #10b981;
+    border-top: none;
+}
+
+.mouth.very-happy {
+    border: 2px solid #059669;
+    border-top: none;
+    width: 20px;
+    height: 10px;
+}
+
+.body {
+    width: 40px;
+    height: 50px;
+    background: #e5e7eb;
+    border-radius: 20px 20px 8px 8px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.lungs {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 15px;
+    background: #ef4444;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.5s ease;
+}
+
+.lungs::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 8px;
+    background: #dc2626;
+}
+
+.lungs.poor {
+    background: #ef4444;
+    animation: lungs-struggle 2s ease-in-out infinite;
+}
+
+.lungs.moderate {
+    background: #f59e0b;
+    animation: lungs-improve 3s ease-in-out infinite;
+}
+
+.lungs.healthy {
+    background: #10b981;
+    animation: lungs-healthy 4s ease-in-out infinite;
+}
+
+@keyframes lungs-struggle {
+    0%, 100% { transform: translateX(-50%) scale(0.8); }
+    50% { transform: translateX(-50%) scale(1.1); }
+}
+
+@keyframes lungs-improve {
+    0%, 100% { transform: translateX(-50%) scale(0.9); }
+    50% { transform: translateX(-50%) scale(1.05); }
+}
+
+@keyframes lungs-healthy {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.02); }
+}
+
+.heart {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: #ef4444;
+    border-radius: 50%;
+    transition: all 0.5s ease;
+}
+
+.heart.healthy {
+    background: #ef4444;
+    animation: heart-beat 1.5s ease-in-out infinite;
+}
+
+@keyframes heart-beat {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    25% { transform: translateX(-50%) scale(1.1); }
+    50% { transform: translateX(-50%) scale(1); }
+    75% { transform: translateX(-50%) scale(1.05); }
+}
+
+/* Health Level Variants */
+.avatar-body.health-level-1 .head {
+    background: #fca5a5;
+    border-color: #ef4444;
+}
+
+.avatar-body.health-level-2 .head {
+    background: #fed7aa;
+    border-color: #f59e0b;
+}
+
+.avatar-body.health-level-3 .head {
+    background: #fde68a;
+    border-color: #eab308;
+}
+
+.avatar-body.health-level-4 .head {
+    background: #bbf7d0;
+    border-color: #10b981;
+}
+
+.avatar-body.health-level-5 .head {
+    background: #a7f3d0;
+    border-color: #059669;
+}
+
+.health-info {
+    width: 100%;
+    max-width: 320px;
+}
+
+.health-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.health-level-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.health-status {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.health-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.health-progress-bar {
+    flex: 1;
+    height: 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #059669);
+    border-radius: 6px;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.health-percentage {
+    font-weight: 700;
+    color: #10b981;
+    min-width: 40px;
+    text-align: right;
+}
+
+.health-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.health-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-indicator.poor {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+.status-indicator.moderate {
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.status-indicator.healthy {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.health-metrics {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.health-metric {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.health-metric i {
+    color: #667eea;
+}
+
 /* Section Styles */
 .section {
     background: white;
@@ -578,6 +955,134 @@ body {
     font-weight: 600;
 }
 
+/* Push Notification Container */
+.push-notification-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20000;
+    pointer-events: none;
+}
+
+.push-notification {
+    background: white;
+    margin: 20px auto 0;
+    max-width: 400px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.push-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.push-notification.success {
+    border-left: 6px solid #10b981;
+}
+
+.push-notification.warning {
+    border-left: 6px solid #f59e0b;
+}
+
+.push-notification.info,
+.push-notification.achievement {
+    border-left: 6px solid #3b82f6;
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 8px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.notification-app-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-app-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.notification-app-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.9rem;
+}
+
+.notification-time {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notification-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.notification-content {
+    padding: 12px 20px 20px;
+}
+
+.notification-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.notification-message {
+    color: #6b7280;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+/* Toast Container */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 350px;
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
     .container {
@@ -656,6 +1161,78 @@ body {
         flex-direction: column;
         gap: 4px;
     }
+    
+    /* Avatar responsive */
+    .avatar-controls {
+        gap: 6px;
+    }
+    
+    .avatar-control-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .avatar-container {
+        gap: 16px;
+    }
+    
+    .avatar-body {
+        width: 70px;
+        height: 90px;
+    }
+    
+    .head {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .body {
+        width: 35px;
+        height: 45px;
+    }
+    
+    .health-info {
+        max-width: 100%;
+    }
+    
+    .health-details {
+        gap: 6px;
+    }
+    
+    .health-detail-item {
+        font-size: 0.85rem;
+    }
+    
+    .health-metrics {
+        padding: 10px;
+    }
+    
+    .health-metric {
+        font-size: 0.85rem;
+    }
+    
+    /* Push notification responsive */
+    .push-notification {
+        margin: 10px 16px 0;
+        max-width: none;
+    }
+    
+    .notification-header {
+        padding: 12px 16px 6px;
+    }
+    
+    .notification-content {
+        padding: 8px 16px 16px;
+    }
+    
+    .notification-title {
+        font-size: 0.95rem;
+    }
+    
+    .notification-message {
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 360px) {
@@ -687,5 +1264,46 @@ body {
     
     .milestone-desc {
         font-size: 0.85rem;
+    }
+    
+    /* Avatar extra small screens */
+    .avatar-controls {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .avatar-control-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+    
+    .section-title {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .avatar-body {
+        width: 60px;
+        height: 80px;
+    }
+    
+    .head {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .body {
+        width: 30px;
+        height: 40px;
+    }
+    
+    .health-detail-item {
+        font-size: 0.8rem;
+    }
+    
+    .health-metric {
+        font-size: 0.8rem;
+        gap: 4px;
     }
 }
