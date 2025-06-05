@@ -73,6 +73,76 @@
             </div>
         </div>
 
+        <!-- Avatar Health System -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-user-md"></i>
+                Avatar Kesehatan
+                <div class="avatar-controls">
+                    <button id="decreaseBtn" class="avatar-control-btn decrease">-</button>
+                    <button id="increaseBtn" class="avatar-control-btn increase">+</button>
+                    <button id="notificationBtn" class="avatar-control-btn notification">🔔</button>
+                </div>
+            </div>
+            
+            <div class="avatar-container">
+                <div class="avatar-display">
+                    <div id="healthAura" class="health-aura"></div>
+                    <div id="avatarBody" class="avatar-body health-level-4">
+                        <div class="head">
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div id="avatarMouth" class="mouth happy"></div>
+                        </div>
+                        <div class="body">
+                            <div id="avatarLungs" class="lungs healthy"></div>
+                            <div id="avatarHeart" class="heart healthy"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="health-info">
+                    <div class="health-status-row">
+                        <div id="healthLevelBadge" class="health-level-badge">Level 4</div>
+                        <div id="healthStatus" class="health-status">Baik</div>
+                    </div>
+                    
+                    <div class="health-progress">
+                        <div class="health-progress-bar">
+                            <div id="healthFill" class="health-fill"></div>
+                        </div>
+                        <div id="healthPercentage" class="health-percentage">75%</div>
+                    </div>
+                    
+                    <div class="health-details">
+                        <div class="health-detail-item">
+                            <div id="lungIndicator" class="status-indicator lung-indicator healthy"></div>
+                            <span>Paru-paru: <span id="lungStatus">Membersihkan diri</span></span>
+                        </div>
+                        <div class="health-detail-item">
+                            <div id="heartIndicator" class="status-indicator heart-indicator healthy"></div>
+                            <span>Jantung: <span id="heartStatus">Stabil</span></span>
+                        </div>
+                        <div class="health-detail-item">
+                            <div id="oxygenStatusIndicator" class="status-indicator oxygen-indicator healthy"></div>
+                            <span>Oksigen: <span id="oxygenStatus">Normal</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="health-metrics">
+                        <div id="oxygenIndicator" class="health-metric">
+                            <i class="fas fa-lungs"></i><span>97%</span>
+                        </div>
+                        <div id="heartRateIndicator" class="health-metric">
+                            <i class="fas fa-heartbeat"></i><span>72</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Progress Overview -->
         <div class="section">
             <div class="section-title">
@@ -132,7 +202,7 @@
         </div>
     </div>
 
-    <<!-- Bottom Navigation - FIXED -->>
+    <!-- Bottom Navigation - FIXED -->
     <div class="bottom-nav">
         <div class="nav-container">
             <a href="home.html" class="nav-item active">
