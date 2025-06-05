@@ -162,22 +162,45 @@ body {
     transform: scale(0.98);
 }
 
-/* Avatar Styles */
+/* Avatar Styles - Professional & Detailed */
 .avatar-section {
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
     border: 2px solid #0ea5e9;
+    position: relative;
+    overflow: hidden;
+}
+
+.avatar-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .avatar-container {
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .avatar-display {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border-radius: 20px;
-    padding: 30px;
+    border-radius: 24px;
+    padding: 40px 30px;
     margin-bottom: 20px;
-    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 
+        inset 0 2px 10px rgba(0,0,0,0.05),
+        0 10px 30px rgba(14, 165, 233, 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -189,30 +212,497 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 50% 30%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+    background: radial-gradient(ellipse at center top, rgba(102, 126, 234, 0.15) 0%, transparent 50%);
     pointer-events: none;
 }
 
 .avatar-body {
     position: relative;
-    width: 120px;
-    height: 160px;
+    width: 140px;
+    height: 180px;
     margin: 0 auto;
     z-index: 1;
+    transition: all 0.4s ease;
+}
+
+/* Professional Head Design */
+.avatar-head {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    margin: 0 auto 15px;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+    overflow: hidden;
+}
+
+.face-features {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+}
+
+.eyes {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+}
+
+.eye {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.pupil {
+    width: 4px;
+    height: 4px;
+    background: #1f2937;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     transition: all 0.3s ease;
 }
 
-.avatar-head {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    margin: 0 auto 10px;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+.mouth {
+    position: absolute;
+    bottom: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 6px;
+    border-radius: 0 0 12px 12px;
+    background: #ef4444;
+    transition: all 0.3s ease;
 }
 
-.avatar-head::before {
+.health-aura {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+    animation: pulse-aura 2s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+@keyframes pulse-aura {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.6; }
+}
+
+/* Professional Torso with Organ System */
+.avatar-torso {
+    width: 90px;
+    height: 100px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    margin: 0 auto;
+    border-radius: 24px 24px 35px 35px;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.organ-system {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Detailed Lungs */
+.lungs {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.lung {
+    width: 18px;
+    height: 35px;
+    border-radius: 10px 10px 18px 18px;
+    transition: all 0.5s ease;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    position: relative;
+    overflow: hidden;
+}
+
+.lung-detail {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.alveoli {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    animation: breathe-alveoli 2.5s ease-in-out infinite;
+}
+
+@keyframes breathe-alveoli {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Professional Heart */
+.heart {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 20px;
+    position: relative;
+}
+
+.heart-chambers {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.chamber {
+    position: absolute;
+    width: 12px;
+    height: 16px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 6px 6px 0 6px;
+}
+
+.left-chamber {
+    left: 0;
+    transform: rotate(-45deg);
+}
+
+.right-chamber {
+    right: 0;
+    transform: rotate(45deg);
+}
+
+.pulse-wave {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid rgba(239, 68, 68, 0.6);
+    border-radius: 50%;
+    animation: heartbeat-wave 1.2s ease-in-out infinite;
+}
+
+@keyframes heartbeat-wave {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Blood Vessels */
+.blood-vessels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.vessel {
+    position: absolute;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.4), rgba(59, 130, 246, 0.4));
+    border-radius: 1px;
+    animation: blood-flow 3s linear infinite;
+}
+
+.vessel-1 {
+    top: 25px;
+    left: 15px;
+    width: 20px;
+    height: 2px;
+}
+
+.vessel-2 {
+    top: 45px;
+    right: 15px;
+    width: 15px;
+    height: 2px;
+}
+
+.vessel-3 {
+    bottom: 30px;
+    left: 20px;
+    width: 25px;
+    height: 2px;
+}
+
+@keyframes blood-flow {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.3; }
+}
+
+/* Professional Arms */
+.avatar-arms {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -50px;
+    padding: 0 5px;
+    position: relative;
+    z-index: 0;
+}
+
+.arm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.shoulder {
+    width: 18px;
+    height: 25px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(251, 191, 36, 0.3);
+}
+
+.forearm {
+    width: 12px;
+    height: 35px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-radius: 6px;
+    margin-top: 3px;
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+}
+
+.left-arm {
+    transform: rotate(-10deg);
+}
+
+.right-arm {
+    transform: rotate(10deg);
+}
+
+/* Health Indicators */
+.health-indicators {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.indicator {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.indicator i {
+    font-size: 0.8rem;
+}
+
+.oxygen-level {
+    color: #0ea5e9;
+}
+
+.heart-rate {
+    color: #ef4444;
+}
+
+/* Enhanced Health Info */
+.health-info {
+    text-align: left;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.health-level {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.health-level-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.health-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.health-bar {
+    flex: 1;
+    height: 16px;
+    background: #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+    border-radius: 8px;
+    width: 78%;
+    transition: all 0.6s ease;
+    position: relative;
+}
+
+.health-sparkle {
+    position: absolute;
+    top: 2px;
+    left: 10%;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+.health-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.health-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: #6b7280;
+    position: relative;
+}
+
+.health-item i {
+    color: #667eea;
+    width: 20px;
+    font-size: 1rem;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+/* Professional Controls */
+.avatar-controls {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    border: 2px solid #d1d5db;
+    border-radius: 16px;
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    min-width: 100px;
+}
+
+.control-btn i {
+    font-size: 1.2rem;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.control-btn.primary {
+    background: linear-gradient(135deg, #667eea, #5a67d8);
+    color: white;
+    border-color: #667eea;
+}
+
+.control-btn.primary:hover {
+    background: linear-gradient(135deg, #5a67d8, #4c51bf);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.decrease-btn:hover {
+    background: linear-gradient(135deg, #fecaca, #fca5a5);
+    border-color: #f87171;
+    color: #dc2626;
+}
+
+.btn-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.control-btn:hover .btn-effect {
+    left: 100%;
+}head::before {
     content: '😊';
     position: absolute;
     top: 50%;
@@ -402,108 +892,320 @@ body {
     border-color: #5a67d8;
 }
 
-/* Notification Styles */
+/* Notification Demo Styles */
 .notification-section {
     background: linear-gradient(135deg, #fef7cd 0%, #fef3c7 100%);
     border: 2px solid #f59e0b;
 }
 
-.notification-panel {
-    margin-bottom: 20px;
-}
-
-.notification-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: white;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    border-left: 4px solid #e5e7eb;
-}
-
-.notification-item.active {
-    border-left-color: #10b981;
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-}
-
-.notification-item:hover {
-    transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.notif-icon {
-    font-size: 1.5rem;
-    min-width: 40px;
+.notification-demo {
     text-align: center;
 }
 
-.notif-content {
-    flex: 1;
-}
-
-.notif-title {
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 4px;
+.demo-description {
+    color: #92400e;
+    margin-bottom: 20px;
+    line-height: 1.6;
     font-size: 0.95rem;
 }
 
-.notif-time {
-    color: #6b7280;
-    font-size: 0.8rem;
-}
-
-.notif-dismiss {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #9ca3af;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.notif-dismiss:hover {
-    background: #f3f4f6;
-    color: #6b7280;
-}
-
-.notification-controls {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-}
-
-.notif-control-btn {
-    background: #f59e0b;
+.show-notification-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    border-radius: 16px;
+    padding: 16px 32px;
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 12px;
+    margin: 0 auto 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+}
+
+.show-notification-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+    background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.show-notification-btn:active {
+    transform: scale(0.98);
+}
+
+.btn-ripple {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.show-notification-btn:hover .btn-ripple {
+    left: 100%;
+}
+
+.notification-types {
+    color: #b45309;
+    font-style: italic;
+}
+
+/* Push Notification System */
+.push-notification-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20000;
+    pointer-events: none;
+}
+
+.push-notification {
+    background: white;
+    margin: 20px auto 0;
+    max-width: 400px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    border-left: 6px solid #10b981;
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: auto;
     position: relative;
     overflow: hidden;
 }
 
-.notif-control-btn:hover {
-    background: #d97706;
-    transform: translateY(-1px);
+.push-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.push-notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 8px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.notification-app-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-app-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.notification-app-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.9rem;
+}
+
+.notification-time {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notification-close:hover {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.notification-content {
+    padding: 12px 20px 20px;
+}
+
+.notification-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.notification-message {
+    color: #6b7280;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Notification Variants */
+.push-notification.success {
+    border-left-color: #10b981;
+}
+
+.push-notification.success::before {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.push-notification.warning {
+    border-left-color: #f59e0b;
+}
+
+.push-notification.warning::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.push-notification.info {
+    border-left-color: #3b82f6;
+}
+
+.push-notification.info::before {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.push-notification.achievement {
+    border-left-color: #8b5cf6;
+}
+
+.push-notification.achievement::before {
+    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+}
+
+/* Health Level Classes for New Avatar */
+.avatar-body.health-level-1 .mouth {
+    background: #ef4444;
+    border-radius: 12px 12px 0 0;
+    transform: translateX(-50%) rotate(180deg);
+}
+
+.avatar-body.health-level-2 .mouth {
+    background: #f59e0b;
+    border-radius: 6px;
+    height: 3px;
+}
+
+.avatar-body.health-level-3 .mouth {
+    background: #eab308;
+    border-radius: 3px;
+    height: 2px;
+}
+
+.avatar-body.health-level-4 .mouth {
+    background: #10b981;
+    border-radius: 0 0 8px 8px;
+    height: 4px;
+}
+
+.avatar-body.health-level-5 .mouth {
+    background: #059669;
+    border-radius: 0 0 12px 12px;
+    height: 6px;
+}
+
+.avatar-body.health-level-4 .health-aura,
+.avatar-body.health-level-5 .health-aura {
+    opacity: 1;
+}
+
+.avatar-body.health-level-4 .lung,
+.avatar-body.health-level-5 .lung {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.avatar-body.health-level-5 .avatar-torso {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.avatar-body.health-level-1 .pupil {
+    transform: translate(-30%, -70%);
+}
+
+.avatar-body.health-level-2 .pupil {
+    transform: translate(-40%, -60%);
+}
+
+.avatar-body.health-level-3 .pupil {
+    transform: translate(-50%, -50%);
+}
+
+.avatar-body.health-level-4 .pupil {
+    transform: translate(-50%, -40%);
+}
+
+.avatar-body.health-level-5 .pupil {
+    transform: translate(-50%, -30%);
+}
+
+/* Status Indicators */
+.lung-indicator.healthy {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.lung-indicator.moderate {
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.lung-indicator.poor {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.heart-indicator.healthy {
+    background: #10b981;
+    animation: heartbeat-indicator 1.5s ease-in-out infinite;
+}
+
+.heart-indicator.moderate {
+    background: #f59e0b;
+    animation: heartbeat-indicator 1.2s ease-in-out infinite;
+}
+
+.heart-indicator.poor {
+    background: #ef4444;
+    animation: heartbeat-indicator 0.8s ease-in-out infinite;
+}
+
+@keyframes heartbeat-indicator {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
 }
 
 /* Toast Notification */
