@@ -190,13 +190,27 @@
             </div>
         </div>
 
-        <!-- Next Milestone -->
-        <div class="milestone-card">
-            <div class="milestone-icon">🎯</div>
-            <div class="milestone-title">Target Berikutnya: 2 Minggu</div>
-            <div class="milestone-desc">Kamu sudah 70% menuju target 2 minggu bebas rokok!</div>
+        <!-- Next Milestone - FIXED STYLING -->
+        <div class="section milestone-card">
+            <div class="milestone-header">
+                <div class="milestone-icon">🎯</div>
+                <div class="milestone-content">
+                    <div class="milestone-title">Target Berikutnya: 2 Minggu</div>
+                    <div class="milestone-desc">Kamu sudah 70% menuju target 2 minggu bebas rokok!</div>
+                </div>
+            </div>
             <div class="milestone-progress">
-                <div class="milestone-progress-bar"></div>
+                <div class="milestone-progress-bar">
+                    <div class="milestone-progress-fill" style="width: 70%;"></div>
+                    <span class="milestone-percentage">70%</span>
+                </div>
+            </div>
+            <div class="milestone-motivational">
+                <div class="milestone-message">🔥 Kamu hampir sampai! Tetap semangat!</div>
+                <div class="milestone-encouragement">
+                    <i class="fas fa-trophy"></i>
+                    Sisa 4 hari lagi menuju pencapaian besar!
+                </div>
             </div>
         </div>
 
@@ -283,7 +297,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - FIXED (HANYA SATU) -->
     <div class="bottom-nav">
         <div class="nav-container">
             <a href="home.html" class="nav-item active">
@@ -317,34 +331,7 @@
     <div id="pushNotificationContainer" class="push-notification-container"></div>
     
     <!-- Toast Notification Container -->
-    <div id="toastContainer" class="toast-container">        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <a href="#" class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Beranda</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-chart-line"></i>
-                <span>Progress</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-robot"></i>
-                <span>AI Helper</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-users"></i>
-                <span>Komunitas</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-bullseye"></i>
-                <span>Target</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-user"></i>
-                <span>Profil</span>
-            </a>
-        </nav>
-    </div>
+    <div id="toastContainer" class="toast-container"></div>
 
     <script src="js/home.js"></script>
 </body>
