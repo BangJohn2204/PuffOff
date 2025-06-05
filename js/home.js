@@ -67,6 +67,21 @@ const sampleNotifications = [
         icon: "👏",
         title: "Selamat! Kamu berhasil menolak rokok tadi",
         time: "15 menit yang lalu"
+    },
+    {
+        icon: "🥇",
+        title: "Ranking kesehatan naik ke posisi 1!",
+        time: "20 menit yang lalu"
+    },
+    {
+        icon: "🚭",
+        title: "Berhasil menghindari zona merokok",
+        time: "30 menit yang lalu"
+    },
+    {
+        icon: "💚",
+        title: "Paru-paru mulai membersihkan diri",
+        time: "1 jam yang lalu"
     }
 ];
 
@@ -84,6 +99,9 @@ function initializeApp() {
     
     // Animate stats on load
     animateStats();
+    
+    // Update greeting based on time
+    updateGreeting();
     
     // Show welcome notification
     setTimeout(() => {
@@ -185,7 +203,9 @@ function handleEmergency() {
         "🎵 Dengarkan Musik Favorit",
         "🤲 Cuci Tangan dan Wajah",
         "📖 Baca Motivasi Positif",
-        "🍎 Makan Camilan Sehat"
+        "🍎 Makan Camilan Sehat",
+        "🧠 Latihan Mindfulness",
+        "☕ Minum Teh Herbal"
     ];
     
     const randomOption = emergencyOptions[Math.floor(Math.random() * emergencyOptions.length)];
@@ -195,6 +215,11 @@ function handleEmergency() {
         
         // Add emergency notification
         addNotification('🆘', 'Berhasil mengatasi keinginan merokok!', 'Baru saja');
+        
+        // Update health slightly as reward
+        if (currentHealthLevel < 5) {
+            showToast('Bonus Kesehatan!', 'Kesehatan meningkat karena berhasil menahan diri!', 'success');
+        }
     }
 }
 
@@ -220,6 +245,10 @@ function changeHealthLevel(action) {
     
     // Update stats
     updateHealthStats();
+    
+    // Add notification about level change
+    const levelNames = ['', 'Buruk', 'Kurang Baik', 'Cukup', 'Membaik', 'Sangat Sehat'];
+    addNotification('📊', `Level kesehatan berubah ke: ${levelNames[currentHealthLevel]}`, 'Baru saja');
 }
 
 function updateAvatarDisplay() {
@@ -422,9 +451,9 @@ function animateStats() {
     }
 }
 
-// Additional utility functions
+// Update greeting based on time
 function updateGreeting() {
-    const greeting = document.querySelector('.greeting strong');
+    const greeting = document.querySelector('.greeting');
     const hour = new Date().getHours();
     let timeGreeting = '';
     
@@ -437,16 +466,12 @@ function updateGreeting() {
     }
     
     if (greeting) {
-        greeting.parentElement.innerHTML = `${timeGreeting}, <strong>Ahmad!</strong> 👋`;
+        greeting.innerHTML = `${timeGreeting}, <strong>Ahmad!</strong> 👋`;
     }
 }
 
-// Auto-update greeting based on time
-setInterval(updateGreeting, 60000); // Update every minute
-
-// Add some interactive features
+// Add ripple effect to buttons
 document.addEventListener('click', function(e) {
-    // Add ripple effect to buttons
     if (e.target.classList.contains('emergency-btn') || 
         e.target.classList.contains('control-btn') || 
         e.target.classList.contains('notif-control-btn')) {
@@ -496,5 +521,84 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Initialize greeting on load
-updateGreeting();
+// Auto-update greeting every minute
+setInterval(updateGreeting, 60000);
+
+// Add some fun interactive features
+function addRandomMotivation() {
+    const motivations = [
+        "Kamu sudah melakukan hal yang luar biasa hari ini!",
+        "Setiap detik tanpa rokok adalah kemenangan!",
+        "Tubuhmu berterima kasih atas keputusan baikmu!",
+        "Kamu lebih kuat dari keinginan merokok!",
+        "Hidup sehat adalah investasi terbaik!"
+    ];
+    
+    const randomMotivation = motivations[Math.floor(Math.random() * motivations.length)];
+    showToast('Motivasi Harian', randomMotivation, 'success');
+}
+
+// Show random motivation every 5 minutes (for demo purposes)
+setInterval(addRandomMotivation, 300000);
+
+// Add keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Press 'E' for emergency help
+    if (e.key.toLowerCase() === 'e' && !e.ctrlKey && !e.altKey) {
+        handleEmergency();
+    }
+    
+    // Press '+' to increase health level
+    if (e.key === '+' || e.key === '=') {
+        changeHealthLevel('increase');
+    }
+    
+    // Press '-' to decrease health level
+    if (e.key === '-') {
+        changeHealthLevel('decrease');
+    }
+    
+    // Press 'N' to add notification
+    if (e.key.toLowerCase() === 'n' && !e.ctrlKey && !e.altKey) {
+        addSampleNotification();
+    }
+});
+
+// Touch gestures for mobile
+let touchStartY = 0;
+let touchEndY = 0;
+
+document.addEventListener('touchstart', function(e) {
+    touchStartY = e.changedTouches[0].screenY;
+});
+
+document.addEventListener('touchend', function(e) {
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    const swipeDistance = touchStartY - touchEndY;
+    const minSwipeDistance = 50;
+    
+    // Swipe up to show motivation
+    if (swipeDistance > minSwipeDistance) {
+        addRandomMotivation();
+    }
+    
+    // Swipe down to add notification (for demo)
+    if (swipeDistance < -minSwipeDistance) {
+        addSampleNotification();
+    }
+}
+
+// Initialize all features when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('PuffOff App Initialized! 🚭');
+    console.log('Keyboard shortcuts:');
+    console.log('- Press E for emergency help');
+    console.log('- Press + to increase health level');
+    console.log('- Press - to decrease health level');
+    console.log('- Press N to add test notification');
+    console.log('- Swipe up/down on mobile for interactions');
+});
