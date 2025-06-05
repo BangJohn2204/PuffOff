@@ -1081,6 +1081,24 @@
         min-width: 80%;
     }
     
+    /* Health indicators repositioned for mobile */
+    .health-indicators {
+        bottom: 10px;
+        left: 10px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .indicator {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        min-width: 50px;
+    }
+    
+    .indicator i {
+        font-size: 0.9rem;
+    }
+    
     .toast-container {
         left: 10px;
         right: 10px;
@@ -1117,6 +1135,23 @@
     .avatar-torso {
         width: 75px;
         height: 85px;
+    }
+    
+    /* Further adjust health indicators for very small screens */
+    .health-indicators {
+        bottom: 5px;
+        left: 5px;
+        gap: 6px;
+    }
+    
+    .indicator {
+        padding: 4px 8px;
+        font-size: 0.65rem;
+        min-width: 45px;
+    }
+    
+    .indicator i {
+        font-size: 0.8rem;
     }
 } /* Reset dan Base Styles */
 * {
