@@ -99,6 +99,7 @@ body {
     font-weight: 700;
     color: #1f2937;
     margin-bottom: 4px;
+    transition: all 0.3s ease;
 }
 
 .stat-label {
@@ -148,6 +149,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 12px;
+    position: relative;
+    overflow: hidden;
 }
 
 .emergency-btn:hover {
@@ -196,6 +199,7 @@ body {
     height: 160px;
     margin: 0 auto;
     z-index: 1;
+    transition: all 0.3s ease;
 }
 
 .avatar-head {
@@ -225,6 +229,7 @@ body {
     border-radius: 20px 20px 30px 30px;
     position: relative;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
 }
 
 .lungs {
@@ -241,15 +246,8 @@ body {
     height: 25px;
     border-radius: 8px 8px 15px 15px;
     transition: all 0.5s ease;
-}
-
-.left-lung, .right-lung {
     background: linear-gradient(135deg, #ef4444, #dc2626);
     animation: breathing 3s ease-in-out infinite;
-}
-
-.lung.healthy {
-    background: linear-gradient(135deg, #10b981, #059669) !important;
 }
 
 .heart {
@@ -384,6 +382,8 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    position: relative;
+    overflow: hidden;
 }
 
 .control-btn:hover {
@@ -497,6 +497,8 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
+    position: relative;
+    overflow: hidden;
 }
 
 .notif-control-btn:hover {
@@ -591,6 +593,7 @@ body {
     justify-content: center;
     margin: 0 auto 20px;
     position: relative;
+    transition: transform 0.5s ease;
 }
 
 .progress-circle::before {
@@ -853,6 +856,14 @@ body {
 
 .avatar-body.health-level-5 .avatar-torso {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Ripple Animation */
+@keyframes ripple {
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
 }
 
 @media (max-width: 480px) {
