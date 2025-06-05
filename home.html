@@ -29,33 +29,102 @@
         <div class="section avatar-section">
             <div class="section-title">
                 <i class="section-icon fas fa-user-md"></i>
-                Avatar Kesehatan
+                Avatar Kesehatan Digital
             </div>
             <div class="avatar-container">
                 <div class="avatar-display">
                     <div class="avatar-body" id="avatarBody">
-                        <div class="avatar-head"></div>
-                        <div class="avatar-torso">
-                            <div class="lungs" id="avatarLungs">
-                                <div class="lung left-lung"></div>
-                                <div class="lung right-lung"></div>
+                        <!-- Head with facial features -->
+                        <div class="avatar-head">
+                            <div class="face-features">
+                                <div class="eyes">
+                                    <div class="eye left-eye">
+                                        <div class="pupil"></div>
+                                    </div>
+                                    <div class="eye right-eye">
+                                        <div class="pupil"></div>
+                                    </div>
+                                </div>
+                                <div class="mouth" id="avatarMouth"></div>
                             </div>
-                            <div class="heart" id="avatarHeart">❤️</div>
+                            <div class="health-aura" id="healthAura"></div>
                         </div>
+                        
+                        <!-- Body with detailed organs -->
+                        <div class="avatar-torso">
+                            <div class="organ-system">
+                                <!-- Lungs with detailed structure -->
+                                <div class="lungs" id="avatarLungs">
+                                    <div class="lung left-lung">
+                                        <div class="lung-detail">
+                                            <div class="alveoli"></div>
+                                            <div class="alveoli"></div>
+                                            <div class="alveoli"></div>
+                                        </div>
+                                    </div>
+                                    <div class="lung right-lung">
+                                        <div class="lung-detail">
+                                            <div class="alveoli"></div>
+                                            <div class="alveoli"></div>
+                                            <div class="alveoli"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Heart with pulse animation -->
+                                <div class="heart" id="avatarHeart">
+                                    <div class="heart-chambers">
+                                        <div class="chamber left-chamber"></div>
+                                        <div class="chamber right-chamber"></div>
+                                    </div>
+                                    <div class="pulse-wave"></div>
+                                </div>
+                                
+                                <!-- Circulatory system -->
+                                <div class="blood-vessels">
+                                    <div class="vessel vessel-1"></div>
+                                    <div class="vessel vessel-2"></div>
+                                    <div class="vessel vessel-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Arms with better positioning -->
                         <div class="avatar-arms">
-                            <div class="arm left-arm"></div>
-                            <div class="arm right-arm"></div>
+                            <div class="arm left-arm">
+                                <div class="shoulder"></div>
+                                <div class="forearm"></div>
+                            </div>
+                            <div class="arm right-arm">
+                                <div class="shoulder"></div>
+                                <div class="forearm"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Health indicators -->
+                        <div class="health-indicators">
+                            <div class="indicator oxygen-level" id="oxygenIndicator">
+                                <i class="fas fa-lungs"></i>
+                                <span>O₂</span>
+                            </div>
+                            <div class="indicator heart-rate" id="heartRateIndicator">
+                                <i class="fas fa-heartbeat"></i>
+                                <span>BPM</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
                 <div class="health-info">
                     <div class="health-level">
-                        <span class="health-label">Level Kesehatan:</span>
+                        <span class="health-label">Status Kesehatan:</span>
                         <span class="health-status" id="healthStatus">Membaik</span>
+                        <span class="health-level-badge" id="healthLevelBadge">Level 4</span>
                     </div>
                     <div class="health-progress">
                         <div class="health-bar">
                             <div class="health-fill" id="healthFill"></div>
+                            <div class="health-sparkle"></div>
                         </div>
                         <span class="health-percentage" id="healthPercentage">78%</span>
                     </div>
@@ -63,63 +132,54 @@
                         <div class="health-item">
                             <i class="fas fa-lungs"></i>
                             <span>Paru-paru: <strong id="lungStatus">Membersihkan diri</strong></span>
+                            <div class="status-indicator lung-indicator" id="lungIndicator"></div>
                         </div>
                         <div class="health-item">
                             <i class="fas fa-heartbeat"></i>
                             <span>Jantung: <strong id="heartStatus">Lebih stabil</strong></span>
+                            <div class="status-indicator heart-indicator" id="heartIndicator"></div>
+                        </div>
+                        <div class="health-item">
+                            <i class="fas fa-tint"></i>
+                            <span>Oksigen: <strong id="oxygenStatus">Normal</strong></span>
+                            <div class="status-indicator oxygen-indicator" id="oxygenStatusIndicator"></div>
                         </div>
                     </div>
                 </div>
+                
                 <div class="avatar-controls">
-                    <button class="control-btn" onclick="changeHealthLevel('decrease')">
-                        <i class="fas fa-minus"></i> Turunkan Level
+                    <button class="control-btn decrease-btn" onclick="changeHealthLevel('decrease')">
+                        <i class="fas fa-minus-circle"></i>
+                        <span>Level Turun</span>
+                        <div class="btn-effect"></div>
                     </button>
-                    <button class="control-btn primary" onclick="changeHealthLevel('increase')">
-                        <i class="fas fa-plus"></i> Naikkan Level
+                    <button class="control-btn primary increase-btn" onclick="changeHealthLevel('increase')">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Level Naik</span>
+                        <div class="btn-effect"></div>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Notification Panel -->
+        <!-- Notification Demo Section -->
         <div class="section notification-section">
             <div class="section-title">
                 <i class="section-icon fas fa-bell"></i>
-                Notifikasi & Pengingat
+                Demo Notifikasi Push
             </div>
-            <div class="notification-panel">
-                <div class="notification-item active" id="notification1">
-                    <div class="notif-icon">🎉</div>
-                    <div class="notif-content">
-                        <div class="notif-title">Selamat! Streak 7 hari tercapai!</div>
-                        <div class="notif-time">2 menit yang lalu</div>
-                    </div>
-                    <button class="notif-dismiss" onclick="dismissNotification('notification1')">×</button>
-                </div>
-                <div class="notification-item" id="notification2">
-                    <div class="notif-icon">💰</div>
-                    <div class="notif-content">
-                        <div class="notif-title">Kamu sudah menghemat Rp 210.000!</div>
-                        <div class="notif-time">1 jam yang lalu</div>
-                    </div>
-                    <button class="notif-dismiss" onclick="dismissNotification('notification2')">×</button>
-                </div>
-                <div class="notification-item" id="notification3">
-                    <div class="notif-icon">❤️</div>
-                    <div class="notif-content">
-                        <div class="notif-title">Kesehatan paru-paru membaik 15%</div>
-                        <div class="notif-time">3 jam yang lalu</div>
-                    </div>
-                    <button class="notif-dismiss" onclick="dismissNotification('notification3')">×</button>
-                </div>
-            </div>
-            <div class="notification-controls">
-                <button class="notif-control-btn" onclick="addSampleNotification()">
-                    <i class="fas fa-plus"></i> Tambah Notifikasi Test
+            <div class="notification-demo">
+                <p class="demo-description">
+                    Klik tombol di bawah untuk melihat contoh notifikasi yang akan muncul dari atas layar seperti notifikasi aplikasi pada umumnya.
+                </p>
+                <button class="show-notification-btn" onclick="triggerPushNotification()">
+                    <i class="fas fa-bell"></i>
+                    <span>Tampilkan Notifikasi</span>
+                    <div class="btn-ripple"></div>
                 </button>
-                <button class="notif-control-btn" onclick="clearAllNotifications()">
-                    <i class="fas fa-trash"></i> Hapus Semua
-                </button>
+                <div class="notification-types">
+                    <small>Jenis notifikasi: Motivasi, Progress, Achievement, Tips, Reminder</small>
+                </div>
             </div>
         </div>
 
