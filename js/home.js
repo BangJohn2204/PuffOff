@@ -1,4 +1,4 @@
-// Globall variables
+// Global variables
 let currentHealthLevel = 4;
 let notificationCounter = 0;
 let isLevelChanging = false;
@@ -123,29 +123,20 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log('🚭 PuffOff App Initialized!');
     
-    // Load saved data and setup
     loadSavedData();
+    updateAvatarDisplay();
     setupButtonListeners();
+    animateStats();
     updateGreeting();
     
-    // Update displays if elements exist
-    updateAvatarDisplay();
-    
-    // Animate elements
     setTimeout(() => {
-        animateStats();
-    }, 500);
-    
-    // Welcome notification
-    setTimeout(() => {
-        showNotification('Selamat datang kembali! Tetap semangat! 💪', 'success');
+        showToast('Selamat datang kembali!', 'Tetap semangat untuk hidup bebas rokok! 💪', 'success');
     }, 1500);
     
     console.log('✅ App initialization complete');
 }
 
 function setupButtonListeners() {
-    // Avatar control buttons (if they exist)
     const increaseBtn = document.getElementById('increaseBtn');
     const decreaseBtn = document.getElementById('decreaseBtn');
     const notificationBtn = document.getElementById('notificationBtn');
@@ -185,7 +176,6 @@ function setupButtonListeners() {
 }
 
 function loadSavedData() {
-    // Load saved mood
     const savedMood = localStorage.getItem('todayMood');
     if (savedMood) {
         const moodButtons = {
@@ -202,7 +192,6 @@ function loadSavedData() {
         }
     }
     
-    // Load saved health level
     const savedHealthLevel = localStorage.getItem('healthLevel');
     if (savedHealthLevel && savedHealthLevel >= 1 && savedHealthLevel <= 5) {
         currentHealthLevel = parseInt(savedHealthLevel);
@@ -214,7 +203,6 @@ function loadSavedData() {
     }
 }
 
-// Health Level Management Functions
 function changeHealthLevelSingle(action) {
     if (isLevelChanging) {
         console.log('⚠️ Level change already in progress, ignoring...');
@@ -280,24 +268,103 @@ function changeHealthLevelSingle(action) {
     }
 }
 
+function triggerSinglePushNotification() {
+    if (notificationTimeout) {
+        console.log('⚠️ Notification already scheduled, ignoring...');
+        return;
+    }
+    
+    console.log('🔔 Triggering single push notification...');
+    
+    try {
+        const randomTemplate = pushNotificationTemplates[Math.floor(Math.random() * pushNotificationTemplates.length)];
+        showSinglePushNotification(randomTemplate);
+        showToast('Notifikasi Ditampilkan!', 'Push notification muncul di atas layar.', 'info');
+    } catch (error) {
+        console.error('❌ Error triggering notification:', error);
+        showToast('Error', 'Gagal menampilkan notifikasi push', 'error');
+    }
+}
+
+function showSinglePushNotification(notificationData) {
+    try {
+        let container = document.getElementById('pushNotificationContainer');
+        
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'pushNotificationContainer';
+            container.className = 'push-notification-container';
+            document.body.appendChild(container);
+            console.log('📦 Created push notification container');
+        }
+        
+        container.innerHTML = '';
+        
+        notificationCounter++;
+        const notificationId = `push-notification-${notificationCounter}`;
+        const currentTime = new Date().toLocaleTimeString('id-ID', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        const notificationHTML = `
+            <div class="push-notification ${notificationData.type}" id="${notificationId}">
+                <div class="notification-header">
+                    <div class="notification-app-info">
+                        <div class="notification-app-icon">P</div>
+                        <span class="notification-app-name">PuffOff</span>
+                    </div>
+                    <span class="notification-time">${currentTime}</span>
+                    <button class="notification-close" onclick="closePushNotification('${notificationId}')">×</button>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">
+                        <span class="notification-icon">${notificationData.icon}</span>
+                        ${notificationData.title}
+                    </div>
+                    <div class="notification-message">${notificationData.message}</div>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', notificationHTML);
+        
+        const notification = document.getElementById(notificationId);
+        
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            closePushNotification(notificationId);
+        }, 6000);
+        
+        console.log(`✅ Single push notification shown: ${notificationData.title}`);
+        
+    } catch (error) {
+        console.error('❌ Error showing push notification:', error);
+    }
+}
+
+function closePushNotification(notificationId) {
+    try {
+        const notification = document.getElementById(notificationId);
+        if (notification) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 400);
+        }
+    } catch (error) {
+        console.error('❌ Error closing push notification:', error);
+    }
+}
+
 function updateAvatarDisplay() {
     console.log(`🎨 Updating avatar display for level ${currentHealthLevel}`);
     
     try {
         const avatarBody = document.getElementById('avatarBody');
-        
-        if (!avatarBody) {
-            console.log('ℹ️ Avatar elements not found - skipping avatar update');
-            return;
-        }
-        
-        const levelData = healthLevels[currentHealthLevel];
-        console.log(`📋 Level data:`, levelData);
-        
-        // Update avatar elements
-        avatarBody.className = `avatar-body health-level-${currentHealthLevel}`;
-        
-        // Update various health indicators
         const healthStatus = document.getElementById('healthStatus');
         const healthFill = document.getElementById('healthFill');
         const healthPercentage = document.getElementById('healthPercentage');
@@ -305,8 +372,63 @@ function updateAvatarDisplay() {
         const lungStatus = document.getElementById('lungStatus');
         const heartStatus = document.getElementById('heartStatus');
         const oxygenStatus = document.getElementById('oxygenStatus');
+        const lungIndicator = document.getElementById('lungIndicator');
+        const heartIndicator = document.getElementById('heartIndicator');
+        const oxygenStatusIndicator = document.getElementById('oxygenStatusIndicator');
         const oxygenIndicator = document.getElementById('oxygenIndicator');
         const heartRateIndicator = document.getElementById('heartRateIndicator');
+        const avatarMouth = document.getElementById('avatarMouth');
+        const healthAura = document.getElementById('healthAura');
+        const avatarLungs = document.getElementById('avatarLungs');
+        const avatarHeart = document.getElementById('avatarHeart');
+        
+        if (!avatarBody) {
+            console.error('❌ Avatar body element not found');
+            return;
+        }
+        
+        const levelData = healthLevels[currentHealthLevel];
+        console.log(`📋 Level data:`, levelData);
+        
+        avatarBody.className = `avatar-body health-level-${currentHealthLevel}`;
+        console.log(`🎭 Avatar class updated to: health-level-${currentHealthLevel}`);
+        
+        if (avatarMouth) {
+            avatarMouth.className = 'mouth';
+            switch(currentHealthLevel) {
+                case 1: avatarMouth.classList.add('very-sad'); break;
+                case 2: avatarMouth.classList.add('sad'); break;
+                case 3: avatarMouth.classList.add('neutral'); break;
+                case 4: avatarMouth.classList.add('happy'); break;
+                case 5: avatarMouth.classList.add('very-happy'); break;
+            }
+        }
+        
+        if (healthAura) {
+            if (currentHealthLevel >= 4) {
+                healthAura.classList.add('active');
+            } else {
+                healthAura.classList.remove('active');
+            }
+        }
+        
+        if (avatarLungs) {
+            avatarLungs.className = 'lungs';
+            if (currentHealthLevel >= 4) {
+                avatarLungs.classList.add('healthy');
+            } else if (currentHealthLevel === 3) {
+                avatarLungs.classList.add('moderate');
+            } else {
+                avatarLungs.classList.add('poor');
+            }
+        }
+        
+        if (avatarHeart) {
+            avatarHeart.className = 'heart';
+            if (currentHealthLevel >= 4) {
+                avatarHeart.classList.add('healthy');
+            }
+        }
         
         if (healthStatus) {
             healthStatus.textContent = levelData.status;
@@ -331,6 +453,16 @@ function updateAvatarDisplay() {
         if (heartStatus) heartStatus.textContent = levelData.heartStatus;
         if (oxygenStatus) oxygenStatus.textContent = levelData.oxygenStatus;
         
+        if (lungIndicator) {
+            lungIndicator.className = `status-indicator lung-indicator ${levelData.lungIndicator}`;
+        }
+        if (heartIndicator) {
+            heartIndicator.className = `status-indicator heart-indicator ${levelData.heartIndicator}`;
+        }
+        if (oxygenStatusIndicator) {
+            oxygenStatusIndicator.className = `status-indicator oxygen-indicator ${levelData.lungIndicator}`;
+        }
+        
         if (oxygenIndicator) {
             oxygenIndicator.innerHTML = `<i class="fas fa-lungs"></i><span>${levelData.oxygenLevel}%</span>`;
         }
@@ -339,7 +471,6 @@ function updateAvatarDisplay() {
             heartRateIndicator.innerHTML = `<i class="fas fa-heartbeat"></i><span>${levelData.heartRate}</span>`;
         }
         
-        // Animation effect
         avatarBody.style.transform = 'scale(1.05)';
         setTimeout(() => {
             avatarBody.style.transform = 'scale(1)';
@@ -370,246 +501,6 @@ function updateHealthStats() {
     }
 }
 
-// Push Notification System
-function triggerSinglePushNotification() {
-    if (notificationTimeout) {
-        console.log('⚠️ Notification already scheduled, ignoring...');
-        return;
-    }
-    
-    console.log('🔔 Triggering single push notification...');
-    
-    try {
-        const randomTemplate = pushNotificationTemplates[Math.floor(Math.random() * pushNotificationTemplates.length)];
-        showSinglePushNotification(randomTemplate);
-        showToast('Notifikasi Ditampilkan!', 'Push notification muncul di atas layar.', 'info');
-    } catch (error) {
-        console.error('❌ Error triggering notification:', error);
-        showToast('Error', 'Gagal menampilkan notifikasi push', 'error');
-    }
-}
-
-function showSinglePushNotification(notificationData) {
-    try {
-        let container = document.getElementById('pushNotificationContainer');
-        
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'pushNotificationContainer';
-            container.className = 'push-notification-container';
-            container.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 20000;
-                pointer-events: none;
-            `;
-            document.body.appendChild(container);
-            console.log('📦 Created push notification container');
-        }
-        
-        container.innerHTML = '';
-        
-        notificationCounter++;
-        const notificationId = `push-notification-${notificationCounter}`;
-        const currentTime = new Date().toLocaleTimeString('id-ID', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        });
-        
-        const notificationHTML = `
-            <div class="push-notification ${notificationData.type}" id="${notificationId}" style="
-                background: white;
-                margin: 20px auto 0;
-                max-width: 400px;
-                border-radius: 16px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-                border-left: 6px solid ${notificationData.type === 'success' ? '#10b981' : notificationData.type === 'warning' ? '#f59e0b' : '#3b82f6'};
-                transform: translateY(-100px);
-                opacity: 0;
-                transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                pointer-events: auto;
-                position: relative;
-                overflow: hidden;
-            ">
-                <div class="notification-header" style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 16px 20px 8px;
-                    border-bottom: 1px solid #f3f4f6;
-                ">
-                    <div class="notification-app-info" style="display: flex; align-items: center; gap: 10px;">
-                        <div class="notification-app-icon" style="
-                            width: 24px;
-                            height: 24px;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            border-radius: 6px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: white;
-                            font-size: 0.8rem;
-                            font-weight: 700;
-                        ">P</div>
-                        <span class="notification-app-name" style="font-weight: 600; color: #1f2937; font-size: 0.9rem;">PuffOff</span>
-                    </div>
-                    <span class="notification-time" style="color: #6b7280; font-size: 0.8rem;">${currentTime}</span>
-                    <button class="notification-close" onclick="closePushNotification('${notificationId}')" style="
-                        background: none;
-                        border: none;
-                        color: #9ca3af;
-                        cursor: pointer;
-                        font-size: 1.2rem;
-                        padding: 4px;
-                        border-radius: 4px;
-                        transition: all 0.2s ease;
-                    ">×</button>
-                </div>
-                <div class="notification-content" style="padding: 12px 20px 20px;">
-                    <div class="notification-title" style="font-weight: 700; color: #1f2937; margin-bottom: 8px; font-size: 1rem;">
-                        <span class="notification-icon" style="font-size: 1.5rem; margin-right: 8px; vertical-align: middle;">${notificationData.icon}</span>
-                        ${notificationData.title}
-                    </div>
-                    <div class="notification-message" style="color: #6b7280; line-height: 1.5; font-size: 0.9rem;">${notificationData.message}</div>
-                </div>
-            </div>
-        `;
-        
-        container.insertAdjacentHTML('beforeend', notificationHTML);
-        
-        const notification = document.getElementById(notificationId);
-        
-        setTimeout(() => {
-            notification.style.transform = 'translateY(0)';
-            notification.style.opacity = '1';
-        }, 100);
-        
-        setTimeout(() => {
-            closePushNotification(notificationId);
-        }, 6000);
-        
-        console.log(`✅ Single push notification shown: ${notificationData.title}`);
-        
-    } catch (error) {
-        console.error('❌ Error showing push notification:', error);
-    }
-}
-
-function closePushNotification(notificationId) {
-    try {
-        const notification = document.getElementById(notificationId);
-        if (notification) {
-            notification.style.transform = 'translateY(-100px)';
-            notification.style.opacity = '0';
-            setTimeout(() => {
-                notification.remove();
-            }, 400);
-        }
-    } catch (error) {
-        console.error('❌ Error closing push notification:', error);
-    }
-}
-
-// Toast Notification System
-function showToast(title, message, type = 'info') {
-    try {
-        let toastContainer = document.getElementById('toastContainer');
-        
-        if (!toastContainer) {
-            toastContainer = document.createElement('div');
-            toastContainer.id = 'toastContainer';
-            toastContainer.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                max-width: 350px;
-            `;
-            document.body.appendChild(toastContainer);
-        }
-        
-        const toastId = `toast-${Date.now()}`;
-        const icons = {
-            success: '✅',
-            error: '❌',
-            warning: '⚠️',
-            info: 'ℹ️'
-        };
-        
-        const colors = {
-            success: '#10b981',
-            error: '#ef4444',
-            warning: '#f59e0b',
-            info: '#3b82f6'
-        };
-        
-        const toastHTML = `
-            <div class="toast ${type}" id="${toastId}" style="
-                background: white;
-                border-radius: 12px;
-                padding: 16px 20px;
-                margin-bottom: 12px;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-                border-left: 4px solid ${colors[type]};
-                transform: translateX(100%);
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                position: relative;
-            ">
-                <div class="toast-icon" style="font-size: 1.2rem; min-width: 20px;">${icons[type] || icons.info}</div>
-                <div class="toast-content" style="flex: 1;">
-                    <div class="toast-title" style="font-weight: 600; color: #1f2937; margin-bottom: 2px; font-size: 0.9rem;">${title}</div>
-                    <div class="toast-message" style="color: #6b7280; font-size: 0.8rem;">${message}</div>
-                </div>
-                <button class="toast-close" onclick="closeToast('${toastId}')" style="
-                    background: none;
-                    border: none;
-                    font-size: 1.2rem;
-                    color: #9ca3af;
-                    cursor: pointer;
-                    padding: 4px;
-                    border-radius: 4px;
-                    transition: all 0.2s ease;
-                ">×</button>
-            </div>
-        `;
-        
-        toastContainer.insertAdjacentHTML('beforeend', toastHTML);
-        
-        const toast = document.getElementById(toastId);
-        
-        setTimeout(() => {
-            toast.style.transform = 'translateX(0)';
-        }, 100);
-        
-        setTimeout(() => {
-            closeToast(toastId);
-        }, 4000);
-        
-    } catch (error) {
-        console.error('❌ Error showing toast:', error);
-    }
-}
-
-function closeToast(toastId) {
-    try {
-        const toast = document.getElementById(toastId);
-        if (toast) {
-            toast.style.transform = 'translateX(100%)';
-            setTimeout(() => {
-                toast.remove();
-            }, 300);
-        }
-    } catch (error) {
-        console.error('❌ Error closing toast:', error);
-    }
-}
-
-// Mood Selection Functions
 function selectMood(button, mood) {
     try {
         document.querySelectorAll('.mood-btn').forEach(btn => {
@@ -618,7 +509,7 @@ function selectMood(button, mood) {
         
         button.classList.add('selected');
         localStorage.setItem('todayMood', mood);
-        showNotification('Mood tersimpan! Tetap semangat! 💪', 'success');
+        showToast('Mood Tersimpan!', 'Terima kasih sudah berbagi perasaanmu hari ini.', 'success');
         updateQuoteBasedOnMood(mood);
     } catch (error) {
         console.error('❌ Error selecting mood:', error);
@@ -660,7 +551,6 @@ function updateQuoteBasedOnMood(mood) {
     }
 }
 
-// Emergency Function
 function handleEmergency() {
     const emergencyOptions = [
         "🧘 Latihan Pernapasan 2 Menit",
@@ -676,7 +566,7 @@ function handleEmergency() {
     const randomOption = emergencyOptions[Math.floor(Math.random() * emergencyOptions.length)];
     
     if (confirm(`Butuh bantuan mengatasi keinginan merokok?\n\nSaran: ${randomOption}\n\nApakah kamu ingin mencoba sekarang?`)) {
-        showNotification('Kamu bisa melakukannya! 💪 Ingat tujuanmu dan tetap kuat!', 'success');
+        showToast('Kamu Bisa Melakukannya!', 'Ingat tujuanmu dan tetap kuat! 💪', 'success');
         
         setTimeout(() => {
             const emergencyNotif = {
@@ -691,63 +581,64 @@ function handleEmergency() {
     }
 }
 
-// Enhanced Notification Function (for backward compatibility)
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10b981' : type === 'info' ? '#667eea' : '#f59e0b'};
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        z-index: 10000;
-        font-weight: 600;
-        max-width: 300px;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-        line-height: 1.4;
-    `;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
+function showToast(title, message, type = 'info') {
+    try {
+        let toastContainer = document.getElementById('toastContainer');
+        
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toastId = `toast-${Date.now()}`;
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        
+        const toastHTML = `
+            <div class="toast ${type}" id="${toastId}">
+                <div class="toast-icon">${icons[type] || icons.info}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="closeToast('${toastId}')">×</button>
+            </div>
+        `;
+        
+        toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+        
+        const toast = document.getElementById(toastId);
+        
         setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 4000);
+            toast.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            closeToast(toastId);
+        }, 4000);
+        
+    } catch (error) {
+        console.error('❌ Error showing toast:', error);
+    }
 }
 
-// Utility Functions
-function updateGreeting() {
+function closeToast(toastId) {
     try {
-        const greeting = document.querySelector('.greeting');
-        const hour = new Date().getHours();
-        let timeGreeting = '';
-        
-        if (hour < 12) {
-            timeGreeting = 'Selamat pagi';
-        } else if (hour < 18) {
-            timeGreeting = 'Selamat siang';
-        } else {
-            timeGreeting = 'Selamat malam';
-        }
-        
-        if (greeting) {
-            greeting.innerHTML = `${timeGreeting}, <strong>Ahmad!</strong> 👋`;
+        const toast = document.getElementById(toastId);
+        if (toast) {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
         }
     } catch (error) {
-        console.error('❌ Error updating greeting:', error);
+        console.error('❌ Error closing toast:', error);
     }
 }
 
@@ -761,10 +652,9 @@ function animateStats() {
                 setTimeout(() => {
                     stat.style.transform = 'scale(1)';
                 }, 200);
-            }, index * 150);
+            }, index * 100);
         });
         
-        // Animate progress circle
         const progressCircle = document.querySelector('.progress-circle');
         if (progressCircle) {
             progressCircle.style.transform = 'scale(0.8)';
@@ -787,7 +677,29 @@ function animateStats() {
     }
 }
 
-// Legacy function aliases for compatibility
+function updateGreeting() {
+    try {
+        const greeting = document.querySelector('.greeting');
+        const hour = new Date().getHours();
+        let timeGreeting = '';
+        
+        if (hour < 12) {
+            timeGreeting = 'Selamat pagi';
+        } else if (hour < 18) {
+            timeGreeting = 'Selamat siang';
+        } else {
+            timeGreeting = 'Selamat malam';
+        }
+        
+        if (greeting) {
+            greeting.innerHTML = `${timeGreeting}, <strong>Ahmad!</strong> 👋`;
+        }
+    } catch (error) {
+        console.error('❌ Error updating greeting:', error);
+    }
+}
+
+// Legacy function aliases
 function changeHealthLevel(action) {
     changeHealthLevelSingle(action);
 }
@@ -796,7 +708,7 @@ function triggerPushNotification() {
     triggerSinglePushNotification();
 }
 
-// Test functions for development
+// Test functions
 window.testHealthLevel = function(level) {
     if (level >= 1 && level <= 5) {
         if (isLevelChanging) {
@@ -819,69 +731,17 @@ window.testNotification = function() {
     console.log('🧪 Test: Triggered single notification');
 };
 
-// Add ripple effect to buttons
-document.addEventListener('click', function(e) {
-    if (e.target.matches('button, .action-btn')) {
-        const button = e.target;
-        const rect = button.getBoundingClientRect();
-        const ripple = document.createElement('span');
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-        
-        ripple.style.cssText = `
-            position: absolute;
-            width: ${size}px;
-            height: ${size}px;
-            left: ${x}px;
-            top: ${y}px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-        `;
-        
-        // Add ripple animation CSS if not exists
-        if (!document.getElementById('ripple-style')) {
-            const style = document.createElement('style');
-            style.id = 'ripple-style';
-            style.textContent = `
-                @keyframes ripple {
-                    to {
-                        transform: scale(4);
-                        opacity: 0;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        button.style.position = 'relative';
-        button.style.overflow = 'hidden';
-        button.appendChild(ripple);
-        
-        setTimeout(() => {
-            if (button.contains(ripple)) {
-                button.removeChild(ripple);
-            }
-        }, 600);
-    }
-});
-
-// Auto-update greeting every minute
+// Auto-update greeting
 setInterval(updateGreeting, 60000);
 
-// Enhanced Keyboard shortcuts
+// Keyboard shortcuts
 document.addEventListener('keydown', function(e) {
     try {
-        // Emergency shortcut (E key)
         if (e.key.toLowerCase() === 'e' && !e.ctrlKey && !e.altKey && !e.target.matches('input, textarea')) {
             e.preventDefault();
             handleEmergency();
         }
         
-        // Health level shortcuts
         if ((e.key === '+' || e.key === '=') && !e.target.matches('input, textarea')) {
             e.preventDefault();
             changeHealthLevelSingle('increase');
@@ -892,36 +752,19 @@ document.addEventListener('keydown', function(e) {
             changeHealthLevelSingle('decrease');
         }
         
-        // Notification shortcut (N key)
         if (e.key.toLowerCase() === 'n' && !e.ctrlKey && !e.altKey && !e.target.matches('input, textarea')) {
             e.preventDefault();
             triggerSinglePushNotification();
-        }
-        
-        // Motivation shortcut (M key)
-        if (e.key.toLowerCase() === 'm' && !e.ctrlKey && !e.altKey && !e.target.matches('input, textarea')) {
-            e.preventDefault();
-            showNotification('Tetap semangat! Kamu sudah melakukan hal yang hebat! 🌟', 'info');
         }
     } catch (error) {
         console.error('❌ Error in keyboard shortcuts:', error);
     }
 });
 
-// Console messages
 console.log('🎮 PuffOff Controls Ready!');
-console.log('🔧 Features available:');
-console.log('  • Avatar Health System (if elements exist)');
-console.log('  • Push Notifications');
-console.log('  • Toast Notifications');
-console.log('  • Mood Selection');
-console.log('  • Emergency Support');
-console.log('⌨️  Keyboard shortcuts:');
-console.log('  • E = Emergency');
-console.log('  • +/- = Health Level (if avatar exists)');
-console.log('  • N = Show Notification');
-console.log('  • M = Show Motivation');
-console.log('🚭 Let\'s stay smoke-free together!');
+console.log('🔧 Click +/- buttons to change health levels');
+console.log('🔔 Click notification button for demo');
+console.log('⌨️ Keyboard: E=Emergency, +/-=Health, N=Notification');
 
 // Initialize if DOM already loaded
 if (document.readyState === 'loading') {
