@@ -33,7 +33,7 @@
             </div>
             <div class="avatar-container">
                 <div class="avatar-display">
-                    <div class="avatar-body" id="avatarBody">
+                    <div class="avatar-body health-level-4" id="avatarBody">
                         <!-- Head with facial features -->
                         <div class="avatar-head">
                             <div class="face-features">
@@ -45,16 +45,16 @@
                                         <div class="pupil"></div>
                                     </div>
                                 </div>
-                                <div class="mouth" id="avatarMouth"></div>
+                                <div class="mouth happy" id="avatarMouth"></div>
                             </div>
-                            <div class="health-aura" id="healthAura"></div>
+                            <div class="health-aura active" id="healthAura"></div>
                         </div>
                         
                         <!-- Body with detailed organs -->
                         <div class="avatar-torso">
                             <div class="organ-system">
                                 <!-- Lungs with detailed structure -->
-                                <div class="lungs" id="avatarLungs">
+                                <div class="lungs healthy" id="avatarLungs">
                                     <div class="lung left-lung">
                                         <div class="lung-detail">
                                             <div class="alveoli"></div>
@@ -72,7 +72,7 @@
                                 </div>
                                 
                                 <!-- Heart with pulse animation -->
-                                <div class="heart" id="avatarHeart">
+                                <div class="heart healthy" id="avatarHeart">
                                     <div class="heart-chambers">
                                         <div class="chamber left-chamber"></div>
                                         <div class="chamber right-chamber"></div>
@@ -81,7 +81,7 @@
                                 </div>
                                 
                                 <!-- Circulatory system -->
-                                <div class="blood-vessels">
+                                <div class="blood-vessels healthy">
                                     <div class="vessel vessel-1"></div>
                                     <div class="vessel vessel-2"></div>
                                     <div class="vessel vessel-3"></div>
@@ -105,11 +105,11 @@
                         <div class="health-indicators">
                             <div class="indicator oxygen-level" id="oxygenIndicator">
                                 <i class="fas fa-lungs"></i>
-                                <span>O₂</span>
+                                <span>97%</span>
                             </div>
                             <div class="indicator heart-rate" id="heartRateIndicator">
                                 <i class="fas fa-heartbeat"></i>
-                                <span>BPM</span>
+                                <span>72</span>
                             </div>
                         </div>
                     </div>
@@ -123,37 +123,37 @@
                     </div>
                     <div class="health-progress">
                         <div class="health-bar">
-                            <div class="health-fill" id="healthFill"></div>
+                            <div class="health-fill" id="healthFill" style="width: 75%;"></div>
                             <div class="health-sparkle"></div>
                         </div>
-                        <span class="health-percentage" id="healthPercentage">78%</span>
+                        <span class="health-percentage" id="healthPercentage">75%</span>
                     </div>
                     <div class="health-details">
                         <div class="health-item">
                             <i class="fas fa-lungs"></i>
                             <span>Paru-paru: <strong id="lungStatus">Membersihkan diri</strong></span>
-                            <div class="status-indicator lung-indicator" id="lungIndicator"></div>
+                            <div class="status-indicator lung-indicator healthy" id="lungIndicator"></div>
                         </div>
                         <div class="health-item">
                             <i class="fas fa-heartbeat"></i>
                             <span>Jantung: <strong id="heartStatus">Lebih stabil</strong></span>
-                            <div class="status-indicator heart-indicator" id="heartIndicator"></div>
+                            <div class="status-indicator heart-indicator healthy" id="heartIndicator"></div>
                         </div>
                         <div class="health-item">
                             <i class="fas fa-tint"></i>
                             <span>Oksigen: <strong id="oxygenStatus">Normal</strong></span>
-                            <div class="status-indicator oxygen-indicator" id="oxygenStatusIndicator"></div>
+                            <div class="status-indicator oxygen-indicator healthy" id="oxygenStatusIndicator"></div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="avatar-controls">
-                    <button class="control-btn decrease-btn" onclick="changeHealthLevel('decrease')">
+                    <button class="control-btn decrease-btn" onclick="changeHealthLevel('decrease')" id="decreaseBtn">
                         <i class="fas fa-minus-circle"></i>
                         <span>Level Turun</span>
                         <div class="btn-effect"></div>
                     </button>
-                    <button class="control-btn primary increase-btn" onclick="changeHealthLevel('increase')">
+                    <button class="control-btn primary increase-btn" onclick="changeHealthLevel('increase')" id="increaseBtn">
                         <i class="fas fa-plus-circle"></i>
                         <span>Level Naik</span>
                         <div class="btn-effect"></div>
@@ -172,7 +172,7 @@
                 <p class="demo-description">
                     Klik tombol di bawah untuk melihat contoh notifikasi yang akan muncul dari atas layar seperti notifikasi aplikasi pada umumnya.
                 </p>
-                <button class="show-notification-btn" onclick="triggerPushNotification()">
+                <button class="show-notification-btn" onclick="triggerPushNotification()" id="notificationBtn">
                     <i class="fas fa-bell"></i>
                     <span>Tampilkan Notifikasi</span>
                     <div class="btn-ripple"></div>
