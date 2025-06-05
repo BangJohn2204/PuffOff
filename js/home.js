@@ -1,4 +1,153 @@
+function updateHealthStats() {
+    try {
+        // Update the health score in stats grid
+        const healthStatCard = document.querySelector('.stat-card:last-child .stat-value');
+        if (healthStatCard) {
+            const percentage = healthLevels[currentHealthLevel].percentage;
+            healthStatCard.textContent = `${percentage}%`;
+            
+            // Add animation
+            healthStatCard.style.transform = 'scale(1.2)';
+            healthStatCard.style.color = healthLevels[currentHealthLevel].color;
+            setTimeout(() => {
+                healthStatCard.style.transform = 'scale(1)';
+            }, 300);
+        }
+    } catch (error) {
+        console.error('❌ Error updating health stats:', error);
+    }
+}
+
 // Mood selection functionality
+function selectMood(button, mood) {
+    try {
+        // Remove selected class from all buttons
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked button
+        button.classList.add('selected');
+        
+        // Store mood and show feedback
+        localStorage.setItem('todayMood', mood);
+        showToast('Mood Tersimpan!', 'Terima kasih sudah berbagi perasaanmu hari ini.', 'success');
+        
+        // Update quote based on mood
+        updateQuoteBasedOnMood(mood);
+    } catch (error) {
+        console.error('❌ Error selecting mood:', error);
+    }
+}
+
+// Update quote based on selected mood
+function updateQuoteBasedOnMood(mood) {
+    const quotes = {
+        great: {
+            text: "Energi positifmu hari ini luar biasa! Terus pertahankan semangat bebas rokok ini.",
+            author: "- Stay Strong"
+        },
+        good: {
+            text: "Hari yang baik untuk terus melanjutkan perjalanan sehatmu tanpa rokok.",
+            author: "- Keep Going"
+        },
+        okay: {
+            text: "Hari biasa-biasa saja? Tidak apa-apa. Yang penting kamu tetap konsisten tanpa rokok.",
+            author: "- One Day at a Time"
+        },
+        bad: {
+            text: "Hari yang berat? Ingatlah bahwa tidak merokok adalah satu hal positif yang sudah kamu lakukan hari ini.",
+            author: "- Every Step Counts"
+        },
+        terrible: {
+            text: "Hari yang sangat sulit? Kamu tidak sendirian. Tim PuffOff dan komunitas selalu siap membantumu.",
+            author: "- We're Here for You"
+        }
+    };
+
+    const quoteCard = document.querySelector('.quote-card');
+    const selectedQuote = quotes[mood];
+    
+    if (selectedQuote && quoteCard) {
+        quoteCard.innerHTML = `
+            <div class="quote-text">${selectedQuote.text}</div>
+            <div class="quote-author">${selectedQuote.author}</div>
+        `;
+    }
+}
+
+// Handle emergency button
+function handleEmergency() {
+    const emergencyOptions = [
+        "🧘 Latihan Pernapasan 2 Menit",
+        "🚶 Jalan Kaki Sebentar",
+        "💧 Minum Air Putih",
+        "📱 Chat dengan Komunitas",
+        "🎵 Dengarkan Musik Favorit",
+        "🤲 Cuci Tangan dan Wajah",
+        "📖 Baca Motivasi Positif",
+        "🍎 Makan Camilan Sehat"
+    ];
+    
+    const randomOption = emergencyOptions[Math.floor(Math.random() * emergencyOptions.length)];
+    
+    if (confirm(`Butuh bantuan mengatasi keinginan merokok?\n\nSaran: ${randomOption}\n\nApakah kamu ingin mencoba sekarang?`)) {
+        showToast('Kamu Bisa Melakukannya!', 'Ingat tujuanmu dan tetap kuat! 💪', 'success');
+        
+        // Show emergency success notification
+        setTimeout(() => {
+            const emergencyNotif = {
+                type: 'success',
+                icon: '🆘',
+                title: 'Berhasil Mengatasi Keinginan!',
+                message: 'Kamu berhasil menahan diri! Setiap detik adalah kemenangan.',
+                category: 'Emergency Success'
+            };
+            showPushNotification(emergencyNotif);
+        }, 1000);
+    }
+}
+
+// Toast notification system
+function showToast(title, message, type = 'info') {
+    try {
+        let toastContainer = document.getElementById('toastContainer');
+        
+        // Create container if it doesn't exist
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toastId = `toast-${Date.now()}`;
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        
+        const toastHTML = `
+            <div class="toast ${type}" id="${toastId}">
+                <div class="toast-icon">${icons[type] || icons.info}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="closeToast('${toastId}')">×</button>
+            </div>
+        `;
+        
+        toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+        
+        const toast = document.getElementById(toastId);
+        
+        // Show toast with animation
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100// Mood selection functionality
 function selectMood(button, mood) {
     // Remove selected class from all buttons
     document.querySelectorAll('.mood-btn').forEach(btn => {
@@ -353,7 +502,9 @@ const healthLevels = {
         oxygenStatus: "Sangat rendah",
         color: "#ef4444",
         lungIndicator: "poor",
-        heartIndicator: "poor"
+        heartIndicator: "poor",
+        oxygenLevel: 85,
+        heartRate: 95
     },
     2: {
         status: "Buruk",
@@ -363,7 +514,9 @@ const healthLevels = {
         oxygenStatus: "Rendah",
         color: "#f59e0b",
         lungIndicator: "poor",
-        heartIndicator: "moderate"
+        heartIndicator: "moderate",
+        oxygenLevel: 88,
+        heartRate: 88
     },
     3: {
         status: "Sedang",
@@ -373,7 +526,9 @@ const healthLevels = {
         oxygenStatus: "Cukup",
         color: "#eab308",
         lungIndicator: "moderate",
-        heartIndicator: "moderate"
+        heartIndicator: "moderate",
+        oxygenLevel: 92,
+        heartRate: 80
     },
     4: {
         status: "Baik",
@@ -383,7 +538,9 @@ const healthLevels = {
         oxygenStatus: "Normal",
         color: "#10b981",
         lungIndicator: "healthy",
-        heartIndicator: "healthy"
+        heartIndicator: "healthy",
+        oxygenLevel: 97,
+        heartRate: 72
     },
     5: {
         status: "Sangat Sehat",
@@ -393,9 +550,436 @@ const healthLevels = {
         oxygenStatus: "Optimal",
         color: "#059669",
         lungIndicator: "healthy",
-        heartIndicator: "healthy"
+        heartIndicator: "healthy",
+        oxygenLevel: 99,
+        heartRate: 65
     }
 };
+
+// Push notification templates
+const pushNotificationTemplates = [
+    {
+        type: 'success',
+        icon: '🎉',
+        title: 'Selamat! Milestone Tercapai',
+        message: 'Kamu berhasil mencapai 7 hari bebas rokok! Terus pertahankan!',
+        category: 'Achievement'
+    },
+    {
+        type: 'info',
+        icon: '💡',
+        title: 'Tips Sehat Hari Ini',
+        message: 'Minum air putih minimal 8 gelas untuk membantu detoksifikasi tubuh.',
+        category: 'Tips'
+    },
+    {
+        type: 'achievement',
+        icon: '🏆',
+        title: 'Pencapaian Baru!',
+        message: 'Kesehatan paru-paru meningkat 20% dalam seminggu terakhir!',
+        category: 'Progress'
+    },
+    {
+        type: 'warning',
+        icon: '⚠️',
+        title: 'Reminder Penting',
+        message: 'Hindari area merokok dan tetap fokus pada tujuan sehatmu.',
+        category: 'Reminder'
+    },
+    {
+        type: 'success',
+        icon: '💰',
+        title: 'Penghematan Luar Biasa!',
+        message: 'Kamu sudah menghemat Rp 210.000 dalam 7 hari terakhir!',
+        category: 'Savings'
+    },
+    {
+        type: 'info',
+        icon: '❤️',
+        title: 'Kesehatan Membaik',
+        message: 'Detak jantung mulai normal dan tekanan darah stabil.',
+        category: 'Health'
+    }
+];
+
+// Initialize app when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚭 PuffOff App Starting...');
+    
+    // Small delay to ensure DOM is fully loaded
+    setTimeout(() => {
+        initializeApp();
+    }, 100);
+});
+
+function initializeApp() {
+    console.log('🚭 PuffOff App Initialized!');
+    
+    // Load saved data
+    loadSavedData();
+    
+    // Initialize avatar
+    updateAvatarDisplay();
+    
+    // Test button functionality
+    setupButtonListeners();
+    
+    // Animate stats on load
+    animateStats();
+    
+    // Update greeting based on time
+    updateGreeting();
+    
+    // Show welcome notification
+    setTimeout(() => {
+        showToast('Selamat datang kembali!', 'Tetap semangat untuk hidup bebas rokok! 💪', 'success');
+    }, 1500);
+    
+    console.log('✅ App initialization complete');
+}
+
+function setupButtonListeners() {
+    // Add direct event listeners as backup
+    const increaseBtn = document.getElementById('increaseBtn');
+    const decreaseBtn = document.getElementById('decreaseBtn');
+    const notificationBtn = document.getElementById('notificationBtn');
+    
+    if (increaseBtn) {
+        increaseBtn.addEventListener('click', function() {
+            console.log('🔼 Increase button clicked');
+            changeHealthLevel('increase');
+        });
+        console.log('✅ Increase button listener added');
+    } else {
+        console.error('❌ Increase button not found');
+    }
+    
+    if (decreaseBtn) {
+        decreaseBtn.addEventListener('click', function() {
+            console.log('🔽 Decrease button clicked');
+            changeHealthLevel('decrease');
+        });
+        console.log('✅ Decrease button listener added');
+    } else {
+        console.error('❌ Decrease button not found');
+    }
+    
+    if (notificationBtn) {
+        notificationBtn.addEventListener('click', function() {
+            console.log('🔔 Notification button clicked');
+            triggerPushNotification();
+        });
+        console.log('✅ Notification button listener added');
+    } else {
+        console.error('❌ Notification button not found');
+    }
+}
+
+function loadSavedData() {
+    // Load saved mood
+    const savedMood = localStorage.getItem('todayMood');
+    if (savedMood) {
+        const moodButtons = {
+            'great': 0, 'good': 1, 'okay': 2, 'bad': 3, 'terrible': 4
+        };
+        
+        const buttonIndex = moodButtons[savedMood];
+        if (buttonIndex !== undefined) {
+            const button = document.querySelectorAll('.mood-btn')[buttonIndex];
+            if (button) {
+                button.classList.add('selected');
+                updateQuoteBasedOnMood(savedMood);
+            }
+        }
+    }
+    
+    // Load saved health level
+    const savedHealthLevel = localStorage.getItem('healthLevel');
+    if (savedHealthLevel && savedHealthLevel >= 1 && savedHealthLevel <= 5) {
+        currentHealthLevel = parseInt(savedHealthLevel);
+        console.log(`📊 Loaded health level: ${currentHealthLevel}`);
+    } else {
+        // Set default and save
+        currentHealthLevel = 4;
+        localStorage.setItem('healthLevel', currentHealthLevel.toString());
+        console.log(`📊 Set default health level: ${currentHealthLevel}`);
+    }
+}
+
+// Avatar health level functions - FIXED AND IMPROVED
+function changeHealthLevel(action) {
+    console.log(`🔧 changeHealthLevel called with action: ${action}`);
+    console.log(`📊 Current level: ${currentHealthLevel}`);
+    
+    const oldLevel = currentHealthLevel;
+    
+    try {
+        if (action === 'increase' && currentHealthLevel < 5) {
+            currentHealthLevel++;
+            console.log(`📈 Health level increased to: ${currentHealthLevel}`);
+            showToast('Level Kesehatan Naik!', `Naik ke level ${currentHealthLevel}/5 - ${healthLevels[currentHealthLevel].status}`, 'success');
+        } else if (action === 'decrease' && currentHealthLevel > 1) {
+            currentHealthLevel--;
+            console.log(`📉 Health level decreased to: ${currentHealthLevel}`);
+            showToast('Level Kesehatan Turun', `Turun ke level ${currentHealthLevel}/5 - ${healthLevels[currentHealthLevel].status}`, 'warning');
+        } else {
+            const message = action === 'increase' ? 'Sudah di level maksimal (5/5)!' : 'Sudah di level minimum (1/5)!';
+            console.log(`⚠️ Cannot change level: ${message}`);
+            showToast('Tidak Bisa Diubah', message, 'info');
+            return;
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('healthLevel', currentHealthLevel.toString());
+        console.log(`💾 Health level saved: ${currentHealthLevel}`);
+        
+        // Update display
+        updateAvatarDisplay();
+        updateHealthStats();
+        
+        // Show push notification for level change
+        if (oldLevel !== currentHealthLevel) {
+            setTimeout(() => {
+                const levelChangeNotif = {
+                    type: action === 'increase' ? 'success' : 'warning',
+                    icon: action === 'increase' ? '📈' : '📉',
+                    title: `Level Kesehatan ${action === 'increase' ? 'Naik' : 'Turun'}!`,
+                    message: `Status kesehatan berubah menjadi: ${healthLevels[currentHealthLevel].status}`,
+                    category: 'Health Update'
+                };
+                showPushNotification(levelChangeNotif);
+            }, 1000);
+        }
+        
+    } catch (error) {
+        console.error('❌ Error in changeHealthLevel:', error);
+        showToast('Error', 'Terjadi kesalahan saat mengubah level kesehatan', 'error');
+    }
+}
+
+function updateAvatarDisplay() {
+    console.log(`🎨 Updating avatar display for level ${currentHealthLevel}`);
+    
+    try {
+        const avatarBody = document.getElementById('avatarBody');
+        const healthStatus = document.getElementById('healthStatus');
+        const healthFill = document.getElementById('healthFill');
+        const healthPercentage = document.getElementById('healthPercentage');
+        const healthLevelBadge = document.getElementById('healthLevelBadge');
+        const lungStatus = document.getElementById('lungStatus');
+        const heartStatus = document.getElementById('heartStatus');
+        const oxygenStatus = document.getElementById('oxygenStatus');
+        const lungIndicator = document.getElementById('lungIndicator');
+        const heartIndicator = document.getElementById('heartIndicator');
+        const oxygenStatusIndicator = document.getElementById('oxygenStatusIndicator');
+        const oxygenIndicator = document.getElementById('oxygenIndicator');
+        const heartRateIndicator = document.getElementById('heartRateIndicator');
+        const avatarMouth = document.getElementById('avatarMouth');
+        const healthAura = document.getElementById('healthAura');
+        const avatarLungs = document.getElementById('avatarLungs');
+        const avatarHeart = document.getElementById('avatarHeart');
+        
+        if (!avatarBody) {
+            console.error('❌ Avatar body element not found');
+            return;
+        }
+        
+        const levelData = healthLevels[currentHealthLevel];
+        console.log(`📋 Level data:`, levelData);
+        
+        // Update avatar body class
+        avatarBody.className = `avatar-body health-level-${currentHealthLevel}`;
+        console.log(`🎭 Avatar class updated to: health-level-${currentHealthLevel}`);
+        
+        // Update mouth expression
+        if (avatarMouth) {
+            avatarMouth.className = 'mouth';
+            switch(currentHealthLevel) {
+                case 1: avatarMouth.classList.add('very-sad'); break;
+                case 2: avatarMouth.classList.add('sad'); break;
+                case 3: avatarMouth.classList.add('neutral'); break;
+                case 4: avatarMouth.classList.add('happy'); break;
+                case 5: avatarMouth.classList.add('very-happy'); break;
+            }
+        }
+        
+        // Update health aura
+        if (healthAura) {
+            if (currentHealthLevel >= 4) {
+                healthAura.classList.add('active');
+            } else {
+                healthAura.classList.remove('active');
+            }
+        }
+        
+        // Update lungs
+        if (avatarLungs) {
+            avatarLungs.className = 'lungs';
+            if (currentHealthLevel >= 4) {
+                avatarLungs.classList.add('healthy');
+            } else if (currentHealthLevel === 3) {
+                avatarLungs.classList.add('moderate');
+            } else {
+                avatarLungs.classList.add('poor');
+            }
+        }
+        
+        // Update heart
+        if (avatarHeart) {
+            avatarHeart.className = 'heart';
+            if (currentHealthLevel >= 4) {
+                avatarHeart.classList.add('healthy');
+            }
+        }
+        
+        // Update health info
+        if (healthStatus) {
+            healthStatus.textContent = levelData.status;
+            healthStatus.style.color = levelData.color;
+        }
+        
+        if (healthLevelBadge) {
+            healthLevelBadge.textContent = `Level ${currentHealthLevel}`;
+        }
+        
+        if (healthFill) {
+            healthFill.style.width = `${levelData.percentage}%`;
+            healthFill.style.background = `linear-gradient(90deg, ${levelData.color}, ${levelData.color}dd)`;
+        }
+        
+        if (healthPercentage) {
+            healthPercentage.textContent = `${levelData.percentage}%`;
+            healthPercentage.style.color = levelData.color;
+        }
+        
+        if (lungStatus) lungStatus.textContent = levelData.lungStatus;
+        if (heartStatus) heartStatus.textContent = levelData.heartStatus;
+        if (oxygenStatus) oxygenStatus.textContent = levelData.oxygenStatus;
+        
+        // Update status indicators
+        if (lungIndicator) {
+            lungIndicator.className = `status-indicator lung-indicator ${levelData.lungIndicator}`;
+        }
+        if (heartIndicator) {
+            heartIndicator.className = `status-indicator heart-indicator ${levelData.heartIndicator}`;
+        }
+        if (oxygenStatusIndicator) {
+            oxygenStatusIndicator.className = `status-indicator oxygen-indicator ${levelData.lungIndicator}`;
+        }
+        
+        // Update health indicators in avatar
+        if (oxygenIndicator) {
+            oxygenIndicator.innerHTML = `<i class="fas fa-lungs"></i><span>${levelData.oxygenLevel}%</span>`;
+        }
+        
+        if (heartRateIndicator) {
+            heartRateIndicator.innerHTML = `<i class="fas fa-heartbeat"></i><span>${levelData.heartRate}</span>`;
+        }
+        
+        // Add animation effect
+        avatarBody.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            avatarBody.style.transform = 'scale(1)';
+        }, 300);
+        
+        console.log(`✅ Avatar display updated successfully`);
+        
+    } catch (error) {
+        console.error('❌ Error updating avatar display:', error);
+    }
+}
+
+// Push Notification System - FIXED
+function triggerPushNotification() {
+    console.log('🔔 Triggering push notification...');
+    
+    try {
+        const randomTemplate = pushNotificationTemplates[Math.floor(Math.random() * pushNotificationTemplates.length)];
+        showPushNotification(randomTemplate);
+        
+        // Also show a toast as backup
+        showToast('Notifikasi Triggered!', 'Push notification sedang ditampilkan di atas layar.', 'info');
+        
+    } catch (error) {
+        console.error('❌ Error triggering notification:', error);
+        showToast('Error', 'Gagal menampilkan notifikasi push', 'error');
+    }
+}
+
+function showPushNotification(notificationData) {
+    try {
+        let container = document.getElementById('pushNotificationContainer');
+        
+        // Create container if it doesn't exist
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'pushNotificationContainer';
+            container.className = 'push-notification-container';
+            document.body.appendChild(container);
+            console.log('📦 Created push notification container');
+        }
+        
+        notificationCounter++;
+        const notificationId = `push-notification-${notificationCounter}`;
+        const currentTime = new Date().toLocaleTimeString('id-ID', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        const notificationHTML = `
+            <div class="push-notification ${notificationData.type}" id="${notificationId}">
+                <div class="notification-header">
+                    <div class="notification-app-info">
+                        <div class="notification-app-icon">P</div>
+                        <span class="notification-app-name">PuffOff</span>
+                    </div>
+                    <span class="notification-time">${currentTime}</span>
+                    <button class="notification-close" onclick="closePushNotification('${notificationId}')">×</button>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">
+                        <span class="notification-icon">${notificationData.icon}</span>
+                        ${notificationData.title}
+                    </div>
+                    <div class="notification-message">${notificationData.message}</div>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', notificationHTML);
+        
+        const notification = document.getElementById(notificationId);
+        
+        // Show notification with animation
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Auto hide after 6 seconds
+        setTimeout(() => {
+            closePushNotification(notificationId);
+        }, 6000);
+        
+        console.log(`✅ Push notification shown: ${notificationData.title}`);
+        
+    } catch (error) {
+        console.error('❌ Error showing push notification:', error);
+    }
+}
+
+function closePushNotification(notificationId) {
+    try {
+        const notification = document.getElementById(notificationId);
+        if (notification) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 400);
+        }
+    } catch (error) {
+        console.error('❌ Error closing push notification:', error);
+    }
+}
 
 // Push notification templates
 const pushNotificationTemplates = [
