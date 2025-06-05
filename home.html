@@ -25,173 +25,8 @@
             Butuh Bantuan Sekarang!
         </button>
 
-        <!-- Avatar Health Section -->
-        <div class="section avatar-section">
-            <div class="section-title">
-                <i class="section-icon fas fa-user-md"></i>
-                Avatar Kesehatan Digital
-            </div>
-            <div class="avatar-container">
-                <div class="avatar-display">
-                    <div class="avatar-body health-level-4" id="avatarBody">
-                        <!-- Head with detailed features -->
-                        <div class="avatar-head">
-                            <div class="face-features">
-                                <div class="eyes">
-                                    <div class="eye left-eye">
-                                        <div class="pupil"></div>
-                                    </div>
-                                    <div class="eye right-eye">
-                                        <div class="pupil"></div>
-                                    </div>
-                                </div>
-                                <div class="nose"></div>
-                                <div class="mouth happy" id="avatarMouth"></div>
-                            </div>
-                            <div class="health-aura active" id="healthAura"></div>
-                        </div>
-                        
-                        <!-- Neck -->
-                        <div class="avatar-neck"></div>
-                        
-                        <!-- Torso with detailed organ system -->
-                        <div class="avatar-torso">
-                            <div class="ribcage"></div>
-                            
-                            <!-- Detailed organ system -->
-                            <div class="organ-system">
-                                <!-- Advanced Lungs with breathing animation -->
-                                <div class="lungs healthy" id="avatarLungs">
-                                    <div class="lung left-lung"></div>
-                                    <div class="lung right-lung"></div>
-                                </div>
-                                
-                                <!-- Advanced Heart with realistic chambers -->
-                                <div class="heart healthy" id="avatarHeart">
-                                    <div class="heart-chambers">
-                                        <div class="chamber left-chamber"></div>
-                                        <div class="chamber right-chamber"></div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Blood vessel network -->
-                                <div class="blood-vessels healthy">
-                                    <div class="vessel vessel-1"></div>
-                                    <div class="vessel vessel-2"></div>
-                                    <div class="vessel vessel-3"></div>
-                                    <div class="vessel vessel-4"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Arms with natural movement -->
-                        <div class="avatar-arms">
-                            <div class="arm left-arm">
-                                <div class="shoulder"></div>
-                                <div class="forearm"></div>
-                            </div>
-                            <div class="arm right-arm">
-                                <div class="shoulder"></div>
-                                <div class="forearm"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Legs -->
-                        <div class="avatar-legs">
-                            <div class="leg left-leg"></div>
-                            <div class="leg right-leg"></div>
-                        </div>
-                        
-                        <!-- Feet -->
-                        <div class="avatar-feet">
-                            <div class="foot left-foot"></div>
-                            <div class="foot right-foot"></div>
-                        </div>
-                        
-                        <!-- Health indicators -->
-                        <div class="health-indicators">
-                            <div class="indicator oxygen-level" id="oxygenIndicator">
-                                <i class="fas fa-lungs"></i>
-                                <span>97%</span>
-                            </div>
-                            <div class="indicator heart-rate" id="heartRateIndicator">
-                                <i class="fas fa-heartbeat"></i>
-                                <span>72</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="health-info">
-                    <div class="health-level">
-                        <span class="health-label">Status Kesehatan:</span>
-                        <span class="health-status" id="healthStatus">Membaik</span>
-                        <span class="health-level-badge" id="healthLevelBadge">Level 4</span>
-                    </div>
-                    <div class="health-progress">
-                        <div class="health-bar">
-                            <div class="health-fill" id="healthFill" style="width: 75%;"></div>
-                            <div class="health-sparkle"></div>
-                        </div>
-                        <span class="health-percentage" id="healthPercentage">75%</span>
-                    </div>
-                    <div class="health-details">
-                        <div class="health-item">
-                            <i class="fas fa-lungs"></i>
-                            <span>Paru-paru: <strong id="lungStatus">Membersihkan diri</strong></span>
-                            <div class="status-indicator lung-indicator healthy" id="lungIndicator"></div>
-                        </div>
-                        <div class="health-item">
-                            <i class="fas fa-heartbeat"></i>
-                            <span>Jantung: <strong id="heartStatus">Lebih stabil</strong></span>
-                            <div class="status-indicator heart-indicator healthy" id="heartIndicator"></div>
-                        </div>
-                        <div class="health-item">
-                            <i class="fas fa-tint"></i>
-                            <span>Oksigen: <strong id="oxygenStatus">Normal</strong></span>
-                            <div class="status-indicator oxygen-indicator healthy" id="oxygenStatusIndicator"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="avatar-controls">
-                    <button class="control-btn decrease-btn" id="decreaseBtn">
-                        <i class="fas fa-minus-circle"></i>
-                        <span>Level Turun</span>
-                        <div class="btn-effect"></div>
-                    </button>
-                    <button class="control-btn primary increase-btn" id="increaseBtn">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Level Naik</span>
-                        <div class="btn-effect"></div>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Notification Demo Section -->
-        <div class="section notification-section">
-            <div class="section-title">
-                <i class="section-icon fas fa-bell"></i>
-                Demo Notifikasi Push
-            </div>
-            <div class="notification-demo">
-                <p class="demo-description">
-                    Klik tombol di bawah untuk melihat contoh notifikasi yang akan muncul dari atas layar seperti notifikasi aplikasi pada umumnya.
-                </p>
-                <button class="show-notification-btn" id="notificationBtn">
-                    <i class="fas fa-bell"></i>
-                    <span>Tampilkan Notifikasi</span>
-                    <div class="btn-ripple"></div>
-                </button>
-                <div class="notification-types">
-                    <small>Jenis notifikasi: Motivasi, Progress, Achievement, Tips, Reminder</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Next Milestone - FIXED STYLING -->
-        <div class="section milestone-card">
+        <!-- Next Milestone - ENHANCED -->
+        <div class="milestone-card">
             <div class="milestone-header">
                 <div class="milestone-icon">🎯</div>
                 <div class="milestone-content">
@@ -201,7 +36,7 @@
             </div>
             <div class="milestone-progress">
                 <div class="milestone-progress-bar">
-                    <div class="milestone-progress-fill" style="width: 70%;"></div>
+                    <div class="milestone-progress-fill"></div>
                     <span class="milestone-percentage">70%</span>
                 </div>
             </div>
@@ -233,7 +68,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-icon">❤️</div>
-                <div class="stat-value">75%</div>
+                <div class="stat-value">78%</div>
                 <div class="stat-label">Health Score</div>
             </div>
         </div>
@@ -297,7 +132,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation - FIXED (HANYA SATU) -->
+    <!-- Bottom Navigation - FIXED -->
     <div class="bottom-nav">
         <div class="nav-container">
             <a href="home.html" class="nav-item active">
@@ -326,12 +161,6 @@
             </a>
         </div>
     </div>
-
-    <!-- Push Notification Container -->
-    <div id="pushNotificationContainer" class="push-notification-container"></div>
-    
-    <!-- Toast Notification Container -->
-    <div id="toastContainer" class="toast-container"></div>
 
     <script src="js/home.js"></script>
 </body>
