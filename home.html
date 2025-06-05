@@ -5,432 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PuffOff - Bebas Rokok Bersama</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8fafc;
-            min-height: 100vh;
-            padding-bottom: 80px;
-            color: #1f2937;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px 16px;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 24px 20px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-        }
-
-        .greeting {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            opacity: 0.9;
-        }
-
-        .main-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .streak-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            color: #6b7280;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .section {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-            border: 1px solid #e5e7eb;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 20px;
-        }
-
-        .section-icon {
-            font-size: 1.5rem;
-            color: #667eea;
-        }
-
-        .emergency-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 18px 24px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .emergency-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
-        }
-
-        .emergency-btn:active {
-            transform: scale(0.98);
-        }
-
-        .progress-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: conic-gradient(#667eea 0deg, #667eea 252deg, #e5e7eb 252deg, #e5e7eb 360deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            position: relative;
-        }
-
-        .progress-circle::before {
-            content: '';
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: white;
-            position: absolute;
-        }
-
-        .progress-text {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-
-        .progress-percentage {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .progress-label {
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-
-        .daily-checkin {
-            text-align: center;
-        }
-
-        .mood-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 16px 0;
-            flex-wrap: wrap;
-        }
-
-        .mood-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid #e5e7eb;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .mood-btn:hover {
-            transform: scale(1.1);
-            border-color: #667eea;
-        }
-
-        .mood-btn.selected {
-            background: #667eea;
-            border-color: #667eea;
-            color: white;
-        }
-
-        .quote-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            border-left: 4px solid #667eea;
-            margin-top: 16px;
-        }
-
-        .quote-text {
-            font-style: italic;
-            color: #374151;
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .quote-author {
-            color: #6b7280;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-
-        .action-btn {
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: #374151;
-        }
-
-        .action-btn:hover {
-            border-color: #667eea;
-            background: #f8fafc;
-            transform: translateY(-2px);
-        }
-
-        .action-icon {
-            font-size: 1.5rem;
-            color: #667eea;
-            margin-bottom: 8px;
-        }
-
-        .action-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .milestone-card {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 2px solid #f59e0b;
-            text-align: center;
-            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
-        }
-
-        .milestone-icon {
-            font-size: 2rem;
-            color: #f59e0b;
-            margin-bottom: 12px;
-        }
-
-        .milestone-title {
-            font-weight: 700;
-            color: #92400e;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-
-        .milestone-desc {
-            color: #b45309;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-
-        .milestone-progress {
-            background: rgba(245, 158, 11, 0.2);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .milestone-progress-bar {
-            height: 100%;
-            background: #f59e0b;
-            width: 70%;
-            transition: width 0.3s ease;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            padding: 12px 0;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            max-width: 500px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #6b7280;
-            transition: color 0.3s ease;
-            padding: 8px;
-        }
-
-        .nav-item.active {
-            color: #667eea;
-        }
-
-        .nav-item i {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
-        }
-
-        .nav-item span {
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 16px 12px;
-            }
-            
-            .header {
-                padding: 20px 16px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-            
-            .main-title {
-                font-size: 1.8rem;
-            }
-            
-            .quick-actions {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-            
-            .mood-buttons {
-                gap: 8px;
-            }
-            
-            .mood-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 1.3rem;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .mood-buttons {
-                gap: 6px;
-            }
-            
-            .mood-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 1.1rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="home.css">
 </head>
 <body>
     <div class="container">
@@ -449,6 +24,104 @@
             <i class="fas fa-exclamation-triangle"></i>
             Butuh Bantuan Sekarang!
         </button>
+
+        <!-- Avatar Health Section -->
+        <div class="section avatar-section">
+            <div class="section-title">
+                <i class="section-icon fas fa-user-md"></i>
+                Avatar Kesehatan
+            </div>
+            <div class="avatar-container">
+                <div class="avatar-display">
+                    <div class="avatar-body" id="avatarBody">
+                        <div class="avatar-head"></div>
+                        <div class="avatar-torso">
+                            <div class="lungs" id="avatarLungs">
+                                <div class="lung left-lung"></div>
+                                <div class="lung right-lung"></div>
+                            </div>
+                            <div class="heart" id="avatarHeart">❤️</div>
+                        </div>
+                        <div class="avatar-arms">
+                            <div class="arm left-arm"></div>
+                            <div class="arm right-arm"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="health-info">
+                    <div class="health-level">
+                        <span class="health-label">Level Kesehatan:</span>
+                        <span class="health-status" id="healthStatus">Membaik</span>
+                    </div>
+                    <div class="health-progress">
+                        <div class="health-bar">
+                            <div class="health-fill" id="healthFill"></div>
+                        </div>
+                        <span class="health-percentage" id="healthPercentage">78%</span>
+                    </div>
+                    <div class="health-details">
+                        <div class="health-item">
+                            <i class="fas fa-lungs"></i>
+                            <span>Paru-paru: <strong id="lungStatus">Membersihkan diri</strong></span>
+                        </div>
+                        <div class="health-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Jantung: <strong id="heartStatus">Lebih stabil</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="avatar-controls">
+                    <button class="control-btn" onclick="changeHealthLevel('decrease')">
+                        <i class="fas fa-minus"></i> Turunkan Level
+                    </button>
+                    <button class="control-btn primary" onclick="changeHealthLevel('increase')">
+                        <i class="fas fa-plus"></i> Naikkan Level
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Panel -->
+        <div class="section notification-section">
+            <div class="section-title">
+                <i class="section-icon fas fa-bell"></i>
+                Notifikasi & Pengingat
+            </div>
+            <div class="notification-panel">
+                <div class="notification-item active" id="notification1">
+                    <div class="notif-icon">🎉</div>
+                    <div class="notif-content">
+                        <div class="notif-title">Selamat! Streak 7 hari tercapai!</div>
+                        <div class="notif-time">2 menit yang lalu</div>
+                    </div>
+                    <button class="notif-dismiss" onclick="dismissNotification('notification1')">×</button>
+                </div>
+                <div class="notification-item" id="notification2">
+                    <div class="notif-icon">💰</div>
+                    <div class="notif-content">
+                        <div class="notif-title">Kamu sudah menghemat Rp 210.000!</div>
+                        <div class="notif-time">1 jam yang lalu</div>
+                    </div>
+                    <button class="notif-dismiss" onclick="dismissNotification('notification2')">×</button>
+                </div>
+                <div class="notification-item" id="notification3">
+                    <div class="notif-icon">❤️</div>
+                    <div class="notif-content">
+                        <div class="notif-title">Kesehatan paru-paru membaik 15%</div>
+                        <div class="notif-time">3 jam yang lalu</div>
+                    </div>
+                    <button class="notif-dismiss" onclick="dismissNotification('notification3')">×</button>
+                </div>
+            </div>
+            <div class="notification-controls">
+                <button class="notif-control-btn" onclick="addSampleNotification()">
+                    <i class="fas fa-plus"></i> Tambah Notifikasi Test
+                </button>
+                <button class="notif-control-btn" onclick="clearAllNotifications()">
+                    <i class="fas fa-trash"></i> Hapus Semua
+                </button>
+            </div>
+        </div>
 
         <!-- Next Milestone -->
         <div class="milestone-card">
@@ -573,148 +246,9 @@
         </div>
     </div>
 
-    <script>
-        // Mood selection
-        function selectMood(button, mood) {
-            // Remove selected class from all buttons
-            document.querySelectorAll('.mood-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            
-            // Add selected class to clicked button
-            button.classList.add('selected');
-            
-            // Store mood and show feedback
-            localStorage.setItem('todayMood', mood);
-            showNotification('Mood tersimpan! Tetap semangat! 💪', 'success');
-            
-            // Update quote based on mood
-            updateQuoteBasedOnMood(mood);
-        }
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
 
-        // Update quote based on selected mood
-        function updateQuoteBasedOnMood(mood) {
-            const quotes = {
-                great: {
-                    text: "Energi positifmu hari ini luar biasa! Terus pertahankan semangat bebas rokok ini.",
-                    author: "- Stay Strong"
-                },
-                good: {
-                    text: "Hari yang baik untuk terus melanjutkan perjalanan sehatmu tanpa rokok.",
-                    author: "- Keep Going"
-                },
-                okay: {
-                    text: "Hari biasa-biasa saja? Tidak apa-apa. Yang penting kamu tetap konsisten tanpa rokok.",
-                    author: "- One Day at a Time"
-                },
-                bad: {
-                    text: "Hari yang berat? Ingatlah bahwa tidak merokok adalah satu hal positif yang sudah kamu lakukan hari ini.",
-                    author: "- Every Step Counts"
-                },
-                terrible: {
-                    text: "Hari yang sangat sulit? Kamu tidak sendirian. Tim PuffOff dan komunitas selalu siap membantumu.",
-                    author: "- We're Here for You"
-                }
-            };
-
-            const quoteCard = document.querySelector('.quote-card');
-            const selectedQuote = quotes[mood];
-            
-            if (selectedQuote) {
-                quoteCard.innerHTML = `
-                    <div class="quote-text">${selectedQuote.text}</div>
-                    <div class="quote-author">${selectedQuote.author}</div>
-                `;
-            }
-        }
-
-        // Handle emergency button
-        function handleEmergency() {
-            const emergencyOptions = [
-                "🧘 Latihan Pernapasan 2 Menit",
-                "🚶 Jalan Kaki Sebentar",
-                "💧 Minum Air Putih",
-                "📱 Chat dengan Komunitas",
-                "🎵 Dengarkan Musik Favorit"
-            ];
-            
-            const randomOption = emergencyOptions[Math.floor(Math.random() * emergencyOptions.length)];
-            
-            if (confirm(`Butuh bantuan mengatasi keinginan merokok?\n\nSaran: ${randomOption}\n\nApakah kamu ingin mencoba sekarang?`)) {
-                showNotification('Kamu bisa melakukannya! 💪 Ingat tujuanmu.', 'success');
-            }
-        }
-
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#10b981' : '#667eea'};
-                color: white;
-                padding: 16px 24px;
-                border-radius: 12px;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-                z-index: 10000;
-                font-weight: 600;
-                max-width: 300px;
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            `;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-
-        // Load saved mood on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedMood = localStorage.getItem('todayMood');
-            if (savedMood) {
-                const moodButtons = {
-                    'great': 0,
-                    'good': 1, 
-                    'okay': 2,
-                    'bad': 3,
-                    'terrible': 4
-                };
-                
-                const buttonIndex = moodButtons[savedMood];
-                if (buttonIndex !== undefined) {
-                    const button = document.querySelectorAll('.mood-btn')[buttonIndex];
-                    button.classList.add('selected');
-                    updateQuoteBasedOnMood(savedMood);
-                }
-            }
-            
-            // Animate stats on load
-            animateStats();
-        });
-
-        // Animate statistics
-        function animateStats() {
-            const statValues = document.querySelectorAll('.stat-value');
-            statValues.forEach((stat, index) => {
-                setTimeout(() => {
-                    stat.style.transform = 'scale(1.1)';
-                    setTimeout(() => {
-                        stat.style.transform = 'scale(1)';
-                    }, 200);
-                }, index * 100);
-            });
-        }
-    </script>
+    <script src="home.js"></script>
 </body>
 </html>
