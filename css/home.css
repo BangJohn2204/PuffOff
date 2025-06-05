@@ -644,3 +644,290 @@ body {
     justify-content: center;
     font-size: 1.5rem;
 }
+
+.mood-btn:hover {
+    transform: scale(1.1);
+    border-color: #667eea;
+}
+
+.mood-btn.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.quote-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    border-left: 4px solid #667eea;
+    margin-top: 16px;
+}
+
+.quote-text {
+    font-style: italic;
+    color: #374151;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.quote-author {
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.action-btn {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #374151;
+}
+
+.action-btn:hover {
+    border-color: #667eea;
+    background: #f8fafc;
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin-bottom: 8px;
+}
+
+.action-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.milestone-card {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 2px solid #f59e0b;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+}
+
+.milestone-icon {
+    font-size: 2rem;
+    color: #f59e0b;
+    margin-bottom: 12px;
+}
+
+.milestone-title {
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.milestone-desc {
+    color: #b45309;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.milestone-progress {
+    background: rgba(245, 158, 11, 0.2);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.milestone-progress-bar {
+    height: 100%;
+    background: #f59e0b;
+    width: 70%;
+    transition: width 0.3s ease;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 12px 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #6b7280;
+    transition: color 0.3s ease;
+    padding: 8px;
+}
+
+.nav-item.active {
+    color: #667eea;
+}
+
+.nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.nav-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* Health Level Classes */
+.health-level-1 .health-fill {
+    width: 20%;
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.health-level-2 .health-fill {
+    width: 40%;
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.health-level-3 .health-fill {
+    width: 60%;
+    background: linear-gradient(90deg, #f59e0b, #eab308);
+}
+
+.health-level-4 .health-fill {
+    width: 78%;
+    background: linear-gradient(90deg, #eab308, #10b981);
+}
+
+.health-level-5 .health-fill {
+    width: 95%;
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+/* Avatar Health States */
+.avatar-body.health-level-1 .avatar-head::before {
+    content: '😰';
+}
+
+.avatar-body.health-level-2 .avatar-head::before {
+    content: '😔';
+}
+
+.avatar-body.health-level-3 .avatar-head::before {
+    content: '😐';
+}
+
+.avatar-body.health-level-4 .avatar-head::before {
+    content: '😊';
+}
+
+.avatar-body.health-level-5 .avatar-head::before {
+    content: '😄';
+}
+
+.avatar-body.health-level-4 .lung,
+.avatar-body.health-level-5 .lung {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.avatar-body.health-level-5 .avatar-torso {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 16px 12px;
+    }
+    
+    .header {
+        padding: 20px 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .main-title {
+        font-size: 1.8rem;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .mood-buttons {
+        gap: 8px;
+    }
+    
+    .mood-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .avatar-body {
+        width: 100px;
+        height: 140px;
+    }
+    
+    .avatar-head {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .avatar-torso {
+        width: 70px;
+        height: 80px;
+    }
+    
+    .notification-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .toast-container {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+}
+
+@media (max-width: 360px) {
+    .mood-buttons {
+        gap: 6px;
+    }
+    
+    .mood-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .avatar-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
