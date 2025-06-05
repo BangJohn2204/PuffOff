@@ -1,4 +1,490 @@
-* {
+/* Professional Head Design */
+.avatar-head {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    margin: 0 auto 15px;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+}
+
+.face-features {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+}
+
+.eyes {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+}
+
+.eye {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.pupil {
+    width: 7px;
+    height: 7px;
+    background: radial-gradient(circle at 30% 30%, #1f2937, #000);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease;
+}
+
+.mouth {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 8px;
+    border-radius: 0 0 16px 16px;
+    background: #10b981;
+    transition: all 0.5s ease;
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
+}
+
+/* Mouth expressions for different health levels */
+.mouth.very-sad {
+    background: #ef4444;
+    border-radius: 16px 16px 0 0;
+    transform: translateX(-50%) rotate(180deg);
+    width: 20px;
+    height: 10px;
+}
+
+.mouth.sad {
+    background: #f59e0b;
+    border-radius: 8px;
+    height: 4px;
+    width: 18px;
+}
+
+.mouth.neutral {
+    background: #eab308;
+    border-radius: 2px;
+    height: 3px;
+    width: 14px;
+}
+
+.mouth.happy {
+    background: #10b981;
+    border-radius: 0 0 12px 12px;
+    height: 6px;
+    width: 16px;
+}
+
+.mouth.very-happy {
+    background: #059669;
+    border-radius: 0 0 20px 20px;
+    height: 10px;
+    width: 22px;
+}
+
+.health-aura {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+    animation: pulse-aura 2s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.health-aura.active {
+    opacity: 1;
+}
+
+/* Professional Torso with Organ System */
+.avatar-torso {
+    width: 100px;
+    height: 110px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    margin: 0 auto;
+    border-radius: 28px 28px 40px 40px;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    transition: all 0.5s ease;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Detailed Lungs */
+.lungs {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    transition: all 0.5s ease;
+}
+
+.lung {
+    width: 22px;
+    height: 40px;
+    border-radius: 12px 12px 20px 20px;
+    transition: all 0.5s ease;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.lungs.healthy .lung {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1), 0 0 15px rgba(16, 185, 129, 0.5);
+}
+
+.lungs.moderate .lung {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1), 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+.lungs.poor .lung {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.lung-detail {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.alveoli {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    animation: breathe-alveoli 2.5s ease-in-out infinite;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Professional Heart */
+.heart {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 24px;
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+.heart-chambers {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.chamber {
+    position: absolute;
+    width: 14px;
+    height: 18px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 7px 7px 0 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.heart.healthy .chamber {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2), 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+.left-chamber {
+    left: 0;
+    transform: rotate(-45deg);
+}
+
+.right-chamber {
+    right: 0;
+    transform: rotate(45deg);
+}
+
+.pulse-wave {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border: 3px solid rgba(239, 68, 68, 0.6);
+    border-radius: 50%;
+    animation: heartbeat-wave 1.2s ease-in-out infinite;
+}
+
+/* Blood Vessels */
+.blood-vessels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all 0.5s ease;
+}
+
+.vessel {
+    position: absolute;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.6), rgba(59, 130, 246, 0.6));
+    border-radius: 2px;
+    animation: blood-flow 3s linear infinite;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.blood-vessels.healthy .vessel {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.8), rgba(16, 185, 129, 0.8));
+    animation-duration: 2s;
+}
+
+.vessel-1 {
+    top: 30px;
+    left: 20px;
+    width: 25px;
+    height: 3px;
+}
+
+.vessel-2 {
+    top: 50px;
+    right: 20px;
+    width: 20px;
+    height: 3px;
+}
+
+.vessel-3 {
+    bottom: 35px;
+    left: 25px;
+    width: 30px;
+    height: 3px;
+}
+
+/* Professional Arms */
+.avatar-arms {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -55px;
+    padding: 0 0px;
+    position: relative;
+    z-index: 0;
+}
+
+.arm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.shoulder {
+    width: 22px;
+    height: 30px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.forearm {
+    width: 16px;
+    height: 40px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-radius: 8px;
+    margin-top: 4px;
+    box-shadow: 0 3px 10px rgba(251, 191, 36, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.left-arm {
+    transform: rotate(-12deg);
+}
+
+.right-arm {
+    transform: rotate(12deg);
+}
+
+/* Health Indicators */
+.health-indicators {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.indicator {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.indicator i {
+    font-size: 0.9rem;
+}
+
+.oxygen-level {
+    color: #0ea5e9;
+    border-left: 3px solid #0ea5e9;
+}
+
+.heart-rate {
+    color: #ef4444;
+    border-left: 3px solid #ef4444;
+}
+
+/* Health Level Classes for Avatar Changes */
+.avatar-body.health-level-1 .mouth {
+    background: #ef4444;
+    border-radius: 16px 16px 0 0;
+    transform: translateX(-50%) rotate(180deg);
+    width: 20px;
+    height: 10px;
+}
+
+.avatar-body.health-level-1 .pupil {
+    transform: translate(-70%, -70%);
+}
+
+.avatar-body.health-level-1 .lungs {
+    background: none;
+}
+
+.avatar-body.health-level-1 .lung {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.avatar-body.health-level-1 .avatar-torso {
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+}
+
+.avatar-body.health-level-1 .health-aura {
+    opacity: 0;
+}
+
+.avatar-body.health-level-2 .mouth {
+    background: #f59e0b;
+    border-radius: 8px;
+    height: 4px;
+    width: 18px;
+}
+
+.avatar-body.health-level-2 .pupil {
+    transform: translate(-60%, -60%);
+}
+
+.avatar-body.health-level-2 .lung {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.avatar-body.health-level-2 .avatar-torso {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.avatar-body.health-level-3 .mouth {
+    background: #eab308;
+    border-radius: 2px;
+    height: 3px;
+    width: 14px;
+}
+
+.avatar-body.health-level-3 .pupil {
+    transform: translate(-50%, -50%);
+}
+
+.avatar-body.health-level-3 .lung {
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
+.avatar-body.health-level-3 .avatar-torso {
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+}
+
+.avatar-body.health-level-4 .mouth {
+    background: #10b981;
+    border-radius: 0 0 12px 12px;
+    height: 6px;
+    width: 16px;
+}
+
+.avatar-body.health-level-4 .pupil {
+    transform: translate(-40%, -40%);
+}
+
+.avatar-body.health-level-4 .lung {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1), 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.avatar-body.health-level-4 .avatar-torso {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.avatar-body.health-level-4 .health-aura {
+    opacity: 0.7;
+}
+
+.avatar-body.health-level-5 .mouth {
+    background: #059669;
+    border-radius: 0 0 20px 20px;
+    height: 10px;
+    width: 22px;
+}
+
+.avatar-body.health-level-5 .pupil {
+    transform: translate(-30%, -30%);
+}
+
+.avatar-body.health-level-5 .lung {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1), 0 0 15px rgba(16, 185, 129, 0.6);
+}
+
+.avatar-body.health-level-5 .avatar-torso {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.avatar-body.health-level-5 .health-aura {
+    opacity: 1;
+    background:* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
