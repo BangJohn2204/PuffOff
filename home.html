@@ -334,5 +334,67 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <script src="js/home.js"></script>
+    
+    <style>
+    /* Bottom Navigation - Fixed to match progress.css exactly */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        padding: 12px 0;
+        z-index: 1000;
+    }
+
+    .nav-container {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: #6b7280;
+        transition: color 0.3s ease;
+        padding: 8px;
+    }
+
+    .nav-item.active {
+        color: #667eea;
+    }
+
+    .nav-item i {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+
+    .nav-item span {
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+    
+    /* Override any existing bottom nav styles in home.css */
+    .bottom-nav .nav-container .nav-item {
+        min-width: auto !important;
+        padding: 8px !important;
+    }
+    
+    .bottom-nav .nav-container .nav-item i {
+        font-size: 1.2rem !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .bottom-nav .nav-container .nav-item span {
+        font-size: 0.7rem !important;
+        font-weight: 500 !important;
+    }
+    </style>
 </body>
 </html>
