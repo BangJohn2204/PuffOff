@@ -99,43 +99,12 @@ const progressData = {
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 PuffOff Progress - Initializing with Smartwatch Support...');
-    
-    // Check if Chart.js is loaded
-    if (typeof Chart === 'undefined') {
-        console.error('❌ Chart.js not loaded!');
-        showToast('Chart library gagal dimuat', 'error');
-        
-        // Try to load Chart.js dynamically
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js';
-        script.onload = function() {
-            console.log('✅ Chart.js loaded dynamically');
-            setTimeout(initializeApp, 100);
-        };
-        script.onerror = function() {
-            console.error('❌ Failed to load Chart.js dynamically');
-            showToast('Gagal memuat library chart', 'error');
-        };
-        document.head.appendChild(script);
-    } else {
-        console.log('✅ Chart.js already loaded, version:', Chart.version || 'unknown');
-        initializeApp();
-    }
+    initializeApp();
 });
 
 function initializeApp() {
     updateStats();
-    
-    // Initialize chart with delay to ensure DOM is ready
-    setTimeout(() => {
-        if (typeof Chart !== 'undefined') {
-            initializeChart();
-        } else {
-            console.warn('Chart.js not available, showing fallback');
-            showChartFallback();
-        }
-    }, 500);
-    
+    initializeChart();
     loadAchievements();
     updateHealthMetrics();
     loadTimelineData();
@@ -146,21 +115,7 @@ function initializeApp() {
     console.log('✅ App initialized successfully');
 }
 
-function showChartFallback() {
-    const chartContainer = document.querySelector('.chart-container');
-    if (chartContainer) {
-        chartContainer.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 280px; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1;">
-                <div style="font-size: 3rem; margin-bottom: 16px; color: #9ca3af;">📊</div>
-                <h3 style="color: #6b7280; margin-bottom: 8px; font-size: 1.1rem;">Chart Tidak Tersedia</h3>
-                <p style="color: #9ca3af; text-align: center; font-size: 0.9rem;">Library chart sedang dimuat...<br>Refresh halaman jika chart tidak muncul.</p>
-                <button onclick="location.reload()" style="margin-top: 16px; padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                    🔄 Refresh Halaman
-                </button>
-            </div>
-        `;
-    }
-}
+
 
 function setupEventListeners() {
     // Badge click events
