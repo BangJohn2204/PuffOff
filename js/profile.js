@@ -10,7 +10,16 @@ let userData = {
     totalSavings: 210000,
     healthScore: 78,
     level: 4,
-    mainBadge: 'Week Warrior'
+    mainBadge: 'Week Warrior',
+    cigarettesAvoided: 84
+};
+
+let smokingHistory = {
+    cigarettesPerDay: 12,
+    pricePerPack: 25000,
+    smokingYears: 5,
+    smokingMonths: 0,
+    isSetup: false
 };
 
 let achievements = {
@@ -66,41 +75,60 @@ let savingsGoals = [
         id: 1,
         title: 'Smartphone Baru',
         target: 3000000,
-        current: 210000
+        current: 210000,
+        category: 'elektronik'
     },
     {
         id: 2,
         title: 'Liburan Keluarga',
         target: 8000000,
-        current: 210000
+        current: 210000,
+        category: 'liburan'
     }
 ];
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
-    initializeProfile();
-    setupEventListeners();
-    loadUserData();
-    initializeHealthScore();
-    loadSavingsGoals();
+    showLoadingOverlay();
+    setTimeout(() => {
+        initializeProfile();
+        setupEventListeners();
+        loadUserData();
+        loadSmokingHistoryData();
+        initializeHealthScore();
+        loadSavingsGoals();
+        initializeProgressBars();
+        hideLoadingOverlay();
+    }, 1000);
 });
 
-function initializeProfile() {
-    // Set initial expanded state for first section
-    const firstSection = document.querySelector('.section-content');
-    if (firstSection) {
-        firstSection.classList.add('expanded');
-        const firstToggle = document.querySelector('.toggle-icon');
-        if (firstToggle) {
-            firstToggle.classList.add('rotated');
-        }
+function showLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.classList.add('show');
     }
-    
-    // Initialize all progress bars
-    initializeProgressBars();
-    
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
+}
+
+function initializeProfile() {
     // Setup intersection observer for animations
     setupScrollAnimations();
+    
+    // Load theme preference
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.checked = isDarkMode;
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+        }
+    }
 }
 
 function setupEventListeners() {
@@ -118,19 +146,18 @@ function setupEventListeners() {
         }
     });
     
-    // Theme toggle
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    if (darkModeToggle) {
-        const isDarkMode = localStorage.getItem('darkMode') === 'true';
-        darkModeToggle.checked = isDarkMode;
-        if (isDarkMode) {
-            document.body.classList.add('dark-mode');
+    // Real-time calculation for smoking history
+    const inputs = ['cigarettesPerDayInput', 'pricePerPackInput', 'smokingYears', 'smokingMonths'];
+    inputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', updateSmokingCalculation);
         }
-    }
+    });
 }
 
 function loadUserData() {
-    // Load user data from localStorage or API
+    // Load user data from localStorage
     const savedUserData = localStorage.getItem('puffoff_user_data');
     if (savedUserData) {
         userData = { ...userData, ...JSON.parse(savedUserData) };
@@ -141,19 +168,30 @@ function loadUserData() {
     updateQuickStats();
 }
 
+function loadSmokingHistoryData() {
+    const savedHistory = localStorage.getItem('puffoff_smoking_history');
+    if (savedHistory) {
+        smokingHistory = { ...smokingHistory, ...JSON.parse(savedHistory) };
+    }
+    
+    updateSmokingHistoryDisplay();
+}
+
 function updateProfileDisplay() {
     const elements = {
         profileName: document.getElementById('profileName'),
         profileStatus: document.getElementById('profileStatus'),
         profileImage: document.getElementById('profileImage'),
         mainBadge: document.getElementById('mainBadge'),
-        healthIndicator: document.getElementById('healthIndicator')
+        healthIndicator: document.getElementById('healthIndicator'),
+        userLevel: document.getElementById('userLevel')
     };
     
     if (elements.profileName) elements.profileName.textContent = userData.name;
     if (elements.profileStatus) elements.profileStatus.textContent = userData.status;
     if (elements.profileImage) elements.profileImage.src = userData.avatar;
     if (elements.mainBadge) elements.mainBadge.textContent = userData.mainBadge;
+    if (elements.userLevel) elements.userLevel.textContent = userData.level;
     
     if (elements.healthIndicator) {
         elements.healthIndicator.className = `health-indicator level-${userData.healthLevel}`;
@@ -165,7 +203,7 @@ function updateQuickStats() {
         streakDays: document.getElementById('streakDays'),
         totalSavings: document.getElementById('totalSavings'),
         healthScore: document.getElementById('healthScore'),
-        userLevel: document.getElementById('userLevel')
+        cigarettesAvoided: document.getElementById('cigarettesAvoided')
     };
     
     if (elements.streakDays) {
@@ -182,9 +220,49 @@ function updateQuickStats() {
         animateValue(elements.healthScore, 0, userData.healthScore, 1500, '%');
     }
     
-    if (elements.userLevel) {
-        animateValue(elements.userLevel, 0, userData.level, 800);
+    if (elements.cigarettesAvoided) {
+        animateValue(elements.cigarettesAvoided, 0, userData.cigarettesAvoided, 1200);
     }
+}
+
+function updateSmokingHistoryDisplay() {
+    if (!smokingHistory.isSetup) {
+        // Show setup prompt
+        const section = document.getElementById('smokingHistorySection');
+        if (section) {
+            section.innerHTML = `
+                <div class="history-setup">
+                    <div class="setup-icon">📝</div>
+                    <h4>Belum Ada Riwayat Merokok</h4>
+                    <p>Masukkan data riwayat merokok Anda untuk mendapatkan analisis penghematan yang lebih akurat.</p>
+                    <button class="setup-btn" onclick="openSmokingHistory()">
+                        <i class="fas fa-plus"></i>
+                        Setup Riwayat Merokok
+                    </button>
+                </div>
+            `;
+        }
+        return;
+    }
+    
+    // Calculate values
+    const dailyCost = (smokingHistory.cigarettesPerDay / 20) * smokingHistory.pricePerPack;
+    const totalMonths = (smokingHistory.smokingYears * 12) + smokingHistory.smokingMonths;
+    const totalSpent = dailyCost * 30 * totalMonths;
+    const smokingDuration = formatDuration(smokingHistory.smokingYears, smokingHistory.smokingMonths);
+    
+    // Update display elements
+    const elements = {
+        cigarettesPerDay: document.getElementById('cigarettesPerDay'),
+        costPerDay: document.getElementById('costPerDay'),
+        smokingDuration: document.getElementById('smokingDuration'),
+        totalSpent: document.getElementById('totalSpent')
+    };
+    
+    if (elements.cigarettesPerDay) elements.cigarettesPerDay.textContent = `${smokingHistory.cigarettesPerDay} batang`;
+    if (elements.costPerDay) elements.costPerDay.textContent = formatCurrency(dailyCost);
+    if (elements.smokingDuration) elements.smokingDuration.textContent = smokingDuration;
+    if (elements.totalSpent) elements.totalSpent.textContent = formatCurrency(totalSpent);
 }
 
 function animateValue(element, start, end, duration, suffix = '') {
@@ -202,7 +280,9 @@ function animateValue(element, start, end, duration, suffix = '') {
 }
 
 function formatCurrency(amount) {
-    if (amount >= 1000000) {
+    if (amount >= 1000000000) {
+        return 'Rp ' + (amount / 1000000000).toFixed(1) + 'B';
+    } else if (amount >= 1000000) {
         return 'Rp ' + (amount / 1000000).toFixed(1) + 'M';
     } else if (amount >= 1000) {
         return 'Rp ' + (amount / 1000).toFixed(0) + 'K';
@@ -210,57 +290,45 @@ function formatCurrency(amount) {
     return 'Rp ' + amount.toLocaleString('id-ID');
 }
 
-// Section Toggle
-function toggleSection(sectionId) {
-    const content = document.getElementById(sectionId + '-content');
-    const toggle = document.getElementById(sectionId + '-toggle');
-    
-    if (!content || !toggle) return;
-    
-    const isExpanded = content.classList.contains('expanded');
-    
-    if (isExpanded) {
-        content.classList.remove('expanded');
-        toggle.classList.remove('rotated');
-    } else {
-        content.classList.add('expanded');
-        toggle.classList.add('rotated');
-    }
-    
-    // Save section state
-    localStorage.setItem(`section_${sectionId}_expanded`, !isExpanded);
+function formatDuration(years, months) {
+    if (years === 0 && months === 0) return '0 bulan';
+    if (years === 0) return `${months} bulan`;
+    if (months === 0) return `${years} tahun`;
+    return `${years} tahun ${months} bulan`;
 }
 
 // Health Score Initialization
 function initializeHealthScore() {
-    const scoreProgress = document.querySelector('.score-progress');
-    if (scoreProgress) {
+    const healthCircle = document.querySelector('.health-circle');
+    if (healthCircle) {
         const score = userData.healthScore;
         const degrees = (score / 100) * 360;
-        scoreProgress.style.background = `conic-gradient(#10b981 0deg, #10b981 ${degrees}deg, #e5e7eb ${degrees}deg, #e5e7eb 360deg)`;
+        healthCircle.style.background = `conic-gradient(#10b981 0deg, #10b981 ${degrees}deg, #e5e7eb ${degrees}deg, #e5e7eb 360deg)`;
     }
 }
 
 // Progress Bars Initialization
 function initializeProgressBars() {
-    const progressBars = document.querySelectorAll('.progress-bar');
-    progressBars.forEach(bar => {
-        const width = bar.style.width;
-        bar.style.width = '0%';
-        setTimeout(() => {
-            bar.style.width = width;
-        }, 500);
-    });
-    
-    // Initialize goal progress bars
-    const goalBars = document.querySelectorAll('.goal-progress-bar');
-    goalBars.forEach(bar => {
-        const width = bar.style.width;
-        bar.style.setProperty('--width', '0%');
-        setTimeout(() => {
-            bar.style.setProperty('--width', width);
-        }, 800);
-    });
+    setTimeout(() => {
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 100);
+        });
+        
+        // Initialize goal progress bars
+        const goalBars = document.querySelectorAll('.goal-progress-bar');
+        goalBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.setProperty('--width', '0%');
+            setTimeout(() => {
+                bar.style.setProperty('--width', width);
+            }, 200);
+        });
+    }, 500);
 }
 
 // Avatar Functions
@@ -271,11 +339,18 @@ function changeAvatar() {
     input.onchange = function(e) {
         const file = e.target.files[0];
         if (file) {
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                showToast('Ukuran file terlalu besar! Maksimal 5MB.', 'error');
+                return;
+            }
+            
+            showLoadingOverlay();
             const reader = new FileReader();
             reader.onload = function(e) {
                 userData.avatar = e.target.result;
                 updateProfileDisplay();
                 saveUserData();
+                hideLoadingOverlay();
                 showToast('Avatar berhasil diubah!', 'success');
             };
             reader.readAsDataURL(file);
@@ -322,389 +397,70 @@ function saveProfile() {
         return;
     }
     
+    if (!elements.editStartDate.value) {
+        showToast('Tanggal mulai berhenti harus diisi!', 'error');
+        return;
+    }
+    
+    showLoadingOverlay();
+    
     // Update user data
     userData.name = elements.editName.value.trim();
     userData.status = elements.editStatus.value.trim();
     userData.bio = elements.editBio.value.trim();
     userData.startDate = elements.editStartDate.value;
     
+    // Calculate new streak based on start date
+    const startDate = new Date(elements.editStartDate.value);
+    const today = new Date();
+    const diffTime = Math.abs(today - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    userData.streak = diffDays;
+    
     // Save to localStorage
     saveUserData();
     
     // Update display
     updateProfileDisplay();
+    updateQuickStats();
     
     // Close modal
     closeEditProfile();
+    hideLoadingOverlay();
     
     showToast('Profil berhasil diperbarui!', 'success');
 }
 
-// Achievement Functions
-function showAchievementDetail(achievementId) {
-    const achievement = achievements[achievementId];
-    if (!achievement) return;
-    
-    const modal = document.getElementById('achievementModal');
+// Smoking History Functions
+function openSmokingHistory() {
+    const modal = document.getElementById('smokingHistoryModal');
     const elements = {
-        achievementTitle: document.getElementById('achievementTitle'),
-        achievementIconLarge: document.getElementById('achievementIconLarge'),
-        achievementName: document.getElementById('achievementName'),
-        achievementDescription: document.getElementById('achievementDescription'),
-        achievementEarnedDate: document.getElementById('achievementEarnedDate')
+        cigarettesPerDayInput: document.getElementById('cigarettesPerDayInput'),
+        pricePerPackInput: document.getElementById('pricePerPackInput'),
+        smokingYears: document.getElementById('smokingYears'),
+        smokingMonths: document.getElementById('smokingMonths')
     };
     
-    elements.achievementTitle.textContent = achievement.title;
-    elements.achievementIconLarge.textContent = achievement.icon;
-    elements.achievementName.textContent = achievement.title;
-    elements.achievementDescription.textContent = achievement.description;
+    // Populate form with current data
+    if (elements.cigarettesPerDayInput) elements.cigarettesPerDayInput.value = smokingHistory.cigarettesPerDay;
+    if (elements.pricePerPackInput) elements.pricePerPackInput.value = smokingHistory.pricePerPack;
+    if (elements.smokingYears) elements.smokingYears.value = smokingHistory.smokingYears;
+    if (elements.smokingMonths) elements.smokingMonths.value = smokingHistory.smokingMonths;
     
-    if (achievement.earned) {
-        elements.achievementEarnedDate.innerHTML = `
-            <i class="fas fa-calendar"></i>
-            <span>Diraih pada: ${formatDate(achievement.earnedDate)}</span>
-        `;
-    } else {
-        elements.achievementEarnedDate.innerHTML = `
-            <i class="fas fa-lock"></i>
-            <span>Belum terbuka (Progress: ${achievement.progress}%)</span>
-        `;
-    }
+    // Update calculation preview
+    updateSmokingCalculation();
     
     modal.classList.add('show');
 }
 
-function closeAchievementDetail() {
-    const modal = document.getElementById('achievementModal');
+function closeSmokingHistory() {
+    const modal = document.getElementById('smokingHistoryModal');
     modal.classList.remove('show');
 }
 
-function shareAchievement() {
-    const text = `🏆 Saya baru saja meraih pencapaian di PuffOff! 
-    
-Bergabunglah dengan perjalanan bebas rokok saya dan dapatkan hidup yang lebih sehat!
-
-#PuffOff #BebasRokok #Achievement`;
-
-    if (navigator.share) {
-        navigator.share({
-            title: 'Pencapaian PuffOff',
-            text: text,
-            url: window.location.href
-        }).then(() => {
-            showToast('Pencapaian berhasil dibagikan!', 'success');
-        }).catch(() => {
-            copyToClipboard(text);
-        });
-    } else {
-        copyToClipboard(text);
-    }
-}
-
-// Savings Goals
-function loadSavingsGoals() {
-    const savedGoals = localStorage.getItem('puffoff_savings_goals');
-    if (savedGoals) {
-        savingsGoals = JSON.parse(savedGoals);
-    }
-    updateSavingsDisplay();
-}
-
-function updateSavingsDisplay() {
-    savingsGoals.forEach(goal => {
-        const percentage = Math.round((goal.current / goal.target) * 100);
-        const goalElement = document.querySelector(`[data-goal-id="${goal.id}"]`);
-        if (goalElement) {
-            const progressBar = goalElement.querySelector('.goal-progress-bar');
-            const percentageElement = goalElement.querySelector('.goal-percentage');
-            
-            if (progressBar) progressBar.style.setProperty('--width', `${percentage}%`);
-            if (percentageElement) percentageElement.textContent = `${percentage}%`;
-        }
-    });
-}
-
-function addSavingsGoal() {
-    const title = prompt('Masukkan nama target penghematan:');
-    if (!title) return;
-    
-    const targetStr = prompt('Masukkan jumlah target (dalam Rupiah):');
-    if (!targetStr) return;
-    
-    const target = parseInt(targetStr.replace(/[^\d]/g, ''));
-    if (isNaN(target) || target <= 0) {
-        showToast('Jumlah target tidak valid!', 'error');
-        return;
-    }
-    
-    const newGoal = {
-        id: Date.now(),
-        title: title.trim(),
-        target: target,
-        current: userData.totalSavings
-    };
-    
-    savingsGoals.push(newGoal);
-    localStorage.setItem('puffoff_savings_goals', JSON.stringify(savingsGoals));
-    
-    // Refresh savings display
-    location.reload();
-    
-    showToast('Target penghematan berhasil ditambahkan!', 'success');
-}
-
-// Analytics & Export
-function exportData() {
-    const exportData = {
-        userData: userData,
-        achievements: achievements,
-        savingsGoals: savingsGoals,
-        exportDate: new Date().toISOString(),
-        version: '1.0'
-    };
-    
-    const dataStr = JSON.stringify(exportData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `puffoff_profile_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    URL.revokeObjectURL(url);
-    showToast('Data profil berhasil diexport!', 'success');
-}
-
-// Settings Functions
-function openNotificationSettings() {
-    showToast('Pengaturan notifikasi akan segera tersedia!', 'info');
-}
-
-function toggleTheme() {
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const isDarkMode = darkModeToggle.checked;
-    
-    if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-        localStorage.setItem('darkMode', 'true');
-    } else {
-        document.body.classList.remove('dark-mode');
-        localStorage.setItem('darkMode', 'false');
-    }
-    
-    showToast(`Mode ${isDarkMode ? 'gelap' : 'terang'} diaktifkan!`, 'success');
-}
-
-function openPrivacySettings() {
-    showToast('Pengaturan privasi akan segera tersedia!', 'info');
-}
-
-function openBackupSettings() {
-    showToast('Pengaturan backup akan segera tersedia!', 'info');
-}
-
-function openEmergencyContacts() {
-    showToast('Fitur kontak darurat akan segera tersedia!', 'info');
-}
-
-function shareProfile() {
-    const profileUrl = window.location.href;
-    const text = `🌟 Lihat progress bebas rokok saya di PuffOff! 
-    
-✅ ${userData.streak} hari streak
-💰 Hemat ${formatCurrency(userData.totalSavings)}
-❤️ Health Score: ${userData.healthScore}%
-
-Bergabunglah dengan perjalanan hidup sehat!
-
-#PuffOff #BebasRokok #HidupSehat`;
-
-    if (navigator.share) {
-        navigator.share({
-            title: 'Profil PuffOff - ' + userData.name,
-            text: text,
-            url: profileUrl
-        }).then(() => {
-            showToast('Profil berhasil dibagikan!', 'success');
-        }).catch(() => {
-            copyToClipboard(text + '\n\n' + profileUrl);
-        });
-    } else {
-        copyToClipboard(text + '\n\n' + profileUrl);
-    }
-}
-
-// Danger Zone Functions
-function confirmLogout() {
-    if (confirm('Apakah Anda yakin ingin keluar? Data yang belum disimpan akan hilang.')) {
-        logout();
-    }
-}
-
-function logout() {
-    // Clear sensitive data but keep progress
-    localStorage.removeItem('puffoff_session');
-    localStorage.removeItem('puffoff_temp_data');
-    
-    showToast('Berhasil keluar!', 'success');
-    
-    // Redirect to login or home
-    setTimeout(() => {
-        window.location.href = 'login.html';
-    }, 1500);
-}
-
-function confirmDeleteAccount() {
-    const confirmation = prompt('PERINGATAN: Tindakan ini akan menghapus semua data Anda secara permanen!\n\nKetik "HAPUS AKUN" untuk konfirmasi:');
-    
-    if (confirmation === 'HAPUS AKUN') {
-        deleteAccount();
-    } else if (confirmation !== null) {
-        showToast('Konfirmasi tidak sesuai. Akun tidak dihapus.', 'warning');
-    }
-}
-
-function deleteAccount() {
-    // Clear all data
-    localStorage.clear();
-    
-    showToast('Akun berhasil dihapus. Terima kasih telah menggunakan PuffOff!', 'success');
-    
-    // Redirect to welcome page
-    setTimeout(() => {
-        window.location.href = 'index.html';
-    }, 2000);
-}
-
-// Utility Functions
-function closeAllModals() {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.classList.remove('show');
-    });
-}
-
-function saveUserData() {
-    localStorage.setItem('puffoff_user_data', JSON.stringify(userData));
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
-
-function copyToClipboard(text) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Teks berhasil disalin ke clipboard!', 'success');
-        }).catch(() => {
-            fallbackCopyTextToClipboard(text);
-        });
-    } else {
-        fallbackCopyTextToClipboard(text);
-    }
-}
-
-function fallbackCopyTextToClipboard(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-    
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    try {
-        document.execCommand('copy');
-        showToast('Teks berhasil disalin!', 'success');
-    } catch (err) {
-        showToast('Gagal menyalin teks', 'error');
-    }
-    
-    document.body.removeChild(textArea);
-}
-
-function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    
-    toast.textContent = message;
-    toast.className = `toast ${type}`;
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-// Scroll Animations
-function setupScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-                
-                // Animate progress bars when section comes into view
-                const progressBars = entry.target.querySelectorAll('.progress-bar, .goal-progress-bar');
-                progressBars.forEach(bar => {
-                    const width = bar.style.width || bar.style.getPropertyValue('--width');
-                    bar.style.width = '0%';
-                    bar.style.setProperty('--width', '0%');
-                    
-                    setTimeout(() => {
-                        bar.style.width = width;
-                        bar.style.setProperty('--width', width);
-                    }, 300);
-                });
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all sections
-    document.querySelectorAll('.section, .stat-card').forEach(section => {
-        observer.observe(section);
-    });
-}
-
-// Auto-save functionality
-setInterval(() => {
-    saveUserData();
-}, 30000); // Auto-save every 30 seconds
-
-// Handle page visibility change
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') {
-        saveUserData();
-    }
-});
-
-// Handle beforeunload
-window.addEventListener('beforeunload', function() {
-    saveUserData();
-});
-
-// Initialize on load
-window.addEventListener('load', function() {
-    // Remove loading states
-    document.querySelectorAll('.loading').forEach(element => {
-        element.classList.remove('loading');
-    });
-    
-    // Initialize animations
-    setTimeout(() => {
-        initializeProgressBars();
-    }, 500);
-});
+function updateSmokingCalculation() {
+    const elements = {
+        cigarettesPerDayInput: document.getElementById('cigarettesPerDayInput'),
+        pricePerPackInput: document.getElementById('pricePerPackInput'),
+        smokingYears: document.getElementById('smokingYears'),
+        smokingMonths: document.getElementById('smoking
