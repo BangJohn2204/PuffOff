@@ -50,6 +50,223 @@
             </div>
         </div>
 
+        <!-- Smartwatch Integration Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="section-icon fas fa-watch"></i>
+                    Smartwatch Monitor
+                </div>
+                <div class="smartwatch-status" id="smartwatchStatus">
+                    <span class="status-dot disconnected"></span>
+                    <span class="status-text">Tidak Terhubung</span>
+                </div>
+            </div>
+
+            <!-- Smartwatch Connection Card -->
+            <div class="smartwatch-card" id="smartwatchCard">
+                <div class="smartwatch-icon">
+                    <i class="fas fa-watch"></i>
+                </div>
+                <div class="smartwatch-info">
+                    <h4>Hubungkan Smartwatch</h4>
+                    <p>Monitor kesehatan dan emosi secara real-time untuk mencegah keinginan merokok</p>
+                    <div class="device-support">
+                        <span class="support-item"><i class="fab fa-apple"></i> Apple Watch</span>
+                        <span class="support-item"><i class="fab fa-google"></i> Wear OS</span>
+                        <span class="support-item"><i class="fas fa-heartbeat"></i> Fitbit</span>
+                        <span class="support-item"><i class="fas fa-watch"></i> Samsung Galaxy</span>
+                    </div>
+                    <button class="connect-btn" onclick="connectSmartwatch()" id="connectBtn">
+                        <i class="fas fa-bluetooth"></i>
+                        <span>Hubungkan Perangkat</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Real-time Health Data (shown when connected) -->
+            <div class="realtime-health" id="realtimeHealth" style="display: none;">
+                <!-- Live Health Metrics -->
+                <div class="health-grid">
+                    <div class="health-metric" data-metric="heart-rate">
+                        <div class="metric-icon">❤️</div>
+                        <div class="metric-value" id="heartRate">72</div>
+                        <div class="metric-label">BPM</div>
+                        <div class="metric-status normal" id="heartRateStatus">Normal</div>
+                        <div class="metric-trend" id="heartTrend">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>-3 dari kemarin</span>
+                        </div>
+                    </div>
+                    <div class="health-metric" data-metric="stress">
+                        <div class="metric-icon">🧠</div>
+                        <div class="metric-value" id="stressLevel">23</div>
+                        <div class="metric-label">Stress Level</div>
+                        <div class="metric-status good" id="stressStatus">Rendah</div>
+                        <div class="metric-trend" id="stressTrend">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>Membaik</span>
+                        </div>
+                    </div>
+                    <div class="health-metric" data-metric="oxygen">
+                        <div class="metric-icon">🩸</div>
+                        <div class="metric-value" id="oxygenLevel">98</div>
+                        <div class="metric-label">SpO2 (%)</div>
+                        <div class="metric-status excellent" id="oxygenStatus">Excellent</div>
+                        <div class="metric-trend" id="oxygenTrend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+2% minggu ini</span>
+                        </div>
+                    </div>
+                    <div class="health-metric" data-metric="sleep">
+                        <div class="metric-icon">😴</div>
+                        <div class="metric-value" id="sleepQuality">85</div>
+                        <div class="metric-label">Sleep Score</div>
+                        <div class="metric-status good" id="sleepStatus">Baik</div>
+                        <div class="metric-trend" id="sleepTrend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>7h 45m tadi malam</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emotion & Mood Tracking -->
+                <div class="emotion-section">
+                    <h4><i class="fas fa-brain"></i> Pelacakan Emosi & Mood</h4>
+                    <div class="emotion-grid">
+                        <div class="emotion-item active" data-emotion="calm">
+                            <div class="emotion-icon">😌</div>
+                            <div class="emotion-label">Tenang</div>
+                            <div class="emotion-percentage">65%</div>
+                            <div class="emotion-time">Dominan hari ini</div>
+                        </div>
+                        <div class="emotion-item moderate" data-emotion="stressed">
+                            <div class="emotion-icon">😰</div>
+                            <div class="emotion-label">Stres</div>
+                            <div class="emotion-percentage">20%</div>
+                            <div class="emotion-time">Puncak: 14:00</div>
+                        </div>
+                        <div class="emotion-item good" data-emotion="happy">
+                            <div class="emotion-icon">😊</div>
+                            <div class="emotion-label">Bahagia</div>
+                            <div class="emotion-percentage">15%</div>
+                            <div class="emotion-time">Pagi hari</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Mood Indicator -->
+                    <div class="current-mood">
+                        <div class="mood-indicator">
+                            <div class="mood-circle">😌</div>
+                            <div class="mood-info">
+                                <h5>Mood Saat Ini: <span class="mood-text">Tenang & Fokus</span></h5>
+                                <p>Kondisi ideal untuk melanjutkan hari tanpa rokok!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Craving Detection & Alert -->
+                <div class="craving-detection" id="cravingDetection">
+                    <div class="detection-header">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Deteksi Keinginan Merokok</h4>
+                        <div class="detection-status safe" id="cravingStatus">
+                            <span class="status-indicator"></span>
+                            <span>Aman</span>
+                        </div>
+                    </div>
+                    
+                    <div class="craving-alert hidden" id="cravingAlert">
+                        <div class="alert-content">
+                            <div class="alert-icon">⚠️</div>
+                            <div class="alert-text">
+                                <h4>Potensi Keinginan Merokok Terdeteksi</h4>
+                                <p>Detak jantung meningkat dan level stress tinggi terdeteksi. Ini mungkin menandakan keinginan untuk merokok.</p>
+                            </div>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="alert-btn primary" onclick="startBreathingExercise()">
+                                <i class="fas fa-lungs"></i>
+                                Latihan Pernapasan
+                            </button>
+                            <button class="alert-btn secondary" onclick="requestSupport()">
+                                <i class="fas fa-users"></i>
+                                Minta Dukungan
+                            </button>
+                            <button class="alert-btn tertiary" onclick="openDistraction()">
+                                <i class="fas fa-gamepad"></i>
+                                Alihkan Perhatian
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Prevention Tips -->
+                    <div class="prevention-tips">
+                        <h5>💡 Tips Pencegahan Berdasarkan Data:</h5>
+                        <ul id="preventionTips">
+                            <li>Level stress cenderung tinggi jam 14:00-16:00, coba lakukan istirahat sejenak</li>
+                            <li>Detak jantung stabil saat mendengarkan musik, pertimbangkan playlist anti-rokok</li>
+                            <li>Tidur berkualitas membantu mengurangi keinginan merokok di pagi hari</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Health Insights from Smartwatch -->
+                <div class="health-insights">
+                    <h4><i class="fas fa-chart-line"></i> Insight Kesehatan</h4>
+                    <div class="insight-grid">
+                        <div class="insight-card positive">
+                            <div class="insight-icon">📈</div>
+                            <div class="insight-content">
+                                <h5>Detak Jantung Istirahat</h5>
+                                <p>Turun 8 BPM sejak berhenti merokok</p>
+                                <span class="insight-value">-8 BPM</span>
+                            </div>
+                        </div>
+                        <div class="insight-card positive">
+                            <div class="insight-icon">🫁</div>
+                            <div class="insight-content">
+                                <h5>Tingkat Oksigen</h5>
+                                <p>Meningkat signifikan dalam 7 hari</p>
+                                <span class="insight-value">+3%</span>
+                            </div>
+                        </div>
+                        <div class="insight-card warning">
+                            <div class="insight-icon">⚡</div>
+                            <div class="insight-content">
+                                <h5>Level Stress</h5>
+                                <p>Tinggi pada jam kerja, butuh manajemen</p>
+                                <span class="insight-value">Perlu Perhatian</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Correlation -->
+                <div class="activity-correlation">
+                    <h4><i class="fas fa-running"></i> Korelasi Aktivitas</h4>
+                    <div class="correlation-items">
+                        <div class="correlation-item">
+                            <div class="correlation-activity">🚶‍♂️ Jalan Kaki</div>
+                            <div class="correlation-effect positive">Mengurangi stress 45%</div>
+                        </div>
+                        <div class="correlation-item">
+                            <div class="correlation-activity">🧘‍♂️ Meditasi</div>
+                            <div class="correlation-effect positive">Detak jantung lebih stabil</div>
+                        </div>
+                        <div class="correlation-item">
+                            <div class="correlation-activity">☕ Minum Kopi</div>
+                            <div class="correlation-effect neutral">Tidak mempengaruhi keinginan merokok</div>
+                        </div>
+                        <div class="correlation-item">
+                            <div class="correlation-activity">📱 Social Media</div>
+                            <div class="correlation-effect negative">Meningkatkan stress 15%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Progress Chart -->
         <div class="section">
             <div class="section-header">
@@ -233,6 +450,14 @@
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
+                        <div class="timeline-title">Smartwatch Terhubung</div>
+                        <div class="timeline-desc">Monitoring kesehatan real-time dimulai</div>
+                        <div class="timeline-time">Hari ini, 08:15</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
                         <div class="timeline-title">Progress Mingguan Tercapai</div>
                         <div class="timeline-desc">Target mingguan berhasil diselesaikan dengan sempurna</div>
                         <div class="timeline-time">Kemarin, 19:45</div>
@@ -244,14 +469,6 @@
                         <div class="timeline-title">Hemat Rp 100.000! 💰</div>
                         <div class="timeline-desc">Pencapaian penghematan pertama yang luar biasa</div>
                         <div class="timeline-time">3 hari lalu, 16:20</div>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-title">Mood Check-in Streak</div>
-                        <div class="timeline-desc">5 hari berturut-turut melakukan mood check-in</div>
-                        <div class="timeline-time">4 hari lalu, 08:15</div>
                     </div>
                 </div>
             </div>
@@ -300,8 +517,44 @@
         </div>
     </div>
 
+    <!-- Breathing Exercise Modal -->
+    <div class="modal" id="breathingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-lungs"></i> Latihan Pernapasan</h3>
+                <button class="modal-close" onclick="closeBreathingModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="breathing-exercise">
+                    <div class="breathing-circle" id="breathingCircle">
+                        <div class="breathing-text" id="breathingText">Bersiap...</div>
+                    </div>
+                    <div class="breathing-controls">
+                        <button class="breathing-btn" id="startBreathingBtn" onclick="startBreathing()">
+                            <i class="fas fa-play"></i> Mulai
+                        </button>
+                        <button class="breathing-btn" id="stopBreathingBtn" onclick="stopBreathing()" style="display: none;">
+                            <i class="fas fa-stop"></i> Berhenti
+                        </button>
+                    </div>
+                    <div class="breathing-progress">
+                        <div class="progress-bar" id="breathingProgress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Menghubungkan ke smartwatch...</p>
+    </div>
 
     <!-- JavaScript -->
     <script src="js/progress.js"></script>
