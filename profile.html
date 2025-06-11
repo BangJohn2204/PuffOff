@@ -73,7 +73,7 @@
             <div class="section-title">
                 <div>
                     <i class="section-icon fas fa-users"></i>
-                    Teman
+                    Teman & Komunitas
                 </div>
                 <div class="friend-actions">
                     <button class="action-icon-btn" onclick="openReferralModal()" title="Masukkan Kode Referral">
@@ -219,6 +219,94 @@
                         <div class="medal">🥉</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Target Penghematan Section -->
+        <div class="section">
+            <div class="section-title">
+                <div>
+                    <i class="section-icon fas fa-bullseye"></i>
+                    Target Penghematan
+                </div>
+                <button class="action-icon-btn" onclick="openAddGoal()" title="Tambah Target Baru">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            
+            <div class="savings-goals">
+                <div class="goals-overview">
+                    <div class="overview-item">
+                        <div class="overview-icon">🎯</div>
+                        <div class="overview-info">
+                            <div class="overview-number" id="totalGoals">2</div>
+                            <div class="overview-label">Target Aktif</div>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">✅</div>
+                        <div class="overview-info">
+                            <div class="overview-number" id="completedGoals">0</div>
+                            <div class="overview-label">Tercapai</div>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">💰</div>
+                        <div class="overview-info">
+                            <div class="overview-number" id="totalTargetAmount">Rp 11M</div>
+                            <div class="overview-label">Total Target</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="goals-list" id="goalsList">
+                    <div class="goal-item">
+                        <div class="goal-header">
+                            <div class="goal-category-icon">📱</div>
+                            <div class="goal-info">
+                                <div class="goal-title">Smartphone Baru</div>
+                                <div class="goal-category">Elektronik</div>
+                            </div>
+                            <div class="goal-amount">Rp 3.000.000</div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="goal-progress-bar">
+                                <div class="goal-progress-fill" style="width: 7%"></div>
+                            </div>
+                            <div class="goal-percentage">7%</div>
+                        </div>
+                        <div class="goal-details">
+                            <div class="goal-saved">Tersimpan: Rp 210.000</div>
+                            <div class="goal-remaining">Sisa: Rp 2.790.000</div>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-header">
+                            <div class="goal-category-icon">🏖️</div>
+                            <div class="goal-info">
+                                <div class="goal-title">Liburan Keluarga</div>
+                                <div class="goal-category">Liburan</div>
+                            </div>
+                            <div class="goal-amount">Rp 8.000.000</div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="goal-progress-bar">
+                                <div class="goal-progress-fill" style="width: 3%"></div>
+                            </div>
+                            <div class="goal-percentage">3%</div>
+                        </div>
+                        <div class="goal-details">
+                            <div class="goal-saved">Tersimpan: Rp 210.000</div>
+                            <div class="goal-remaining">Sisa: Rp 7.790.000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="add-goal-btn" onclick="openAddGoal()">
+                    <i class="fas fa-plus"></i>
+                    Tambah Target Baru
+                </button>
             </div>
         </div>
 
@@ -573,6 +661,78 @@
         </div>
     </div>
 
+    <!-- Add Goal Modal -->
+    <div class="modal" id="addGoalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tambah Target Penghematan</h3>
+                <button class="modal-close" onclick="closeAddGoal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="goal-input-info">
+                    <div class="info-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="info-text">
+                        <h4>Tetapkan Target Anda</h4>
+                        <p>Buat target penghematan untuk memotivasi perjalanan bebas rokok Anda.</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nama Target</label>
+                    <input type="text" id="goalName" placeholder="Contoh: Laptop Baru" maxlength="50">
+                    <small>Nama yang mudah diingat untuk target Anda</small>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah Target (Rp)</label>
+                    <input type="number" id="goalAmount" placeholder="Contoh: 5000000" min="10000" step="10000">
+                    <small>Jumlah uang yang ingin dikumpulkan</small>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="goalCategory">
+                        <option value="elektronik">📱 Elektronik</option>
+                        <option value="liburan">🏖️ Liburan</option>
+                        <option value="pendidikan">📚 Pendidikan</option>
+                        <option value="kesehatan">❤️ Kesehatan</option>
+                        <option value="investasi">📈 Investasi</option>
+                        <option value="kendaraan">🚗 Kendaraan</option>
+                        <option value="rumah">🏠 Rumah</option>
+                        <option value="fashion">👕 Fashion</option>
+                        <option value="hobi">🎨 Hobi</option>
+                        <option value="lainnya">📦 Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Target Waktu (Opsional)</label>
+                    <input type="date" id="goalTargetDate" min="">
+                    <small>Kapan Anda ingin mencapai target ini?</small>
+                </div>
+                <div class="goal-preview" id="goalPreview">
+                    <h5>📊 Estimasi Pencapaian:</h5>
+                    <div class="preview-item">
+                        <span>Hemat per hari:</span>
+                        <span id="previewDailySavings">Rp 0</span>
+                    </div>
+                    <div class="preview-item">
+                        <span>Estimasi waktu:</span>
+                        <span id="previewTimeEstimate">0 hari</span>
+                    </div>
+                    <div class="preview-item">
+                        <span>Progress saat ini:</span>
+                        <span id="previewCurrentProgress">0%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddGoal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveGoal()">Tambah Target</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
@@ -583,5 +743,15 @@
     </div>
 
     <script src="js/profile.js"></script>
+    <script>
+        // Set minimum date for goal target date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const goalTargetDate = document.getElementById('goalTargetDate');
+            if (goalTargetDate) {
+                const today = new Date().toISOString().split('T')[0];
+                goalTargetDate.min = today;
+            }
+        });
+    </script>
 </body>
 </html>
