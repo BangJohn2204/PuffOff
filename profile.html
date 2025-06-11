@@ -31,427 +31,6 @@
                 <div class="profile-badges">
                     <div class="badge main-badge">
                         <i class="fas fa-trophy"></i>
-                        <span id="mainBadge">Week Warrior</span>
-                    </div>
-                    <div class="badge level-badge">
-                        <i class="fas fa-star"></i>
-                        <span>Level <span id="userLevel">4</span></span>
-                    </div>
-                </div>
-            </div>
-            <button class="edit-btn" onclick="openEditProfile()">
-                <i class="fas fa-edit"></i>
-                Edit Profil
-            </button>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">🔥</div>
-                <div class="stat-value" id="streakDays">7</div>
-                <div class="stat-label">Hari Bebas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-value" id="totalSavings">Rp 210K</div>
-                <div class="stat-label">Total Hemat</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🚫</div>
-                <div class="stat-value" id="cigarettesAvoided">84</div>
-                <div class="stat-label">Rokok Dihindari</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">❤️</div>
-                <div class="stat-value" id="healthScore">78%</div>
-                <div class="stat-label">Health Score</div>
-            </div>
-        </div>
-
-        <!-- Smoking History Section -->
-        <div class="section">
-            <div class="section-title">
-                <i class="section-icon fas fa-history"></i>
-                Riwayat Merokok
-            </div>
-            <div class="smoking-history" id="smokingHistorySection">
-                <div class="history-summary" id="historySummary">
-                    <div class="summary-item">
-                        <span class="summary-label">Rokok per Hari</span>
-                        <span class="summary-value" id="cigarettesPerDay">12 batang</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Biaya per Hari</span>
-                        <span class="summary-value" id="costPerDay">Rp 30,000</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Lama Merokok</span>
-                        <span class="summary-value" id="smokingDuration">5 tahun</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Total Dihabiskan</span>
-                        <span class="summary-value" id="totalSpent">Rp 54,750,000</span>
-                    </div>
-                </div>
-                <button class="edit-history-btn" onclick="openSmokingHistory()">
-                    <i class="fas fa-edit"></i>
-                    Edit Riwayat Merokok
-                </button>
-            </div>
-        </div>
-
-        <!-- Journey Timeline -->
-        <div class="section">
-            <div class="section-title">
-                <i class="section-icon fas fa-route"></i>
-                Timeline Perjalanan
-            </div>
-            <div class="journey-timeline">
-                <div class="timeline-item completed">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-title">Memulai Perjalanan 🌟</div>
-                        <div class="timeline-desc">Bergabung dengan PuffOff dan berkomitmen berhenti merokok</div>
-                        <div class="timeline-date">15 Januari 2024</div>
-                    </div>
-                </div>
-                <div class="timeline-item completed">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-title">Minggu Pertama! 🏆</div>
-                        <div class="timeline-desc">Berhasil mencapai 7 hari bebas rokok</div>
-                        <div class="timeline-date">22 Januari 2024</div>
-                    </div>
-                </div>
-                <div class="timeline-item upcoming">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-title">Target 2 Minggu 🎯</div>
-                        <div class="timeline-desc">Menuju pencapaian 14 hari bebas rokok</div>
-                        <div class="timeline-date">29 Januari 2024</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Health Recovery -->
-        <div class="section">
-            <div class="section-title">
-                <i class="section-icon fas fa-heartbeat"></i>
-                Pemulihan Kesehatan
-            </div>
-            <div class="health-recovery">
-                <div class="health-score-display">
-                    <div class="health-circle">
-                        <div class="circle-progress" data-score="78"></div>
-                        <div class="circle-content">
-                            <span class="score-number">78</span>
-                            <span class="score-label">Health Score</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="health-metrics">
-                    <div class="health-metric improving">
-                        <div class="metric-icon">🫁</div>
-                        <div class="metric-info">
-                            <div class="metric-title">Fungsi Paru</div>
-                            <div class="metric-status">Membaik 15%</div>
-                            <div class="metric-progress">
-                                <div class="progress-bar" style="width: 75%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="health-metric improving">
-                        <div class="metric-icon">❤️</div>
-                        <div class="metric-info">
-                            <div class="metric-title">Kardiovaskular</div>
-                            <div class="metric-status">Membaik 20%</div>
-                            <div class="metric-progress">
-                                <div class="progress-bar" style="width: 80%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="health-metric normal">
-                        <div class="metric-icon">🌬️</div>
-                        <div class="metric-info">
-                            <div class="metric-title">Oksigen</div>
-                            <div class="metric-status">Normal 97%</div>
-                            <div class="metric-progress">
-                                <div class="progress-bar" style="width: 97%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="health-metric excellent">
-                        <div class="metric-icon">⚡</div>
-                        <div class="metric-info">
-                            <div class="metric-title">Energi</div>
-                            <div class="metric-status">Meningkat 25%</div>
-                            <div class="metric-progress">
-                                <div class="progress-bar" style="width: 85%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Achievements -->
-        <div class="section">
-            <div class="section-title">
-                <i class="section-icon fas fa-trophy"></i>
-                Pencapaian & Lencana
-            </div>
-            <div class="achievements-grid">
-                <div class="achievement-card earned" data-achievement="fire-starter" onclick="showAchievementDetail('fire-starter')">
-                    <div class="achievement-icon">🔥</div>
-                    <div class="achievement-title">Fire Starter</div>
-                    <div class="achievement-desc">3 hari bebas rokok</div>
-                </div>
-                <div class="achievement-card earned" data-achievement="money-saver" onclick="showAchievementDetail('money-saver')">
-                    <div class="achievement-icon">💰</div>
-                    <div class="achievement-title">Money Saver</div>
-                    <div class="achievement-desc">Hemat Rp 100K</div>
-                </div>
-                <div class="achievement-card earned" data-achievement="week-warrior" onclick="showAchievementDetail('week-warrior')">
-                    <div class="achievement-icon">🏃</div>
-                    <div class="achievement-title">Week Warrior</div>
-                    <div class="achievement-desc">7 hari konsisten</div>
-                </div>
-                <div class="achievement-card locked">
-                    <div class="achievement-icon">👑</div>
-                    <div class="achievement-title">Champion</div>
-                    <div class="achievement-desc">30 hari bebas rokok</div>
-                    <div class="achievement-progress">23%</div>
-                </div>
-                <div class="achievement-card locked">
-                    <div class="achievement-icon">💎</div>
-                    <div class="achievement-title">Diamond</div>
-                    <div class="achievement-desc">90 hari bebas rokok</div>
-                    <div class="achievement-progress">8%</div>
-                </div>
-                <div class="achievement-card locked">
-                    <div class="achievement-icon">🌟</div>
-                    <div class="achievement-title">Legend</div>
-                    <div class="achievement-desc">1 tahun bebas rokok</div>
-                    <div class="achievement-progress">2%</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Savings Tracker -->
-        <div class="section">
-            <div class="section-title">
-                <i class="section-icon fas fa-piggy-bank"></i>
-                Tracker Penghematan
-            </div>
-            <div class="savings-tracker">
-                <div class="savings-breakdown">
-                    <div class="savings-item">
-                        <div class="savings-period">Minggu Ini</div>
-                        <div class="savings-amount">Rp 210K</div>
-                    </div>
-                    <div class="savings-item">
-                        <div class="savings-period">Bulan Ini</div>
-                        <div class="savings-amount">Rp 900K</div>
-                    </div>
-                    <div class="savings-item">
-                        <div class="savings-period">Proyeksi Tahun</div>
-                        <div class="savings-amount">Rp 10.8M</div>
-                    </div>
-                </div>
-                
-                <div class="savings-goals">
-                    <h4>🎯 Target Penghematan</h4>
-                    <div class="goals-list" id="goalsList">
-                        <div class="goal-item">
-                            <div class="goal-info">
-                                <span class="goal-title">Smartphone Baru</span>
-                                <span class="goal-target">Rp 3.000.000</span>
-                            </div>
-                            <div class="goal-progress">
-                                <div class="goal-progress-bar" style="width: 7%"></div>
-                                <span class="goal-percentage">7%</span>
-                            </div>
-                        </div>
-                        <div class="goal-item">
-                            <div class="goal-info">
-                                <span class="goal-title">Liburan Keluarga</span>
-                                <span class="goal-target">Rp 8.000.000</span>
-                            </div>
-                            <div class="goal-progress">
-                                <div class="goal-progress-bar" style="width: 3%"></div>
-                                <span class="goal-percentage">3%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="add-goal-btn" onclick="openAddGoal()">
-                        <i class="fas fa-plus"></i>
-                        Tambah Target Baru
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Settings -->
-        <div class="section">
-            <div class="section-title">
-                <i class="section-icon fas fa-cog"></i>
-                Pengaturan
-            </div>
-            <div class="settings-list">
-                <div class="setting-item" onclick="openNotificationSettings()">
-                    <div class="setting-info">
-                        <i class="fas fa-bell"></i>
-                        <span>Notifikasi</span>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-                <div class="setting-item" onclick="toggleTheme()">
-                    <div class="setting-info">
-                        <i class="fas fa-moon"></i>
-                        <span>Mode Gelap</span>
-                    </div>
-                    <div class="setting-toggle">
-                        <input type="checkbox" id="darkModeToggle">
-                        <label for="darkModeToggle"></label>
-                    </div>
-                </div>
-                <div class="setting-item" onclick="openDataManagement()">
-                    <div class="setting-info">
-                        <i class="fas fa-download"></i>
-                        <span>Export Data</span>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-                <div class="setting-item" onclick="shareProfile()">
-                    <div class="setting-info">
-                        <i class="fas fa-share-alt"></i>
-                        <span>Bagikan Profil</span>
-                    </div>
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="action-btn btn-secondary" onclick="resetProgress()">
-                <i class="fas fa-redo"></i>
-                Reset Progress
-            </button>
-            <button class="action-btn btn-danger" onclick="confirmLogout()">
-                <i class="fas fa-sign-out-alt"></i>
-                Keluar
-            </button>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="nav-container">
-            <a href="home.html" class="nav-item">
-                <i class="fas fa-home"></i>
-                <span>Beranda</span>
-            </a>
-            <a href="progress.html" class="nav-item">
-                <i class="fas fa-chart-bar"></i>
-                <span>Progress</span>
-            </a>
-            <a href="chatbot.html" class="nav-item">
-                <i class="fas fa-robot"></i>
-                <span>AI Helper</span>
-            </a>
-            <a href="komunitas.html" class="nav-item">
-                <i class="fas fa-users"></i>
-                <span>Komunitas</span>
-            </a>
-            <a href="target.html" class="nav-item">
-                <i class="fas fa-bullseye"></i>
-                <span>Target</span>
-            </a>
-            <a href="profile.html" class="nav-item active">
-                <i class="fas fa-user"></i>
-                <span>Profil</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div class="modal" id="editProfileModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Edit Profil</h3>
-                <button class="modal-close" onclick="closeEditProfile()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Nama Lengkap</label>
-                    <input type="text" id="editName" placeholder="Masukkan nama lengkap">
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <input type="text" id="editStatus" placeholder="Masukkan status">
-                </div>
-                <div class="form-group">
-                    <label>Bio</label>
-                    <textarea id="editBio" placeholder="Ceritakan tentang perjalanan Anda"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Tanggal Mulai Berhenti</label>
-                    <input type="date" id="editStartDate">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeEditProfile()">Batal</button>
-                <button class="btn btn-primary" onclick="saveProfile()">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Smoking History Modal -->
-    <div class="modal" id="smokingHistoryModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Riwayat Merokok</h3>
-                <button class="modal-close" onclick="closeSmokingHistory()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Berapa batang rokok per hari sebelumnya?</label>
-                    <input type="number" id="cigarettesPerDayInput" placeholder="Contoh: 12" min="1" max="100">
-                    <small>Rata-rata jumlah rokok yang Anda konsumsi per hari</small>
-                </div>
-                <div class="form-group">
-                    <label>Berapa harga per bungkus rokok?</label>
-                    <input type="number" id="pricePerPackInput" placeholder="Contoh: 25000" min="1000">
-                    <small>Harga rata-rata per bungkus (20 batang)</small>
-                </div>
-                <div class="form-group">
-                    <label>Sudah berapa lama merokok?</label>
-                    <div class="duration-inputs">
-                        <input type="number" id="smokingYears" placeholder="0" min="0" max="50">
-                        <span>tahun</span>
-                        <input type="number" id="smokingMonths" placeholder="0" min="0" max="11">
-                        <span>bulan</span>
-                    </div>
-                </div>
-                <div class="calculation-preview" id="calculationPreview">
-                    <h4>📊 Perkiraan Pengeluaran:</h4>
-                    <div class="calculation-item">
-                        <span>Per Hari:</span>
-                        <span id="dailyCost">Rp 0</span>
-                    </div>
-                    <div class="calculation-item">
-                        <span>Per Bulan:</span>
-                        <span id="monthlyCost">Rp 0</span>
-                    </div>
-                    <div class="calculation-item">
-                        <span>Per Tahun:</span>
                         <span id="yearlyCost">Rp 0</span>
                     </div>
                     <div class="calculation-item total">
@@ -539,6 +118,90 @@
         </div>
     </div>
 
+    <!-- Challenge Friend Modal -->
+    <div class="modal" id="challengeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔥 Kirim Tantangan</h3>
+                <button class="modal-close" onclick="closeChallengeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="challenge-options">
+                    <div class="challenge-option" onclick="selectChallenge('streak')">
+                        <div class="challenge-icon">🔥</div>
+                        <div class="challenge-title">Streak Challenge</div>
+                        <div class="challenge-desc">Tantang untuk mencapai streak lebih tinggi</div>
+                    </div>
+                    <div class="challenge-option" onclick="selectChallenge('savings')">
+                        <div class="challenge-icon">💰</div>
+                        <div class="challenge-title">Savings Challenge</div>
+                        <div class="challenge-desc">Tantang untuk menghemat lebih banyak</div>
+                    </div>
+                    <div class="challenge-option" onclick="selectChallenge('health')">
+                        <div class="challenge-icon">❤️</div>
+                        <div class="challenge-title">Health Challenge</div>
+                        <div class="challenge-desc">Tantang untuk meningkatkan health score</div>
+                    </div>
+                </div>
+                <div class="challenge-message">
+                    <label>Pesan Motivasi (Opsional)</label>
+                    <textarea id="challengeMessage" placeholder="Tulis pesan motivasi untuk teman Anda..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeChallengeModal()">Batal</button>
+                <button class="btn btn-primary" onclick="sendChallengeMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                    Kirim Tantangan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Message Modal -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💪 Kirim Dukungan</h3>
+                <button class="modal-close" onclick="closeSupportModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="support-templates">
+                    <h4>Template Pesan:</h4>
+                    <div class="template-options">
+                        <div class="template-option" onclick="selectTemplate('motivation')">
+                            <div class="template-icon">🌟</div>
+                            <div class="template-text">"Kamu hebat! Terus pertahankan ya!"</div>
+                        </div>
+                        <div class="template-option" onclick="selectTemplate('encouragement')">
+                            <div class="template-icon">💪</div>
+                            <div class="template-text">"Jangan menyerah, kamu pasti bisa!"</div>
+                        </div>
+                        <div class="template-option" onclick="selectTemplate('celebration')">
+                            <div class="template-icon">🎉</div>
+                            <div class="template-text">"Selamat atas pencapaianmu!"</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="support-message">
+                    <label>Pesan Dukungan</label>
+                    <textarea id="supportMessage" placeholder="Tulis pesan dukungan..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSupportModal()">Batal</button>
+                <button class="btn btn-primary" onclick="sendSupportMessage()">
+                    <i class="fas fa-heart"></i>
+                    Kirim Dukungan
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
@@ -551,4 +214,618 @@
     <!-- JavaScript -->
     <script src="js/profile.js"></script>
 </body>
-</html>
+</html>d="mainBadge">Week Warrior</span>
+                    </div>
+                    <div class="badge level-badge">
+                        <i class="fas fa-star"></i>
+                        <span>Level <span id="userLevel">4</span></span>
+                    </div>
+                    <div class="badge theme-badge" id="currentThemeBadge">
+                        <i class="fas fa-palette"></i>
+                        <span id="themeName">Default</span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="edit-btn" onclick="openEditProfile()">
+                    <i class="fas fa-edit"></i>
+                    Edit Profil
+                </button>
+                <button class="theme-btn" onclick="openThemeSelector()">
+                    <i class="fas fa-palette"></i>
+                    Tema
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="streakDays">7</div>
+                <div class="stat-label">Hari Bebas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value" id="totalSavings">Rp 210K</div>
+                <div class="stat-label">Total Hemat</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚫</div>
+                <div class="stat-value" id="cigarettesAvoided">84</div>
+                <div class="stat-label">Rokok Dihindari</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="friendsCount">5</div>
+                <div class="stat-label">Teman</div>
+            </div>
+        </div>
+
+        <!-- Friends Challenge Section -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-users"></i>
+                Tantangan Teman
+                <div class="friend-actions">
+                    <button class="action-icon-btn" onclick="openAddFriend()" title="Tambah Teman">
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                    <button class="action-icon-btn" onclick="shareReferralCode()" title="Bagikan Kode">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- My Referral Code -->
+            <div class="referral-card">
+                <div class="referral-info">
+                    <span class="referral-label">Kode Referral Anda:</span>
+                    <div class="referral-code" id="myReferralCode" onclick="copyReferralCode()">
+                        AHMAD2024
+                        <i class="fas fa-copy"></i>
+                    </div>
+                </div>
+                <button class="invite-btn" onclick="inviteFriends()">
+                    <i class="fas fa-paper-plane"></i>
+                    Ajak Teman
+                </button>
+            </div>
+
+            <!-- Friends List -->
+            <div class="friends-list" id="friendsList">
+                <div class="friend-item">
+                    <div class="friend-avatar">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face&auto=format" alt="Sarah">
+                        <div class="friend-status online"></div>
+                    </div>
+                    <div class="friend-info">
+                        <div class="friend-name">Sarah Putri</div>
+                        <div class="friend-progress">12 hari bebas rokok</div>
+                        <div class="friend-progress-bar">
+                            <div class="progress-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="friend-actions">
+                        <button class="support-btn" onclick="sendSupport('sarah')">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="challenge-btn" onclick="sendChallenge('sarah')">
+                            <i class="fas fa-fire"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="friend-item">
+                    <div class="friend-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format" alt="Budi">
+                        <div class="friend-status offline"></div>
+                    </div>
+                    <div class="friend-info">
+                        <div class="friend-name">Budi Santoso</div>
+                        <div class="friend-progress">3 hari bebas rokok</div>
+                        <div class="friend-progress-bar">
+                            <div class="progress-fill" style="width: 20%"></div>
+                        </div>
+                    </div>
+                    <div class="friend-actions">
+                        <button class="support-btn" onclick="sendSupport('budi')">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="challenge-btn" onclick="sendChallenge('budi')">
+                            <i class="fas fa-fire"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="leaderboard">
+                <h4>🏆 Leaderboard Mingguan</h4>
+                <div class="leaderboard-list">
+                    <div class="leaderboard-item rank-1">
+                        <div class="rank-badge">1</div>
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face&auto=format" alt="Sarah">
+                        <div class="leaderboard-info">
+                            <div class="name">Sarah Putri</div>
+                            <div class="score">12 hari</div>
+                        </div>
+                        <div class="crown">👑</div>
+                    </div>
+                    <div class="leaderboard-item rank-2">
+                        <div class="rank-badge">2</div>
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face&auto=format" alt="Ahmad">
+                        <div class="leaderboard-info">
+                            <div class="name">Ahmad Wijaya (Anda)</div>
+                            <div class="score">7 hari</div>
+                        </div>
+                        <div class="medal">🥈</div>
+                    </div>
+                    <div class="leaderboard-item rank-3">
+                        <div class="rank-badge">3</div>
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face&auto=format" alt="Budi">
+                        <div class="leaderboard-info">
+                            <div class="name">Budi Santoso</div>
+                            <div class="score">3 hari</div>
+                        </div>
+                        <div class="medal">🥉</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smoking History Section -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-history"></i>
+                Riwayat Merokok
+            </div>
+            <div class="smoking-history" id="smokingHistorySection">
+                <div class="history-summary" id="historySummary">
+                    <div class="summary-item">
+                        <span class="summary-label">Rokok per Hari</span>
+                        <span class="summary-value" id="cigarettesPerDay">12 batang</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Biaya per Hari</span>
+                        <span class="summary-value" id="costPerDay">Rp 30,000</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Lama Merokok</span>
+                        <span class="summary-value" id="smokingDuration">5 tahun</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Dihabiskan</span>
+                        <span class="summary-value" id="totalSpent">Rp 54,750,000</span>
+                    </div>
+                </div>
+                <button class="edit-history-btn" onclick="openSmokingHistory()">
+                    <i class="fas fa-edit"></i>
+                    Edit Riwayat Merokok
+                </button>
+            </div>
+        </div>
+
+        <!-- Health Recovery -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-heartbeat"></i>
+                Pemulihan Kesehatan
+            </div>
+            <div class="health-recovery">
+                <div class="health-score-display">
+                    <div class="health-circle">
+                        <div class="circle-progress" data-score="78"></div>
+                        <div class="circle-content">
+                            <span class="score-number">78</span>
+                            <span class="score-label">Health Score</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="health-metrics">
+                    <div class="health-metric improving">
+                        <div class="metric-icon">🫁</div>
+                        <div class="metric-info">
+                            <div class="metric-title">Fungsi Paru</div>
+                            <div class="metric-status">Membaik 15%</div>
+                            <div class="metric-progress">
+                                <div class="progress-bar" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-metric improving">
+                        <div class="metric-icon">❤️</div>
+                        <div class="metric-info">
+                            <div class="metric-title">Kardiovaskular</div>
+                            <div class="metric-status">Membaik 20%</div>
+                            <div class="metric-progress">
+                                <div class="progress-bar" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-metric normal">
+                        <div class="metric-icon">🌬️</div>
+                        <div class="metric-info">
+                            <div class="metric-title">Oksigen</div>
+                            <div class="metric-status">Normal 97%</div>
+                            <div class="metric-progress">
+                                <div class="progress-bar" style="width: 97%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-metric excellent">
+                        <div class="metric-icon">⚡</div>
+                        <div class="metric-info">
+                            <div class="metric-title">Energi</div>
+                            <div class="metric-status">Meningkat 25%</div>
+                            <div class="metric-progress">
+                                <div class="progress-bar" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-trophy"></i>
+                Pencapaian & Lencana
+            </div>
+            <div class="achievements-grid">
+                <div class="achievement-card earned" data-achievement="fire-starter" onclick="showAchievementDetail('fire-starter')">
+                    <div class="achievement-icon">🔥</div>
+                    <div class="achievement-title">Fire Starter</div>
+                    <div class="achievement-desc">3 hari bebas rokok</div>
+                </div>
+                <div class="achievement-card earned" data-achievement="money-saver" onclick="showAchievementDetail('money-saver')">
+                    <div class="achievement-icon">💰</div>
+                    <div class="achievement-title">Money Saver</div>
+                    <div class="achievement-desc">Hemat Rp 100K</div>
+                </div>
+                <div class="achievement-card earned" data-achievement="week-warrior" onclick="showAchievementDetail('week-warrior')">
+                    <div class="achievement-icon">🏃</div>
+                    <div class="achievement-title">Week Warrior</div>
+                    <div class="achievement-desc">7 hari konsisten</div>
+                </div>
+                <div class="achievement-card earned" data-achievement="social-supporter" onclick="showAchievementDetail('social-supporter')">
+                    <div class="achievement-icon">🤝</div>
+                    <div class="achievement-title">Social Supporter</div>
+                    <div class="achievement-desc">5 teman didukung</div>
+                </div>
+                <div class="achievement-card locked">
+                    <div class="achievement-icon">👑</div>
+                    <div class="achievement-title">Champion</div>
+                    <div class="achievement-desc">30 hari bebas rokok</div>
+                    <div class="achievement-progress">23%</div>
+                </div>
+                <div class="achievement-card locked">
+                    <div class="achievement-icon">💎</div>
+                    <div class="achievement-title">Diamond</div>
+                    <div class="achievement-desc">90 hari bebas rokok</div>
+                    <div class="achievement-progress">8%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Savings Tracker -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-piggy-bank"></i>
+                Tracker Penghematan
+            </div>
+            <div class="savings-tracker">
+                <div class="savings-breakdown">
+                    <div class="savings-item">
+                        <div class="savings-period">Minggu Ini</div>
+                        <div class="savings-amount">Rp 210K</div>
+                    </div>
+                    <div class="savings-item">
+                        <div class="savings-period">Bulan Ini</div>
+                        <div class="savings-amount">Rp 900K</div>
+                    </div>
+                    <div class="savings-item">
+                        <div class="savings-period">Proyeksi Tahun</div>
+                        <div class="savings-amount">Rp 10.8M</div>
+                    </div>
+                </div>
+                
+                <div class="savings-goals">
+                    <h4>🎯 Target Penghematan</h4>
+                    <div class="goals-list" id="goalsList">
+                        <div class="goal-item">
+                            <div class="goal-info">
+                                <span class="goal-title">Smartphone Baru</span>
+                                <span class="goal-target">Rp 3.000.000</span>
+                            </div>
+                            <div class="goal-progress">
+                                <div class="goal-progress-bar" style="width: 7%"></div>
+                                <span class="goal-percentage">7%</span>
+                            </div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-info">
+                                <span class="goal-title">Liburan Keluarga</span>
+                                <span class="goal-target">Rp 8.000.000</span>
+                            </div>
+                            <div class="goal-progress">
+                                <div class="goal-progress-bar" style="width: 3%"></div>
+                                <span class="goal-percentage">3%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-goal-btn" onclick="openAddGoal()">
+                        <i class="fas fa-plus"></i>
+                        Tambah Target Baru
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="section">
+            <div class="section-title">
+                <i class="section-icon fas fa-cog"></i>
+                Pengaturan
+            </div>
+            <div class="settings-list">
+                <div class="setting-item" onclick="openNotificationSettings()">
+                    <div class="setting-info">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifikasi</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="setting-item" onclick="togglePrivacy()">
+                    <div class="setting-info">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Profil Privat</span>
+                    </div>
+                    <div class="setting-toggle">
+                        <input type="checkbox" id="privacyToggle">
+                        <label for="privacyToggle"></label>
+                    </div>
+                </div>
+                <div class="setting-item" onclick="openDataManagement()">
+                    <div class="setting-info">
+                        <i class="fas fa-download"></i>
+                        <span>Export Data</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="setting-item" onclick="shareProfile()">
+                    <div class="setting-info">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Bagikan Profil</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn btn-secondary" onclick="resetProgress()">
+                <i class="fas fa-redo"></i>
+                Reset Progress
+            </button>
+            <button class="action-btn btn-danger" onclick="confirmLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Keluar
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="progress.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Progress</span>
+            </a>
+            <a href="chatbot.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                <span>AI Helper</span>
+            </a>
+            <a href="komunitas.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Komunitas</span>
+            </a>
+            <a href="target.html" class="nav-item">
+                <i class="fas fa-bullseye"></i>
+                <span>Target</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Theme Selector Modal -->
+    <div class="modal" id="themeSelectorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎨 Pilih Tema</h3>
+                <button class="modal-close" onclick="closeThemeSelector()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="themes-grid">
+                    <div class="theme-option active" data-theme="default">
+                        <div class="theme-preview default-theme"></div>
+                        <div class="theme-name">Default</div>
+                    </div>
+                    <div class="theme-option" data-theme="ocean">
+                        <div class="theme-preview ocean-theme"></div>
+                        <div class="theme-name">Ocean</div>
+                    </div>
+                    <div class="theme-option" data-theme="forest">
+                        <div class="theme-preview forest-theme"></div>
+                        <div class="theme-name">Forest</div>
+                    </div>
+                    <div class="theme-option" data-theme="sunset">
+                        <div class="theme-preview sunset-theme"></div>
+                        <div class="theme-name">Sunset</div>
+                    </div>
+                    <div class="theme-option" data-theme="purple">
+                        <div class="theme-preview purple-theme"></div>
+                        <div class="theme-name">Purple</div>
+                    </div>
+                    <div class="theme-option" data-theme="dark">
+                        <div class="theme-preview dark-theme"></div>
+                        <div class="theme-name">Dark</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Friend Modal -->
+    <div class="modal" id="addFriendModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👥 Tambah Teman</h3>
+                <button class="modal-close" onclick="closeAddFriend()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="add-friend-tabs">
+                    <button class="tab-btn active" onclick="switchTab('code')">Kode Referral</button>
+                    <button class="tab-btn" onclick="switchTab('contacts')">Kontak</button>
+                    <button class="tab-btn" onclick="switchTab('qr')">QR Code</button>
+                </div>
+                
+                <div class="tab-content active" id="codeTab">
+                    <div class="form-group">
+                        <label>Masukkan Kode Referral Teman</label>
+                        <input type="text" id="friendCode" placeholder="Contoh: SARAH2024" style="text-transform: uppercase;">
+                        <small>Minta kode referral dari teman Anda</small>
+                    </div>
+                    <button class="btn btn-primary" onclick="addFriendByCode()">
+                        <i class="fas fa-user-plus"></i>
+                        Tambah Teman
+                    </button>
+                </div>
+                
+                <div class="tab-content" id="contactsTab">
+                    <div class="contacts-list">
+                        <div class="contact-item">
+                            <div class="contact-info">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Sarah Putri (+62812345678)</span>
+                            </div>
+                            <button class="invite-contact-btn">Undang</button>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-info">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Budi Santoso (+62887654321)</span>
+                            </div>
+                            <button class="invite-contact-btn">Undang</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="qrTab">
+                    <div class="qr-section">
+                        <div class="qr-code">
+                            <div class="qr-placeholder">
+                                <i class="fas fa-qrcode"></i>
+                                <p>QR Code akan ditampilkan di sini</p>
+                            </div>
+                        </div>
+                        <p>Scan QR Code teman atau minta mereka scan QR Code Anda</p>
+                        <button class="btn btn-secondary" onclick="generateQRCode()">
+                            <i class="fas fa-qrcode"></i>
+                            Generate QR Code Saya
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profil</h3>
+                <button class="modal-close" onclick="closeEditProfile()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="editName" placeholder="Masukkan nama lengkap">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <input type="text" id="editStatus" placeholder="Masukkan status">
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="editBio" placeholder="Ceritakan tentang perjalanan Anda"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Mulai Berhenti</label>
+                    <input type="date" id="editStartDate">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditProfile()">Batal</button>
+                <button class="btn btn-primary" onclick="saveProfile()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smoking History Modal -->
+    <div class="modal" id="smokingHistoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Riwayat Merokok</h3>
+                <button class="modal-close" onclick="closeSmokingHistory()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Berapa batang rokok per hari sebelumnya?</label>
+                    <input type="number" id="cigarettesPerDayInput" placeholder="Contoh: 12" min="1" max="100">
+                    <small>Rata-rata jumlah rokok yang Anda konsumsi per hari</small>
+                </div>
+                <div class="form-group">
+                    <label>Berapa harga per bungkus rokok?</label>
+                    <input type="number" id="pricePerPackInput" placeholder="Contoh: 25000" min="1000">
+                    <small>Harga rata-rata per bungkus (20 batang)</small>
+                </div>
+                <div class="form-group">
+                    <label>Sudah berapa lama merokok?</label>
+                    <div class="duration-inputs">
+                        <input type="number" id="smokingYears" placeholder="0" min="0" max="50">
+                        <span>tahun</span>
+                        <input type="number" id="smokingMonths" placeholder="0" min="0" max="11">
+                        <span>bulan</span>
+                    </div>
+                </div>
+                <div class="calculation-preview" id="calculationPreview">
+                    <h4>📊 Perkiraan Pengeluaran:</h4>
+                    <div class="calculation-item">
+                        <span>Per Hari:</span>
+                        <span id="dailyCost">Rp 0</span>
+                    </div>
+                    <div class="calculation-item">
+                        <span>Per Bulan:</span>
+                        <span id="monthlyCost">Rp 0</span>
+                    </div>
+                    <div class="calculation-item">
+                        <span>Per Tahun:</span>
+                        <span i
