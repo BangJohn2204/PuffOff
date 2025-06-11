@@ -134,6 +134,707 @@ body {
     color: #667eea;
 }
 
+/* ===========================================
+   SMARTWATCH INTEGRATION STYLES
+   =========================================== */
+
+/* Smartwatch Status */
+.smartwatch-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.status-dot::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.connected {
+    background: #10b981;
+}
+
+.status-dot.connected::before {
+    background: rgba(16, 185, 129, 0.3);
+}
+
+.status-dot.disconnected {
+    background: #ef4444;
+}
+
+.status-dot.disconnected::before {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+.status-dot.connecting {
+    background: #f59e0b;
+}
+
+.status-dot.connecting::before {
+    background: rgba(245, 158, 11, 0.3);
+}
+
+.status-text {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Smartwatch Connection Card */
+.smartwatch-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px dashed #cbd5e1;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.smartwatch-card:hover {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+}
+
+.smartwatch-icon {
+    font-size: 3rem;
+    color: #64748b;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.smartwatch-card:hover .smartwatch-icon {
+    color: #667eea;
+    transform: scale(1.1);
+}
+
+.smartwatch-info {
+    flex: 1;
+}
+
+.smartwatch-info h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.smartwatch-info p {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.device-support {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.support-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.connect-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.connect-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.connect-btn:hover::before {
+    left: 100%;
+}
+
+.connect-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.connect-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Real-time Health Data */
+.realtime-health {
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.health-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.health-metric {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.health-metric::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.health-metric:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: #10b981;
+}
+
+.metric-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.metric-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.metric-status {
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.metric-status.normal {
+    background: #f0fdf4;
+    color: #059669;
+}
+
+.metric-status.good {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.metric-status.excellent {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.metric-status.warning {
+    background: #fefce8;
+    color: #ca8a04;
+}
+
+.metric-trend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+.metric-trend i {
+    color: #10b981;
+}
+
+/* Emotion Section */
+.emotion-section {
+    margin-bottom: 24px;
+}
+
+.emotion-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.emotion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.emotion-item {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    cursor: pointer;
+}
+
+.emotion-item.active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-color: #10b981;
+    transform: scale(1.05);
+}
+
+.emotion-item.moderate {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border-color: #f59e0b;
+}
+
+.emotion-item.good {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+}
+
+.emotion-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.emotion-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.emotion-percentage {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.emotion-time {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+/* Current Mood */
+.current-mood {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid #0ea5e9;
+}
+
+.mood-indicator {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.mood-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.mood-info h5 {
+    font-size: 0.95rem;
+    color: #0c4a6e;
+    margin-bottom: 4px;
+}
+
+.mood-text {
+    color: #0369a1;
+    font-weight: 700;
+}
+
+.mood-info p {
+    font-size: 0.8rem;
+    color: #075985;
+    margin: 0;
+}
+
+/* Craving Detection */
+.craving-detection {
+    margin-bottom: 24px;
+}
+
+.detection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.detection-header h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detection-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.detection-status.safe {
+    background: #f0fdf4;
+    color: #047857;
+}
+
+.detection-status.warning {
+    background: #fefce8;
+    color: #ca8a04;
+}
+
+.detection-status.danger {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.craving-alert {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 2px solid #fca5a5;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    animation: alertPulse 2s ease-in-out infinite;
+}
+
+.craving-alert.hidden {
+    display: none;
+}
+
+@keyframes alertPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(252, 165, 165, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(252, 165, 165, 0);
+    }
+}
+
+.alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.alert-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.alert-text h4 {
+    color: #dc2626;
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+.alert-text p {
+    color: #b91c1c;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.alert-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.alert-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.alert-btn.primary {
+    background: #dc2626;
+    color: white;
+}
+
+.alert-btn.secondary {
+    background: #f59e0b;
+    color: white;
+}
+
+.alert-btn.tertiary {
+    background: #667eea;
+    color: white;
+}
+
+.alert-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Prevention Tips */
+.prevention-tips {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+    border-left: 4px solid #667eea;
+}
+
+.prevention-tips h5 {
+    color: #1f2937;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.prevention-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.prevention-tips li {
+    padding: 8px 0;
+    color: #4b5563;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    position: relative;
+    padding-left: 20px;
+}
+
+.prevention-tips li::before {
+    content: '💡';
+    position: absolute;
+    left: 0;
+    top: 8px;
+}
+
+/* Health Insights */
+.health-insights {
+    margin-bottom: 24px;
+}
+
+.health-insights h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.insight-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.insight-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.insight-card.positive {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+}
+
+.insight-card.warning {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+}
+
+.insight-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.insight-content {
+    flex: 1;
+}
+
+.insight-content h5 {
+    font-size: 0.9rem;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.insight-content p {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.insight-value {
+    font-weight: 700;
+    color: #10b981;
+    font-size: 0.9rem;
+}
+
+.insight-card.warning .insight-value {
+    color: #f59e0b;
+}
+
+/* Activity Correlation */
+.activity-correlation h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.correlation-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.correlation-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.correlation-activity {
+    font-size: 0.9rem;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.correlation-effect {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.correlation-effect.positive {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.correlation-effect.negative {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.correlation-effect.neutral {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
 /* View Toggle */
 .view-toggle {
     display: flex;
@@ -563,6 +1264,7 @@ body {
     border-top: 1px solid #e5e7eb;
     padding: 12px 0;
     z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
 }
 
 .nav-container {
@@ -581,10 +1283,12 @@ body {
     color: #6b7280;
     transition: color 0.3s ease;
     padding: 8px;
+    border-radius: 8px;
 }
 
 .nav-item.active {
     color: #667eea;
+    background: #f0f4ff;
 }
 
 .nav-item i {
@@ -595,6 +1299,176 @@ body {
 .nav-item span {
     font-size: 0.7rem;
     font-weight: 500;
+}
+
+/* ===========================================
+   MODAL STYLES (Breathing Exercise)
+   =========================================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 90%;
+    width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+    font-weight: 700;
+    color: #1f2937;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+/* Breathing Exercise */
+.breathing-exercise {
+    text-align: center;
+}
+
+.breathing-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.breathing-circle.inhale {
+    transform: scale(1.2);
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.breathing-circle.exhale {
+    transform: scale(0.8);
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.breathing-text {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.breathing-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.breathing-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.breathing-btn:first-child {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.breathing-btn:last-child {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.breathing-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.breathing-progress {
+    background: #e5e7eb;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 0%;
+    transition: width 0.3s ease;
 }
 
 /* Toast */
@@ -612,6 +1486,7 @@ body {
     transition: transform 0.3s ease;
     font-weight: 500;
     font-size: 0.9rem;
+    max-width: 300px;
 }
 
 .toast.show {
@@ -624,6 +1499,80 @@ body {
 
 .toast.warning {
     background: #f59e0b;
+}
+
+.toast.info {
+    background: #667eea;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    color: #6b7280;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* ===========================================
+   ANIMATIONS & EFFECTS
+   =========================================== */
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+.health-metric[data-metric="heart-rate"]:hover {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.emotion-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 /* Badge Animation */
@@ -640,21 +1589,10 @@ body {
     animation: badgeGlow 2s ease-in-out infinite;
 }
 
-/* Loading Animation */
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-}
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
 
-.loading {
-    animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* Responsive Design */
 @media (max-width: 480px) {
     .container {
         padding: 16px 12px;
@@ -701,6 +1639,64 @@ body {
     
     .chart-container {
         height: 240px;
+    }
+    
+    .health-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .health-metric {
+        padding: 12px;
+    }
+    
+    .emotion-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .emotion-item {
+        padding: 12px;
+    }
+    
+    .mood-indicator {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .smartwatch-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .device-support {
+        justify-content: center;
+    }
+    
+    .alert-actions {
+        flex-direction: column;
+    }
+    
+    .alert-btn {
+        justify-content: center;
+    }
+    
+    .insight-grid {
+        gap: 8px;
+    }
+    
+    .insight-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .correlation-item {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
     }
     
     .health-metrics {
@@ -764,6 +1760,20 @@ body {
     .legend-item {
         font-size: 0.75rem;
     }
+    
+    .breathing-circle {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .breathing-text {
+        font-size: 1rem;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
 }
 
 @media (max-width: 360px) {
@@ -773,6 +1783,20 @@ body {
     
     .section {
         padding: 16px 12px;
+    }
+    
+    .smartwatch-icon {
+        font-size: 2rem;
+    }
+    
+    .emotion-icon {
+        font-size: 1.5rem;
+    }
+    
+    .mood-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
     }
     
     .badges-grid {
@@ -790,5 +1814,86 @@ body {
     
     .chart-container {
         height: 200px;
+    }
+    
+    .breathing-circle {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .breathing-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* ===========================================
+   DARK MODE SUPPORT (Optional)
+   =========================================== */
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #111827;
+        color: #f9fafb;
+    }
+    
+    .section,
+    .stat-card,
+    .modal-content {
+        background: #1f2937;
+        border-color: #374151;
+    }
+    
+    .smartwatch-card {
+        background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+        border-color: #4b5563;
+    }
+    
+    .health-metric {
+        background: #1f2937;
+        border-color: #374151;
+    }
+    
+    .emotion-item {
+        background: #374151;
+        border-color: #4b5563;
+    }
+    
+    .timeline-content,
+    .insight-card {
+        background: #374151;
+    }
+    
+    .prevention-tips {
+        background: #374151;
+    }
+}
+
+/* ===========================================
+   PRINT STYLES
+   =========================================== */
+
+@media print {
+    .bottom-nav,
+    .action-buttons,
+    .modal,
+    .toast,
+    .loading-overlay {
+        display: none !important;
+    }
+    
+    .container {
+        padding: 0;
+        max-width: 100%;
+    }
+    
+    .section {
+        break-inside: avoid;
+        margin-bottom: 20px;
+        box-shadow: none;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .chart-container {
+        height: auto;
     }
 }
