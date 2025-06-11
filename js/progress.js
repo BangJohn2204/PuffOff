@@ -1,8 +1,73 @@
+// ===========================================
+// PuffOff Progress Page - Complete JavaScript with Smartwatch Integration
+// ===========================================
+
 // Global variables
 let progressChart = null;
 let currentChartType = 'daily';
+let smartwatchConnected = false;
+let healthMonitoringInterval = null;
+let emotionTrackingInterval = null;
+let breathingExerciseInterval = null;
+let breathingActive = false;
+let cravingDetectionActive = false;
 
-// Data dummy untuk simulasi
+// Smartwatch simulation data
+let smartwatchData = {
+    device: null,
+    battery: 85,
+    lastSync: null,
+    realTimeMetrics: {
+        heartRate: 72,
+        stressLevel: 23,
+        oxygenLevel: 98,
+        sleepQuality: 85,
+        bodyTemp: 36.5,
+        steps: 8342,
+        calories: 1847
+    },
+    emotions: {
+        calm: 65,
+        stressed: 20,
+        happy: 15,
+        currentMood: 'calm',
+        lastUpdate: new Date()
+    },
+    cravingPatterns: {
+        riskLevel: 'low', // low, medium, high
+        triggers: ['stress', 'coffee', 'social'],
+        lastCraving: null,
+        preventionScore: 85
+    },
+    healthInsights: [
+        {
+            type: 'positive',
+            icon: '📈',
+            title: 'Detak Jantung Istirahat',
+            description: 'Turun 8 BPM sejak berhenti merokok',
+            value: '-8 BPM',
+            trend: 'improving'
+        },
+        {
+            type: 'positive',
+            icon: '🫁',
+            title: 'Tingkat Oksigen',
+            description: 'Meningkat signifikan dalam 7 hari',
+            value: '+3%',
+            trend: 'improving'
+        },
+        {
+            type: 'warning',
+            icon: '⚡',
+            title: 'Level Stress',
+            description: 'Tinggi pada jam kerja, butuh manajemen',
+            value: 'Perlu Perhatian',
+            trend: 'stable'
+        }
+    ]
+};
+
+// Progress data (existing)
 const progressData = {
     smokeFreedays: 7,
     moneySaved: 210000,
@@ -28,8 +93,12 @@ const progressData = {
     }
 };
 
-// Initialize the app
+// ===========================================
+// INITIALIZATION
+// ===========================================
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 PuffOff Progress - Initializing with Smartwatch Support...');
     initializeApp();
 });
 
@@ -40,6 +109,10 @@ function initializeApp() {
     updateHealthMetrics();
     loadTimelineData();
     setupEventListeners();
+    initializeSmartwatch();
+    checkForSavedConnection();
+    
+    console.log('✅ App initialized successfully');
 }
 
 function setupEventListeners() {
@@ -58,494 +131,719 @@ function setupEventListeners() {
             progressChart.resize();
         }
     });
-}
 
-// Update stats dengan animasi
-function updateStats() {
-    const elements = {
-        smokeFreedays: document.getElementById('smokeFreedays'),
-        moneySaved: document.getElementById('moneySaved'),
-        cigarettesAvoided: document.getElementById('cigarettesAvoided'),
-        healthScore: document.getElementById('healthScore')
-    };
-
-    // Animate numbers
-    animateValue(elements.smokeFreedays, 0, progressData.smokeFreedays, 1000);
-    animateValue(elements.cigarettesAvoided, 0, progressData.cigarettesAvoided, 1200);
-    animateValue(elements.healthScore, 0, progressData.healthScore, 1500, '%');
-    
-    // Format money with currency
-    setTimeout(() => {
-        elements.moneySaved.textContent = formatCurrency(progressData.moneySaved);
-    }, 800);
-}
-
-// Animasi angka
-function animateValue(element, start, end, duration, suffix = '') {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const current = Math.floor(progress * (end - start) + start);
-        element.textContent = current + suffix;
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
-    };
-    window.requestAnimationFrame(step);
-}
-
-// Format currency
-function formatCurrency(amount) {
-    if (amount >= 1000000) {
-        return 'Rp ' + (amount / 1000000).toFixed(1) + 'M';
-    } else if (amount >= 1000) {
-        return 'Rp ' + (amount / 1000).toFixed(0) + 'K';
-    }
-    return 'Rp ' + amount.toLocaleString('id-ID');
-}
-
-// Initialize Chart
-function initializeChart() {
-    const ctx = document.getElementById('progressChart').getContext('2d');
-    
-    progressChart = new Chart(ctx, {
-        type: 'line',
-        data: getChartData(currentChartType),
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20,
-                        font: {
-                            size: 12
-                        }
-                    }
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    titleColor: 'white',
-                    bodyColor: 'white',
-                    borderColor: '#667eea',
-                    borderWidth: 1,
-                    cornerRadius: 8,
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.datasetIndex === 1) {
-                                label += formatCurrency(context.parsed.y);
-                            } else if (context.datasetIndex === 2) {
-                                label += context.parsed.y + '%';
-                            } else {
-                                label += context.parsed.y;
-                            }
-                            return label;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            size: 11
-                        }
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    },
-                    ticks: {
-                        font: {
-                            size: 11
-                        }
-                    }
-                }
-            },
-            elements: {
-                line: {
-                    tension: 0.4,
-                    borderWidth: 3
-                },
-                point: {
-                    radius: 6,
-                    hoverRadius: 8,
-                    borderWidth: 2
-                }
-            },
-            interaction: {
-                mode: 'nearest',
-                axis: 'x',
-                intersect: false
-            }
+    // Modal backdrop clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            closeAllModals();
         }
     });
+
+    // Escape key to close modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllModals();
+        }
+    });
+
+    // Health metric click events
+    document.querySelectorAll('.health-metric').forEach(metric => {
+        metric.addEventListener('click', function() {
+            showMetricDetails(this.dataset.metric);
+        });
+    });
+
+    // Emotion item click events
+    document.querySelectorAll('.emotion-item').forEach(item => {
+        item.addEventListener('click', function() {
+            showEmotionHistory(this.dataset.emotion);
+        });
+    });
+
+    console.log('🎧 Event listeners setup complete');
 }
 
-// Get chart data based on type
-function getChartData(type) {
-    const data = progressData[type + 'Data'];
-    
-    return {
-        labels: data.labels,
-        datasets: [
-            {
-                label: 'Hari Sukses',
-                data: data.successDays,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                fill: true,
-                yAxisID: 'y'
-            },
-            {
-                label: 'Penghematan (Rp)',
-                data: data.savings,
-                borderColor: '#f59e0b',
-                backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                fill: false,
-                yAxisID: 'y1'
-            },
-            {
-                label: 'Health Score (%)',
-                data: data.healthScore,
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                fill: false,
-                yAxisID: 'y2'
-            }
-        ]
-    };
-}
+// ===========================================
+// SMARTWATCH INTEGRATION
+// ===========================================
 
-// Switch chart view
-function switchChart(type) {
-    const buttons = document.querySelectorAll('.toggle-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    currentChartType = type;
-    
-    // Update chart with new data
-    progressChart.data = getChartData(type);
-    
-    // Update chart options for different scales
-    if (type === 'monthly') {
-        progressChart.options.scales.y1 = {
-            type: 'linear',
-            display: false,
-            position: 'right'
-        };
-        progressChart.options.scales.y2 = {
-            type: 'linear',
-            display: false,
-            position: 'right'
-        };
+function initializeSmartwatch() {
+    // Check for Web Bluetooth support
+    if ('bluetooth' in navigator) {
+        console.log('🔵 Bluetooth API supported');
+    } else {
+        console.log('❌ Bluetooth API not supported');
+        showToast('Bluetooth tidak didukung di perangkat ini', 'warning');
     }
-    
-    progressChart.update('active');
-    
-    // Add loading animation
-    const chartContainer = document.querySelector('.chart-container');
-    chartContainer.classList.add('loading');
-    
-    setTimeout(() => {
-        chartContainer.classList.remove('loading');
-    }, 500);
+
+    // Initialize smartwatch UI
+    updateSmartWatchStatus('disconnected');
 }
 
-// Update health metrics
-function updateHealthMetrics() {
-    const healthItems = document.querySelectorAll('.health-item');
-    
-    healthItems.forEach((item, index) => {
-        const progressBar = item.querySelector('.health-progress-bar');
-        if (progressBar) {
+function checkForSavedConnection() {
+    const savedDevice = localStorage.getItem('puffoff_smartwatch_device');
+    if (savedDevice) {
+        try {
+            const deviceInfo = JSON.parse(savedDevice);
+            smartwatchData.device = deviceInfo;
+            
+            // Simulate reconnection
             setTimeout(() => {
-                const width = progressBar.style.width;
-                progressBar.style.width = '0%';
-                setTimeout(() => {
-                    progressBar.style.width = width;
-                }, 100);
-            }, index * 200);
+                if (Math.random() > 0.3) { // 70% chance to reconnect
+                    connectToSavedDevice(deviceInfo);
+                } else {
+                    showToast('Gagal terhubung ke perangkat tersimpan', 'warning');
+                }
+            }, 2000);
+        } catch (error) {
+            console.error('Error parsing saved device:', error);
         }
-    });
-}
-
-// Load achievements
-function loadAchievements() {
-    const achievements = {
-        'fire-starter': { unlocked: true, date: '2024-01-15' },
-        'money-saver': { unlocked: true, date: '2024-01-18' },
-        'week-warrior': { unlocked: true, date: '2024-01-22' },
-        'champion': { unlocked: false, progress: 23 },
-        'diamond': { unlocked: false, progress: 8 },
-        'legend': { unlocked: false, progress: 2 }
-    };
-
-    Object.keys(achievements).forEach(achievementId => {
-        const badge = document.querySelector(`[data-achievement="${achievementId}"]`);
-        if (badge && achievements[achievementId].unlocked) {
-            badge.classList.add('earned');
-            badge.classList.remove('locked');
-        }
-    });
-}
-
-// Show badge details
-function showBadgeDetails(achievementId) {
-    const achievements = {
-        'fire-starter': {
-            title: 'Fire Starter 🔥',
-            description: 'Selamat! Kamu telah berhasil tidak merokok selama 3 hari berturut-turut. Ini adalah langkah pertama yang sangat penting!',
-            tips: 'Terus pertahankan momentum ini dengan mengingat alasan mengapa kamu ingin berhenti merokok.'
-        },
-        'money-saver': {
-            title: 'Money Saver 💰',
-            description: 'Luar biasa! Kamu telah menghemat Rp 100.000 dengan tidak membeli rokok. Uang ini bisa kamu gunakan untuk hal yang lebih bermanfaat!',
-            tips: 'Coba hitung berapa banyak yang bisa kamu hemat dalam setahun dan buat rencana untuk menggunakan uang tersebut.'
-        },
-        'week-warrior': {
-            title: 'Week Warrior 🏃',
-            description: 'Hebat! Satu minggu penuh tanpa rokok adalah pencapaian yang luar biasa. Tubuhmu sudah mulai merasakan manfaatnya!',
-            tips: 'Fungsi paru-parumu mulai membaik. Terus jaga pola hidup sehat dengan olahraga dan makan makanan bergizi.'
-        }
-    };
-
-    const achievement = achievements[achievementId];
-    if (achievement) {
-        alert(`${achievement.title}\n\n${achievement.description}\n\n💡 Tips: ${achievement.tips}`);
     }
 }
 
-// Load timeline data
-function loadTimelineData() {
-    // Simulate loading animation for timeline items
-    const timelineItems = document.querySelectorAll('.timeline-item');
-    
-    timelineItems.forEach((item, index) => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(20px)';
-        
-        setTimeout(() => {
-            item.style.transition = 'all 0.5s ease';
-            item.style.opacity = '1';
-            item.style.transform = 'translateY(0)';
-        }, index * 200);
-    });
-}
-
-// Share progress
-function shareProgress() {
-    const text = `🎉 Progress Bebas Rokok - PuffOff
-    
-🔥 ${progressData.smokeFreedays} hari bebas rokok
-💰 Hemat ${formatCurrency(progressData.moneySaved)}
-🚫 Hindari ${progressData.cigarettesAvoided} batang rokok
-❤️ Health Score: ${progressData.healthScore}%
-
-Bergabunglah dengan PuffOff untuk mencapai hidup bebas rokok!
-
-#PuffOff #BebasRokok #SehatTanpaRokok #ProgressTracker`;
-
-    if (navigator.share) {
-        navigator.share({
-            title: 'Progress Bebas Rokok - PuffOff',
-            text: text,
-            url: window.location.href
-        }).then(() => {
-            showToast('Progress berhasil dibagikan!', 'success');
-        }).catch(() => {
-            copyToClipboard(text);
-        });
-    } else {
-        copyToClipboard(text);
-    }
-}
-
-// Copy to clipboard fallback
-function copyToClipboard(text) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Progress berhasil disalin ke clipboard!', 'success');
-        }).catch(() => {
-            fallbackCopyTextToClipboard(text);
-        });
-    } else {
-        fallbackCopyTextToClipboard(text);
-    }
-}
-
-function fallbackCopyTextToClipboard(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-    
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
+async function connectSmartwatch() {
+    const connectBtn = document.getElementById('connectBtn');
+    const btnText = connectBtn.querySelector('span');
+    const btnIcon = connectBtn.querySelector('i');
     
     try {
-        document.execCommand('copy');
-        showToast('Progress berhasil disalin!', 'success');
-    } catch (err) {
-        showToast('Gagal menyalin progress', 'error');
+        // Update button state
+        connectBtn.disabled = true;
+        btnIcon.className = 'fas fa-spinner fa-spin';
+        btnText.textContent = 'Menghubungkan...';
+        updateSmartWatchStatus('connecting');
+        
+        showLoading('Mencari perangkat smartwatch...');
+
+        // Simulate device discovery and connection
+        await simulateDeviceConnection();
+        
+        hideLoading();
+        
+        // Update UI for successful connection
+        connectBtn.style.display = 'none';
+        document.getElementById('smartwatchCard').style.display = 'none';
+        document.getElementById('realtimeHealth').style.display = 'block';
+        
+        updateSmartWatchStatus('connected');
+        smartwatchConnected = true;
+        
+        // Start health monitoring
+        startHealthMonitoring();
+        startEmotionTracking();
+        startCravingDetection();
+        
+        showToast('Smartwatch berhasil terhubung! 📱⌚', 'success');
+        
+        // Add to timeline
+        addTimelineEvent('Smartwatch Terhubung', 'Monitoring kesehatan real-time dimulai', new Date());
+        
+        console.log('✅ Smartwatch connected successfully');
+        
+    } catch (error) {
+        console.error('❌ Smartwatch connection failed:', error);
+        
+        hideLoading();
+        connectBtn.disabled = false;
+        btnIcon.className = 'fas fa-bluetooth';
+        btnText.textContent = 'Hubungkan Perangkat';
+        updateSmartWatchStatus('disconnected');
+        
+        showToast('Gagal menghubungkan smartwatch: ' + error.message, 'error');
     }
-    
-    document.body.removeChild(textArea);
 }
 
-// Export data
-function exportData() {
-    const data = {
-        tanggal_export: new Date().toISOString(),
-        user_info: {
-            hari_bebas_rokok: progressData.smokeFreedays,
-            uang_dihemat: progressData.moneySaved,
-            rokok_dihindari: progressData.cigarettesAvoided,
-            health_score: progressData.healthScore
-        },
-        progress_harian: progressData.dailyData,
-        progress_mingguan: progressData.weeklyData,
-        progress_bulanan: progressData.monthlyData,
-        pencapaian: [
-            { nama: 'Fire Starter', tanggal: '2024-01-15', deskripsi: '3 hari bebas rokok' },
-            { nama: 'Money Saver', tanggal: '2024-01-18', deskripsi: 'Hemat Rp 100K' },
-            { nama: 'Week Warrior', tanggal: '2024-01-22', deskripsi: '7 hari konsisten' }
-        ],
-        kesehatan: {
-            fungsi_paru: { status: 'membaik', persentase: 15 },
-            sirkulasi_darah: { status: 'membaik', persentase: 20 },
-            penciuman: { status: 'normal', persentase: 90 },
-            energi: { status: 'meningkat', persentase: 75 }
-        },
-        target_penghematan: [
-            { nama: 'Smartphone Baru', target: 3000000, progress: 7 },
-            { nama: 'Liburan Keluarga', target: 5000000, progress: 4 }
-        ]
-    };
-
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `puffoff_progress_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    URL.revokeObjectURL(url);
-    showToast('Data progress berhasil diexport!', 'success');
+async function simulateDeviceConnection() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // Simulate various device types
+            const deviceTypes = [
+                { name: 'Apple Watch Series 9', type: 'apple', battery: 85 },
+                { name: 'Samsung Galaxy Watch 6', type: 'samsung', battery: 78 },
+                { name: 'Fitbit Sense 2', type: 'fitbit', battery: 92 },
+                { name: 'Garmin Forerunner 255', type: 'garmin', battery: 67 }
+            ];
+            
+            const selectedDevice = deviceTypes[Math.floor(Math.random() * deviceTypes.length)];
+            
+            // 90% success rate
+            if (Math.random() > 0.1) {
+                smartwatchData.device = {
+                    ...selectedDevice,
+                    id: 'device_' + Date.now(),
+                    connectedAt: new Date().toISOString()
+                };
+                
+                // Save device info
+                localStorage.setItem('puffoff_smartwatch_device', JSON.stringify(smartwatchData.device));
+                
+                resolve(selectedDevice);
+            } else {
+                reject(new Error('Perangkat tidak ditemukan atau gagal terhubung'));
+            }
+        }, 3000 + Math.random() * 2000); // 3-5 seconds
+    });
 }
 
-// Show toast notification
-function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    
-    toast.textContent = message;
-    toast.className = `toast ${type}`;
-    toast.classList.add('show');
+function connectToSavedDevice(deviceInfo) {
+    showLoading('Menghubungkan ke ' + deviceInfo.name + '...');
     
     setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+        hideLoading();
+        
+        document.getElementById('smartwatchCard').style.display = 'none';
+        document.getElementById('realtimeHealth').style.display = 'block';
+        
+        updateSmartWatchStatus('connected');
+        smartwatchConnected = true;
+        
+        startHealthMonitoring();
+        startEmotionTracking();
+        startCravingDetection();
+        
+        showToast(`Terhubung kembali ke ${deviceInfo.name}`, 'success');
+        
+        console.log('✅ Reconnected to saved device:', deviceInfo.name);
+    }, 2000);
 }
 
-// Unlock new badge (simulation)
-function unlockBadge(badgeId) {
-    const badge = document.querySelector(`[data-achievement="${badgeId}"]`);
-    if (badge && badge.classList.contains('locked')) {
-        badge.classList.remove('locked');
-        badge.classList.add('earned');
-        
-        // Add celebration animation
-        badge.style.animation = 'badgeGlow 1s ease-in-out 3';
-        
-        setTimeout(() => {
-            badge.style.animation = '';
-            showToast('🎉 Lencana baru terbuka!', 'success');
-        }, 3000);
+function updateSmartWatchStatus(status) {
+    const statusElement = document.getElementById('smartwatchStatus');
+    const statusDot = statusElement.querySelector('.status-dot');
+    const statusText = statusElement.querySelector('.status-text');
+    
+    // Remove all status classes
+    statusDot.className = 'status-dot';
+    
+    switch(status) {
+        case 'connected':
+            statusDot.classList.add('connected');
+            statusText.textContent = smartwatchData.device ? 
+                `Terhubung - ${smartwatchData.device.name}` : 'Terhubung';
+            break;
+        case 'connecting':
+            statusDot.classList.add('connecting');
+            statusText.textContent = 'Menghubungkan...';
+            break;
+        case 'disconnected':
+        default:
+            statusDot.classList.add('disconnected');
+            statusText.textContent = 'Tidak Terhubung';
+            break;
     }
 }
 
-// Simulate real-time updates
-function simulateRealtimeUpdates() {
-    setInterval(() => {
-        // Randomly update health score
-        const healthScore = document.getElementById('healthScore');
-        const currentScore = parseInt(healthScore.textContent.replace('%', ''));
-        const newScore = Math.min(100, currentScore + Math.floor(Math.random() * 2));
-        
-        if (newScore > currentScore) {
-            healthScore.textContent = newScore + '%';
-            progressData.healthScore = newScore;
-        }
-        
-        // Check for new achievements
-        if (progressData.smokeFreedays >= 30 && document.querySelector('[data-achievement="champion"]').classList.contains('locked')) {
-            unlockBadge('champion');
-        }
-        
-    }, 30000); // Update every 30 seconds
+// ===========================================
+// HEALTH MONITORING
+// ===========================================
+
+function startHealthMonitoring() {
+    if (healthMonitoringInterval) {
+        clearInterval(healthMonitoringInterval);
+    }
+    
+    // Update health metrics every 5 seconds
+    healthMonitoringInterval = setInterval(() => {
+        updateHealthMetricsRealtime();
+    }, 5000);
+    
+    // Initial update
+    updateHealthMetricsRealtime();
+    
+    console.log('❤️ Health monitoring started');
 }
 
-// Start real-time simulation
-// simulateRealtimeUpdates(); // Uncomment for demo purposes
+function updateHealthMetricsRealtime() {
+    if (!smartwatchConnected) return;
+    
+    // Simulate realistic health data variations
+    simulateHealthDataChanges();
+    
+    // Update heart rate
+    const heartRateEl = document.getElementById('heartRate');
+    const heartRateStatusEl = document.getElementById('heartRateStatus');
+    const heartTrendEl = document.getElementById('heartTrend');
+    
+    if (heartRateEl) {
+        heartRateEl.textContent = smartwatchData.realTimeMetrics.heartRate;
+        
+        // Update status based on heart rate
+        const hr = smartwatchData.realTimeMetrics.heartRate;
+        if (hr < 60) {
+            heartRateStatusEl.textContent = 'Rendah';
+            heartRateStatusEl.className = 'metric-status warning';
+        } else if (hr > 100) {
+            heartRateStatusEl.textContent = 'Tinggi';
+            heartRateStatusEl.className = 'metric-status warning';
+        } else {
+            heartRateStatusEl.textContent = 'Normal';
+            heartRateStatusEl.className = 'metric-status normal';
+        }
+        
+        // Update trend
+        const trend = Math.random() > 0.5 ? 'down' : 'up';
+        const trendValue = Math.floor(Math.random() * 5) + 1;
+        heartTrendEl.innerHTML = `
+            <i class="fas fa-arrow-${trend}"></i>
+            <span>${trend === 'down' ? '-' : '+'}${trendValue} dari kemarin</span>
+        `;
+    }
+    
+    // Update stress level
+    const stressEl = document.getElementById('stressLevel');
+    const stressStatusEl = document.getElementById('stressStatus');
+    const stressTrendEl = document.getElementById('stressTrend');
+    
+    if (stressEl) {
+        stressEl.textContent = smartwatchData.realTimeMetrics.stressLevel;
+        
+        const stress = smartwatchData.realTimeMetrics.stressLevel;
+        if (stress < 30) {
+            stressStatusEl.textContent = 'Rendah';
+            stressStatusEl.className = 'metric-status good';
+        } else if (stress > 70) {
+            stressStatusEl.textContent = 'Tinggi';
+            stressStatusEl.className = 'metric-status warning';
+        } else {
+            stressStatusEl.textContent = 'Sedang';
+            stressStatusEl.className = 'metric-status normal';
+        }
+        
+        stressTrendEl.innerHTML = `
+            <i class="fas fa-arrow-down"></i>
+            <span>Membaik</span>
+        `;
+    }
+    
+    // Update oxygen level
+    const oxygenEl = document.getElementById('oxygenLevel');
+    const oxygenStatusEl = document.getElementById('oxygenStatus');
+    const oxygenTrendEl = document.getElementById('oxygenTrend');
+    
+    if (oxygenEl) {
+        oxygenEl.textContent = smartwatchData.realTimeMetrics.oxygenLevel;
+        
+        const oxygen = smartwatchData.realTimeMetrics.oxygenLevel;
+        if (oxygen >= 95) {
+            oxygenStatusEl.textContent = 'Excellent';
+            oxygenStatusEl.className = 'metric-status excellent';
+        } else if (oxygen >= 90) {
+            oxygenStatusEl.textContent = 'Normal';
+            oxygenStatusEl.className = 'metric-status normal';
+        } else {
+            oxygenStatusEl.textContent = 'Rendah';
+            oxygenStatusEl.className = 'metric-status warning';
+        }
+        
+        oxygenTrendEl.innerHTML = `
+            <i class="fas fa-arrow-up"></i>
+            <span>+2% minggu ini</span>
+        `;
+    }
+    
+    // Update sleep quality
+    const sleepEl = document.getElementById('sleepQuality');
+    const sleepStatusEl = document.getElementById('sleepStatus');
+    const sleepTrendEl = document.getElementById('sleepTrend');
+    
+    if (sleepEl) {
+        sleepEl.textContent = smartwatchData.realTimeMetrics.sleepQuality;
+        
+        const sleep = smartwatchData.realTimeMetrics.sleepQuality;
+        if (sleep >= 80) {
+            sleepStatusEl.textContent = 'Baik';
+            sleepStatusEl.className = 'metric-status good';
+        } else if (sleep >= 60) {
+            sleepStatusEl.textContent = 'Cukup';
+            sleepStatusEl.className = 'metric-status normal';
+        } else {
+            sleepStatusEl.textContent = 'Kurang';
+            sleepStatusEl.className = 'metric-status warning';
+        }
+        
+        const hours = Math.floor(Math.random() * 2) + 7; // 7-8 hours
+        const minutes = Math.floor(Math.random() * 60);
+        sleepTrendEl.innerHTML = `
+            <i class="fas fa-arrow-up"></i>
+            <span>${hours}h ${minutes}m tadi malam</span>
+        `;
+    }
+}
 
-// Add smooth scrolling for internal links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+function simulateHealthDataChanges() {
+    const metrics = smartwatchData.realTimeMetrics;
+    
+    // Heart rate: 60-100 normal, with small variations
+    metrics.heartRate += Math.floor(Math.random() * 6) - 3; // ±3
+    metrics.heartRate = Math.max(50, Math.min(120, metrics.heartRate));
+    
+    // Stress level: 0-100, tends to decrease over time (quit smoking effect)
+    metrics.stressLevel += Math.floor(Math.random() * 4) - 2; // ±2
+    metrics.stressLevel = Math.max(0, Math.min(100, metrics.stressLevel));
+    
+    // Oxygen level: tends to improve (quit smoking effect)
+    if (Math.random() > 0.7) { // 30% chance to improve
+        metrics.oxygenLevel = Math.min(100, metrics.oxygenLevel + 1);
+    }
+    metrics.oxygenLevel = Math.max(85, Math.min(100, metrics.oxygenLevel));
+    
+    // Sleep quality: small random variations
+    metrics.sleepQuality += Math.floor(Math.random() * 4) - 2; // ±2
+    metrics.sleepQuality = Math.max(30, Math.min(100, metrics.sleepQuality));
+    
+    // Body temperature: normal variations
+    metrics.bodyTemp += (Math.random() - 0.5) * 0.2; // ±0.1°C
+    metrics.bodyTemp = Math.max(35.5, Math.min(37.5, metrics.bodyTemp));
+}
+
+// ===========================================
+// EMOTION TRACKING
+// ===========================================
+
+function startEmotionTracking() {
+    if (emotionTrackingInterval) {
+        clearInterval(emotionTrackingInterval);
+    }
+    
+    // Update emotions every 30 seconds
+    emotionTrackingInterval = setInterval(() => {
+        updateEmotionTracking();
+    }, 30000);
+    
+    // Initial update
+    updateEmotionTracking();
+    
+    console.log('😊 Emotion tracking started');
+}
+
+function updateEmotionTracking() {
+    if (!smartwatchConnected) return;
+    
+    // Simulate emotion changes based on stress level and heart rate
+    const stressLevel = smartwatchData.realTimeMetrics.stressLevel;
+    const heartRate = smartwatchData.realTimeMetrics.heartRate;
+    
+    // Calculate emotion percentages
+    let emotions = smartwatchData.emotions;
+    
+    if (stressLevel > 60) {
+        emotions.stressed = Math.min(80, emotions.stressed + 5);
+        emotions.calm = Math.max(10, emotions.calm - 3);
+    } else if (stressLevel < 30) {
+        emotions.calm = Math.min(80, emotions.calm + 3);
+        emotions.stressed = Math.max(5, emotions.stressed - 5);
+    }
+    
+    if (heartRate > 90) {
+        emotions.stressed = Math.min(70, emotions.stressed + 2);
+    }
+    
+    // Normalize percentages
+    const total = emotions.calm + emotions.stressed + emotions.happy;
+    emotions.calm = Math.round((emotions.calm / total) * 100);
+    emotions.stressed = Math.round((emotions.stressed / total) * 100);
+    emotions.happy = 100 - emotions.calm - emotions.stressed;
+    
+    // Determine current mood
+    if (emotions.calm > 50) {
+        emotions.currentMood = 'calm';
+    } else if (emotions.stressed > 40) {
+        emotions.currentMood = 'stressed';
+    } else {
+        emotions.currentMood = 'happy';
+    }
+    
+    emotions.lastUpdate = new Date();
+    
+    // Update UI
+    updateEmotionUI();
+}
+
+function updateEmotionUI() {
+    const emotions = smartwatchData.emotions;
+    
+    // Update emotion percentages
+    document.querySelectorAll('.emotion-item').forEach(item => {
+        const emotion = item.dataset.emotion;
+        const percentageEl = item.querySelector('.emotion-percentage');
+        
+        if (percentageEl && emotions[emotion] !== undefined) {
+            percentageEl.textContent = emotions[emotion] + '%';
+            
+            // Update active state
+            item.classList.remove('active', 'moderate', 'good');
+            
+            if (emotions[emotion] > 50) {
+                item.classList.add('active');
+            } else if (emotions[emotion] > 25) {
+                item.classList.add('moderate');
+            } else {
+                item.classList.add('good');
+            }
         }
     });
-});
+    
+    // Update current mood
+    const moodCircle = document.querySelector('.mood-circle');
+    const moodText = document.querySelector('.mood-text');
+    
+    if (moodCircle && moodText) {
+        const moodEmojis = {
+            calm: '😌',
+            stressed: '😰',
+            happy: '😊'
+        };
+        
+        const moodTexts = {
+            calm: 'Tenang & Fokus',
+            stressed: 'Sedikit Tegang',
+            happy: 'Bahagia & Energik'
+        };
+        
+        moodCircle.textContent = moodEmojis[emotions.currentMood] || '😐';
+        moodText.textContent = moodTexts[emotions.currentMood] || 'Normal';
+    }
+}
 
-// Update progress bars on scroll (Intersection Observer)
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+// ===========================================
+// CRAVING DETECTION
+// ===========================================
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const progressBars = entry.target.querySelectorAll('.health-progress-bar, .goal-progress-bar, .milestone-progress-bar');
-            progressBars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0%';
+function startCravingDetection() {
+    cravingDetectionActive = true;
+    
+    // Check for craving patterns every 15 seconds
+    setInterval(() => {
+        if (cravingDetectionActive) {
+            analyzeCravingRisk();
+        }
+    }, 15000);
+    
+    console.log('🚨 Craving detection started');
+}
+
+function analyzeCravingRisk() {
+    if (!smartwatchConnected) return;
+    
+    const metrics = smartwatchData.realTimeMetrics;
+    const emotions = smartwatchData.emotions;
+    
+    let riskFactors = [];
+    let riskScore = 0;
+    
+    // Analyze risk factors
+    if (metrics.heartRate > 85) {
+        riskFactors.push('elevated_hr');
+        riskScore += 25;
+    }
+    
+    if (metrics.stressLevel > 60) {
+        riskFactors.push('high_stress');
+        riskScore += 35;
+    }
+    
+    if (emotions.stressed > 40) {
+        riskFactors.push('negative_emotion');
+        riskScore += 20;
+    }
+    
+    // Time-based factors (common craving times)
+    const hour = new Date().getHours();
+    if ((hour >= 14 && hour <= 16) || (hour >= 20 && hour <= 22)) {
+        riskFactors.push('high_risk_time');
+        riskScore += 15;
+    }
+    
+    // Update risk level
+    let riskLevel = 'low';
+    if (riskScore >= 60) {
+        riskLevel = 'high';
+    } else if (riskScore >= 30) {
+        riskLevel = 'medium';
+    }
+    
+    smartwatchData.cravingPatterns.riskLevel = riskLevel;
+    smartwatchData.cravingPatterns.lastCheck = new Date();
+    
+    // Update UI
+    updateCravingDetectionUI(riskLevel, riskScore, riskFactors);
+    
+    // Trigger alert if high risk
+    if (riskLevel === 'high' && riskScore >= 70) {
+        triggerCravingAlert(riskFactors);
+    }
+}
+
+function updateCravingDetectionUI(riskLevel, riskScore, riskFactors) {
+    const statusEl = document.getElementById('cravingStatus');
+    const alertEl = document.getElementById('cravingAlert');
+    
+    if (statusEl) {
+        statusEl.className = `detection-status ${riskLevel === 'low' ? 'safe' : riskLevel === 'medium' ? 'warning' : 'danger'}`;
+        
+        const statusText = {
+            low: 'Aman',
+            medium: 'Waspada',
+            high: 'Berisiko Tinggi'
+        };
+        
+        statusEl.querySelector('span:last-child').textContent = statusText[riskLevel];
+    }
+    
+    // Show/hide alert
+    if (alertEl) {
+        if (riskLevel === 'high') {
+            alertEl.classList.remove('hidden');
+            
+            // Update alert text based on risk factors
+            const alertText = generateAlertMessage(riskFactors);
+            alertEl.querySelector('.alert-text p').textContent = alertText;
+        } else {
+            alertEl.classList.add('hidden');
+        }
+    }
+}
+
+function generateAlertMessage(riskFactors) {
+    let message = 'Berdasarkan data smartwatch, ';
+    
+    const messages = [];
+    
+    if (riskFactors.includes('elevated_hr')) {
+        messages.push('detak jantung meningkat');
+    }
+    
+    if (riskFactors.includes('high_stress')) {
+        messages.push('level stress tinggi');
+    }
+    
+    if (riskFactors.includes('negative_emotion')) {
+        messages.push('emosi negatif terdeteksi');
+    }
+    
+    if (riskFactors.includes('high_risk_time')) {
+        messages.push('waktu rentan keinginan merokok');
+    }
+    
+    if (messages.length > 0) {
+        message += messages.join(', ') + ' terdeteksi. ';
+    }
+    
+    message += 'Ini mungkin menandakan keinginan untuk merokok. Gunakan teknik yang tersedia untuk mengatasinya.';
+    
+    return message;
+}
+
+function triggerCravingAlert(riskFactors) {
+    // Log craving event
+    console.log('🚨 Craving alert triggered:', riskFactors);
+    
+    // Show notification
+    showToast('⚠️ Potensi keinginan merokok terdeteksi! Coba teknik pernapasan.', 'warning');
+    
+    // Add to timeline
+    addTimelineEvent(
+        'Deteksi Keinginan Merokok',
+        'Smartwatch mendeteksi pola yang menandakan keinginan merokok',
+        new Date()
+    );
+    
+    // Vibrate device if supported
+    if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200]);
+    }
+    
+    // Update prevention score
+    smartwatchData.cravingPatterns.preventionScore = Math.max(0, 
+        smartwatchData.cravingPatterns.preventionScore - 5);
+}
+
+// ===========================================
+// BREATHING EXERCISE
+// ===========================================
+
+function startBreathingExercise() {
+    const modal = document.getElementById('breathingModal');
+    if (modal) {
+        modal.classList.add('show');
+    }
+    
+    console.log('🫁 Breathing exercise modal opened');
+}
+
+function closeBreathingModal() {
+    const modal = document.getElementById('breathingModal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+    
+    if (breathingActive) {
+        stopBreathing();
+    }
+}
+
+function startBreathing() {
+    if (breathingActive) return;
+    
+    breathingActive = true;
+    const circle = document.getElementById('breathingCircle');
+    const text = document.getElementById('breathingText');
+    const startBtn = document.getElementById('startBreathingBtn');
+    const stopBtn = document.getElementById('stopBreathingBtn');
+    const progressBar = document.getElementById('breathingProgress');
+    
+    // Update buttons
+    startBtn.style.display = 'none';
+    stopBtn.style.display = 'inline-flex';
+    
+    let cycle = 0;
+    const totalCycles = 10;
+    let phase = 'prepare'; // prepare, inhale, hold, exhale
+    
+    // Reset progress
+    progressBar.style.width = '0%';
+    
+    function breathingCycle() {
+        if (!breathingActive) return;
+        
+        switch(phase) {
+            case 'prepare':
+                text.textContent = 'Bersiap...';
+                circle.className = 'breathing-circle';
                 setTimeout(() => {
-                    bar.style.width = width;
-                }, 100);
-            });
-        }
-    });
-}, observerOptions);
-
-// Observe sections with progress bars
-document.querySelectorAll('.health-metrics, .savings-goals, .milestone-card').forEach(section => {
-    observer.observe(section);
-});
+                    phase = 'inhale';
+                    breathingCycle();
+                }, 1000);
+                break;
+                
+            case 'inhale':
+                text.textContent = 'Tarik Napas (4 detik)';
+                circle.className = 'breathing-circle inhale';
+                setTimeout(() => {
+                    phase = 'hold';
+                    breathingCycle();
+                }, 4000);
+                break;
+                
+            case 'hold':
+                text.textContent = 'Tahan (7 detik)';
+                circle.className = 'breathing-circle inhale';
+                setTimeout(() => {
+                    phase = 'exhale';
+                    breathingCycle();
+                }, 7000);
+                break;
+                
+            case 'exhale':
+                text.textContent = 'Hembuskan (8 detik)';
+                circle.className = 'breathing-circle exhale';
+                setTimeout(() => {
+                    cycle++;
+                    const progress = (cycle / totalCycles) * 100;
+                    progressBar.style.width = progress + '%';
+                    
+                    if (cycle >= totalCycles) {
+                        completedBreathing();
+                    } else {
+                        phase = 'inhale';
+                        breathingCycle();
