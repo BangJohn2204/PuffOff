@@ -3,11 +3,6 @@
     --primary-color: #667eea;
     --secondary-color: #764ba2;
     --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    --accent-color: #f59e0b;
-    --success-color: #10b981;
-    --error-color: #ef4444;
-    --warning-color: #f59e0b;
-    --info-color: #3b82f6;
 }
 
 /* Theme Variations */
@@ -66,7 +61,7 @@ body {
     padding: 20px 16px;
 }
 
-/* Header - Mobile First */
+/* Header - Exact sama seperti progress */
 .header {
     background: var(--gradient);
     color: white;
@@ -92,7 +87,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Profile Card - Mobile Optimized */
+/* Profile Card */
 .profile-card {
     background: white;
     border-radius: 16px;
@@ -279,7 +274,7 @@ body {
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
-/* Stats Grid - Mobile First */
+/* Stats Grid - Exact sama seperti progress */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -311,7 +306,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--gradient);
+    background: linear-gradient(90deg, #667eea, #764ba2);
 }
 
 .stat-card:hover {
@@ -322,7 +317,7 @@ body {
 .stat-card:nth-child(1)::before { background: linear-gradient(90deg, #ef4444, #f97316); }
 .stat-card:nth-child(2)::before { background: linear-gradient(90deg, #10b981, #059669); }
 .stat-card:nth-child(3)::before { background: linear-gradient(90deg, #6b7280, #4b5563); }
-.stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); }
+.stat-card:nth-child(4)::before { background: linear-gradient(90deg, #ec4899, #be185d); }
 
 .stat-icon {
     font-size: 2rem;
@@ -350,7 +345,7 @@ body {
     color: #d1d5db;
 }
 
-/* Sections - Mobile First */
+/* Sections - Exact sama seperti progress */
 .section {
     background: white;
     border-radius: 16px;
@@ -390,6 +385,7 @@ body {
     color: var(--primary-color);
 }
 
+/* Friends Section Styles */
 .friend-actions {
     display: flex;
     gap: 8px;
@@ -419,7 +415,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Referral Card - Mobile Optimized */
 .referral-card {
     background: #f8fafc;
     border-radius: 12px;
@@ -429,7 +424,6 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    flex-wrap: wrap;
 }
 
 [data-theme="dark"] .referral-card {
@@ -438,7 +432,6 @@ body {
 
 .referral-info {
     flex: 1;
-    min-width: 200px;
 }
 
 .referral-label {
@@ -491,7 +484,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Friends List - Mobile Friendly */
 .friends-list {
     margin-bottom: 24px;
 }
@@ -631,7 +623,6 @@ body {
     color: white;
 }
 
-/* Leaderboard - Mobile Optimized */
 .leaderboard {
     margin-top: 24px;
 }
@@ -735,395 +726,7 @@ body {
     flex-shrink: 0;
 }
 
-/* Bottom Navigation - Mobile First */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    border-top: 1px solid #e5e7eb;
-    padding: 12px 0 8px;
-    z-index: 1000;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-}
-
-[data-theme="dark"] .bottom-nav {
-    background: #1f2937;
-    border-top-color: #374151;
-}
-
-.nav-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 0 16px;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #6b7280;
-    transition: all 0.3s ease;
-    padding: 8px 4px;
-    border-radius: 12px;
-    min-width: 50px;
-}
-
-[data-theme="dark"] .nav-item {
-    color: #9ca3af;
-}
-
-.nav-item:hover {
-    background: #f8fafc;
-    color: var(--primary-color);
-}
-
-[data-theme="dark"] .nav-item:hover {
-    background: #374151;
-}
-
-.nav-item.active {
-    color: var(--primary-color);
-    background: rgba(102, 126, 234, 0.1);
-}
-
-.nav-item i {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-}
-
-.nav-item span {
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-/* Theme Selector - Mobile Optimized */
-.themes-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-
-.theme-option {
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 16px;
-    border-radius: 12px;
-    border: 2px solid #e5e7eb;
-}
-
-[data-theme="dark"] .theme-option {
-    border-color: #374151;
-}
-
-.theme-option:hover {
-    transform: scale(1.05);
-}
-
-.theme-option.active {
-    border-color: var(--primary-color);
-    background: rgba(102, 126, 234, 0.1);
-}
-
-.theme-preview {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin: 0 auto 12px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.theme-preview.ocean-theme {
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
-}
-
-.theme-preview.forest-theme {
-    background: linear-gradient(135deg, #10b981, #059669);
-}
-
-.theme-preview.sunset-theme {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-}
-
-.theme-preview.purple-theme {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
-.theme-preview.dark-theme {
-    background: linear-gradient(135deg, #374151, #1f2937);
-}
-
-.theme-name {
-    font-weight: 600;
-    color: #1f2937;
-    font-size: 0.9rem;
-}
-
-[data-theme="dark"] .theme-name {
-    color: #f9fafb;
-}
-
-/* Modal Styles - Mobile First */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-    padding: 20px;
-}
-
-.modal.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 400px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    transform: scale(0.8);
-    transition: all 0.3s ease;
-}
-
-[data-theme="dark"] .modal-content {
-    background: #1f2937;
-}
-
-.modal.show .modal-content {
-    transform: scale(1);
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-[data-theme="dark"] .modal-header {
-    border-bottom-color: #374151;
-}
-
-.modal-header h3 {
-    font-weight: 700;
-    color: #1f2937;
-    font-size: 1.2rem;
-}
-
-[data-theme="dark"] .modal-header h3 {
-    color: #f9fafb;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    color: #6b7280;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    font-size: 1.2rem;
-}
-
-.modal-close:hover {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-[data-theme="dark"] .modal-close:hover {
-    background: #374151;
-    color: #d1d5db;
-}
-
-.modal-body {
-    padding: 24px;
-}
-
-.modal-footer {
-    display: flex;
-    gap: 12px;
-    padding: 20px 24px;
-    border-top: 1px solid #e5e7eb;
-    justify-content: flex-end;
-}
-
-[data-theme="dark"] .modal-footer {
-    border-top-color: #374151;
-}
-
-/* Toast Notification - Mobile Optimized */
-.toast {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100px);
-    background: #10b981;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 10001;
-    transition: transform 0.3s ease;
-    font-weight: 500;
-    font-size: 0.9rem;
-    max-width: 90%;
-    text-align: center;
-}
-
-.toast.show {
-    transform: translateX(-50%) translateY(0);
-}
-
-.toast.error {
-    background: #ef4444;
-}
-
-.toast.warning {
-    background: #f59e0b;
-}
-
-.toast.info {
-    background: #3b82f6;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 480px) {
-    .container {
-        padding: 16px 12px;
-    }
-    
-    .header {
-        padding: 20px 16px;
-        margin-bottom: 20px;
-    }
-    
-    .header h1 {
-        font-size: 1.3rem;
-    }
-    
-    .profile-card {
-        padding: 20px;
-    }
-    
-    .section {
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .stats-grid {
-        gap: 12px;
-    }
-    
-    .stat-card {
-        padding: 16px;
-    }
-    
-    .stat-value {
-        font-size: 1.5rem;
-    }
-    
-    .achievements-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    
-    .health-recovery {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    
-    .action-buttons {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-    
-    .nav-item span {
-        font-size: 0.7rem;
-    }
-    
-    .referral-card {
-        flex-direction: column;
-        text-align: center;
-        gap: 12px;
-    }
-    
-    .profile-actions {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .friend-actions {
-        flex-direction: column;
-        gap: 4px;
-    }
-    
-    .modal {
-        padding: 10px;
-    }
-    
-    .themes-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-}
-
-@media (max-width: 360px) {
-    .profile-name {
-        font-size: 1.2rem;
-    }
-    
-    .stat-value {
-        font-size: 1.3rem;
-    }
-    
-    .stat-icon {
-        font-size: 1.5rem;
-    }
-    
-    .section-title {
-        font-size: 1.1rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .friend-actions {
-        margin-top: 8px;
-        flex-direction: row;
-        gap: 4px;
-    }
-    
-    .nav-item span {
-        display: none;
-    }
-    
-    .nav-item {
-        min-width: 40px;
-    }
-}
-
-/* Additional Mobile Styles yang hilang */
+/* Smoking History - Copy exact dari progress */
 .smoking-history {
     text-align: center;
 }
@@ -1201,20 +804,112 @@ body {
     box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
 }
 
-/* Health Recovery - Mobile Optimized */
+/* Journey Timeline - Copy exact dari progress */
+.journey-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 24px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: #e5e7eb;
+}
+
+.timeline-item.completed::before {
+    background: #10b981;
+}
+
+.timeline-item.upcoming::before {
+    background: linear-gradient(to bottom, #10b981 0%, #e5e7eb 50%);
+}
+
+.timeline-item:last-child::before {
+    display: none;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -38px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.timeline-item.completed .timeline-dot {
+    background: #10b981;
+    box-shadow: 0 0 0 2px #10b981, 0 0 0 4px rgba(16, 185, 129, 0.2);
+    animation: timeline-pulse 2s ease-in-out infinite;
+}
+
+@keyframes timeline-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.timeline-item.upcoming .timeline-dot {
+    background: #f59e0b;
+    box-shadow: 0 0 0 2px #f59e0b, 0 0 0 4px rgba(245, 158, 11, 0.2);
+}
+
+.timeline-content {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 12px;
+    border-left: 4px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.timeline-item.completed .timeline-content {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.timeline-item.upcoming .timeline-content {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.timeline-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+
+.timeline-desc {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.timeline-date {
+    color: #9ca3af;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Health Recovery - Copy exact dari progress */
 .health-recovery {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 20px;
+    gap: 24px;
     align-items: start;
-}
-
-@media (max-width: 480px) {
-    .health-recovery {
-        grid-template-columns: 1fr;
-        gap: 16px;
-        text-align: center;
-    }
 }
 
 .health-score-display {
@@ -1379,18 +1074,11 @@ body {
     100% { transform: translateX(100%); }
 }
 
-/* Achievements - Mobile Optimized */
+/* Achievements - Copy exact dari progress */
 .achievements-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
-}
-
-@media (max-width: 480px) {
-    .achievements-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
 }
 
 .achievement-card {
@@ -1465,7 +1153,7 @@ body {
     margin-top: 4px;
 }
 
-/* Savings Tracker - Mobile Optimized */
+/* Savings Tracker - Copy exact dari progress */
 .savings-tracker {
     display: flex;
     flex-direction: column;
@@ -1529,7 +1217,7 @@ body {
 }
 
 [data-theme="dark"] .savings-goals h4 {
-    color: #f9fafb;
+    color: #f3f4f6;
 }
 
 .goals-list {
@@ -1642,7 +1330,7 @@ body {
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
-/* Settings - Mobile Optimized */
+/* Settings - Copy exact dari progress */
 .settings-list {
     display: flex;
     flex-direction: column;
@@ -1659,7 +1347,7 @@ body {
 }
 
 [data-theme="dark"] .setting-item {
-    border-bottom-color: #374151;
+    border-bottom-color: #4b5563;
 }
 
 .setting-item:hover {
@@ -1744,19 +1432,12 @@ body {
     transform: translateX(22px);
 }
 
-/* Action Buttons - Mobile Optimized */
+/* Action Buttons - Copy exact dari progress */
 .action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-top: 24px;
-}
-
-@media (max-width: 480px) {
-    .action-buttons {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
 }
 
 .action-btn {
@@ -1807,7 +1488,181 @@ body {
     box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
 }
 
-/* Form Styles - Mobile Optimized */
+/* Bottom Navigation - Exact sama dengan progress */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 12px 0 8px;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] .bottom-nav {
+    background: #1f2937;
+    border-top-color: #374151;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #6b7280;
+    transition: all 0.3s ease;
+    padding: 8px 4px;
+    border-radius: 12px;
+    min-width: 50px;
+}
+
+[data-theme="dark"] .nav-item {
+    color: #9ca3af;
+}
+
+.nav-item:hover {
+    background: #f8fafc;
+    color: var(--primary-color);
+}
+
+[data-theme="dark"] .nav-item:hover {
+    background: #374151;
+    color: var(--primary-color);
+}
+
+.nav-item.active {
+    color: var(--primary-color);
+    background: #f0f4ff;
+}
+
+[data-theme="dark"] .nav-item.active {
+    background: #374151;
+}
+
+.nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.nav-item span {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Modal Styles - Copy exact dari progress */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 90%;
+    width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .modal-content {
+    background: #1f2937;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+[data-theme="dark"] .modal-header {
+    border-bottom-color: #374151;
+}
+
+.modal-header h3 {
+    font-weight: 700;
+    color: #1f2937;
+    font-size: 1.2rem;
+}
+
+[data-theme="dark"] .modal-header h3 {
+    color: #f9fafb;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+[data-theme="dark"] .modal-close:hover {
+    background: #374151;
+    color: #f3f4f6;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #e5e7eb;
+    justify-content: flex-end;
+}
+
+[data-theme="dark"] .modal-footer {
+    border-top-color: #374151;
+}
+
+/* Form Styles - Copy exact dari progress */
 .form-group {
     margin-bottom: 20px;
 }
@@ -1842,7 +1697,7 @@ body {
 [data-theme="dark"] .form-group select {
     background: #374151;
     border-color: #4b5563;
-    color: #f3f4f6;
+    color: #f9fafb;
 }
 
 .form-group input:focus,
@@ -1869,7 +1724,97 @@ body {
     color: #d1d5db;
 }
 
-/* Button Styles */
+.duration-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.duration-inputs input {
+    width: 60px;
+    text-align: center;
+}
+
+.duration-inputs span {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+[data-theme="dark"] .duration-inputs span {
+    color: #d1d5db;
+}
+
+/* Calculation Preview - Copy exact dari progress */
+.calculation-preview {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+[data-theme="dark"] .calculation-preview {
+    background: #374151;
+    border-color: #4b5563;
+}
+
+.calculation-preview h4 {
+    margin-bottom: 12px;
+    color: #374151;
+    font-size: 1rem;
+}
+
+[data-theme="dark"] .calculation-preview h4 {
+    color: #f3f4f6;
+}
+
+.calculation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+[data-theme="dark"] .calculation-item {
+    border-bottom-color: #4b5563;
+}
+
+.calculation-item:last-child {
+    border-bottom: none;
+}
+
+.calculation-item.total {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 2px solid #e5e7eb;
+    font-weight: 700;
+    color: #ef4444;
+}
+
+[data-theme="dark"] .calculation-item.total {
+    border-top-color: #4b5563;
+}
+
+.calculation-item span:first-child {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+[data-theme="dark"] .calculation-item span:first-child {
+    color: #d1d5db;
+}
+
+.calculation-item span:last-child {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .calculation-item span:last-child {
+    color: #f9fafb;
+}
+
+/* Button Styles - Copy exact dari progress */
 .btn {
     padding: 12px 24px;
     border: none;
@@ -1893,7 +1838,119 @@ body {
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-/* Loading Overlay */
+/* Achievement Detail Modal - Copy exact dari progress */
+.achievement-detail {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.achievement-icon-large {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+.achievement-info h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+[data-theme="dark"] .achievement-info h4 {
+    color: #f9fafb;
+}
+
+.achievement-info p {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+[data-theme="dark"] .achievement-info p {
+    color: #d1d5db;
+}
+
+.achievement-earned-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #10b981;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.achievement-tips {
+    background: #f0fdf4;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    border-left: 4px solid #10b981;
+}
+
+[data-theme="dark"] .achievement-tips {
+    background: #064e3b;
+    border-left-color: #10b981;
+}
+
+.achievement-tips h5 {
+    margin-bottom: 8px;
+    color: #047857;
+    font-size: 1rem;
+}
+
+[data-theme="dark"] .achievement-tips h5 {
+    color: #34d399;
+}
+
+.achievement-tips p {
+    color: #065f46;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+[data-theme="dark"] .achievement-tips p {
+    color: #a7f3d0;
+}
+
+.achievement-actions {
+    text-align: center;
+}
+
+/* Toast Notification - Copy exact dari progress */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #10b981;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10001;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.error {
+    background: #ef4444;
+}
+
+.toast.warning {
+    background: #f59e0b;
+}
+
+.toast.info {
+    background: #3b82f6;
+}
+
+/* Loading Overlay - Copy exact dari progress */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -1942,4 +1999,215 @@ body {
 
 [data-theme="dark"] .loading-overlay p {
     color: #d1d5db;
+}
+
+/* Theme Selection Modal */
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.theme-option {
+    background: #f8fafc;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .theme-option {
+    background: #374151;
+    border-color: #4b5563;
+}
+
+.theme-option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.theme-option.selected {
+    border-color: var(--primary-color);
+    background: #f0f4ff;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+
+[data-theme="dark"] .theme-option.selected {
+    background: #1e40af;
+}
+
+.theme-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    border-radius: 12px 12px 0 0;
+}
+
+.theme-option[data-theme="default"]::before { background: linear-gradient(135deg, #667eea, #764ba2); }
+.theme-option[data-theme="ocean"]::before { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.theme-option[data-theme="forest"]::before { background: linear-gradient(135deg, #10b981, #059669); }
+.theme-option[data-theme="sunset"]::before { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.theme-option[data-theme="purple"]::before { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.theme-option[data-theme="dark"]::before { background: linear-gradient(135deg, #374151, #1f2937); }
+
+.theme-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.theme-option[data-theme="default"] .theme-preview { background: linear-gradient(135deg, #667eea, #764ba2); }
+.theme-option[data-theme="ocean"] .theme-preview { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.theme-option[data-theme="forest"] .theme-preview { background: linear-gradient(135deg, #10b981, #059669); }
+.theme-option[data-theme="sunset"] .theme-preview { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.theme-option[data-theme="purple"] .theme-preview { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.theme-option[data-theme="dark"] .theme-preview { background: linear-gradient(135deg, #374151, #1f2937); }
+
+.theme-name {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+[data-theme="dark"] .theme-name {
+    color: #f3f4f6;
+}
+
+/* Responsive Design - Exact sama dengan progress */
+@media (max-width: 480px) {
+    .container {
+        padding: 16px 12px;
+    }
+    
+    .header {
+        padding: 20px 16px;
+        margin-bottom: 20px;
+    }
+    
+    .header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .profile-card {
+        padding: 20px;
+    }
+    
+    .section {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .stats-grid {
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 16px;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .achievements-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .health-recovery {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .action-buttons {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .nav-item span {
+        display: none;
+    }
+    
+    .nav-item {
+        min-width: 40px;
+    }
+    
+    .friends-list .friend-item {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .friend-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .friend-name {
+        font-size: 0.85rem;
+    }
+    
+    .friend-progress {
+        font-size: 0.75rem;
+    }
+    
+    .theme-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .profile-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .profile-name {
+        font-size: 1.2rem;
+    }
+    
+    .stat-value {
+        font-size: 1.3rem;
+    }
+    
+    .stat-icon {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .edit-btn, .theme-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .profile-badges {
+        gap: 6px;
+    }
+    
+    .badge {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
 }
