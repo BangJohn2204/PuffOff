@@ -116,17 +116,22 @@ function initializeApp() {
     // Add inline CSS fallback for timeline to ensure it's visible
     const timelineCSS = `
         <style id="timeline-fallback-css">
+        /* Force timeline to be visible */
         .progress-timeline {
             position: relative !important;
             padding-left: 30px !important;
             display: block !important;
             visibility: visible !important;
+            opacity: 1 !important;
+            min-height: 50px !important;
         }
         
         .timeline-item {
             position: relative !important;
             padding-bottom: 24px !important;
             display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
         
         .timeline-item::before {
@@ -153,6 +158,7 @@ function initializeApp() {
             background: #667eea !important;
             border: 3px solid white !important;
             box-shadow: 0 0 0 2px #667eea !important;
+            z-index: 2 !important;
         }
         
         .timeline-content {
@@ -161,23 +167,38 @@ function initializeApp() {
             border-radius: 12px !important;
             border-left: 4px solid #667eea !important;
             display: block !important;
+            visibility: visible !important;
         }
         
         .timeline-title {
             font-weight: 600 !important;
             color: #1f2937 !important;
             margin-bottom: 4px !important;
+            display: block !important;
         }
         
         .timeline-desc {
             color: #6b7280 !important;
             font-size: 0.9rem !important;
             margin-bottom: 8px !important;
+            display: block !important;
         }
         
         .timeline-time {
             color: #9ca3af !important;
             font-size: 0.8rem !important;
+            display: block !important;
+        }
+        
+        /* Force section to be visible */
+        .section {
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        .section-title {
+            display: flex !important;
+            visibility: visible !important;
         }
         </style>
     `;
@@ -194,10 +215,40 @@ function initializeApp() {
         loadAchievements();
         updateHealthMetrics();
         
-        // Load timeline with extra delay to ensure DOM is ready
+        // Load timeline with extra delay and debug
         setTimeout(() => {
+            console.log('🔍 Starting timeline loading process...');
+            
+            // Debug: Check if timeline section exists
+            const timelineSection = Array.from(document.querySelectorAll('.section')).find(section => {
+                const title = section.querySelector('.section-title');
+                return title && title.textContent.includes('Aktivitas Terkini');
+            });
+            
+            if (timelineSection) {
+                console.log('✅ Found Aktivitas Terkini section');
+                timelineSection.style.display = 'block';
+                timelineSection.style.visibility = 'visible';
+                
+                const timeline = timelineSection.querySelector('.progress-timeline');
+                if (timeline) {
+                    console.log('✅ Found timeline container in section');
+                    timeline.style.display = 'block';
+                    timeline.style.visibility = 'visible';
+                } else {
+                    console.error('❌ No .progress-timeline found in Aktivitas Terkini section');
+                }
+            } else {
+                console.error('❌ Aktivitas Terkini section not found');
+                console.log('Available sections:');
+                document.querySelectorAll('.section').forEach((section, index) => {
+                    const title = section.querySelector('.section-title');
+                    console.log(`Section ${index + 1}:`, title ? title.textContent.trim() : 'No title');
+                });
+            }
+            
             loadTimelineData();
-        }, 200);
+        }, 300);
         
         setupEventListeners();
         initializeSmartwatch();
@@ -1386,6 +1437,37 @@ function updateHealthMetrics() {
 function loadTimelineData() {
     console.log('📅 Loading timeline data...');
     
+    // Check if timeline already exists with content
+    const timeline = document.querySelector('.progress-timeline');
+    if (!timeline) {
+        console.error('❌ Timeline container (.progress-timeline) not found!');
+        return;
+    }
+    
+    console.log('✅ Timeline container found');
+    
+    // Check if timeline already has content from HTML
+    const existingItems = timeline.querySelectorAll('.timeline-item');
+    if (existingItems.length > 0) {
+        console.log('✅ Timeline already has', existingItems.length, 'items from HTML');
+        
+        // Just add animations to existing items
+        existingItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            item.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, index * 200 + 100);
+        });
+        
+        console.log('✅ Animations applied to existing timeline items');
+        return;
+    }
+    
+    // If no existing content, create new timeline data
     const timelineData = [
         {
             title: 'Lencana Week Warrior Diraih! 🏆',
@@ -1409,10 +1491,7 @@ function loadTimelineData() {
         }
     ];
     
-    const timeline = document.querySelector('.progress-timeline');
-    if (!timeline) return;
-    
-    timeline.innerHTML = '';
+    console.log('Creating new timeline items...');
     
     timelineData.forEach((item, index) => {
         const timelineItem = document.createElement('div');
@@ -1427,8 +1506,21 @@ function loadTimelineData() {
             </div>
         `;
         
+        // Set initial animation state
+        timelineItem.style.opacity = '0';
+        timelineItem.style.transform = 'translateX(-20px)';
+        timelineItem.style.transition = 'all 0.5s ease';
+        
         timeline.appendChild(timelineItem);
+        
+        // Add staggered animation
+        setTimeout(() => {
+            timelineItem.style.opacity = '1';
+            timelineItem.style.transform = 'translateX(0)';
+        }, index * 200 + 100);
     });
+    
+    console.log('✅ Timeline loaded with', timelineData.length, 'new items');
 }
 
 function addTimelineEvent(title, description, date) {
