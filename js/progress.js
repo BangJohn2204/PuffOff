@@ -213,11 +213,11 @@ function initializeChartWithFallback() {
                                     label += ': ';
                                 }
                                 if (context.datasetIndex === 1) {
-                                    label += formatCurrency(context.parsed.y);
+                                    label += 'Rp ' + (context.parsed.y * 1000).toLocaleString('id-ID');
                                 } else if (context.datasetIndex === 2) {
                                     label += context.parsed.y + '%';
                                 } else {
-                                    label += context.parsed.y;
+                                    label += context.parsed.y + ' hari';
                                 }
                                 return label;
                             }
@@ -236,14 +236,66 @@ function initializeChartWithFallback() {
                         }
                     },
                     y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
                         beginAtZero: true,
+                        max: Math.max(...chartData.datasets[0].data) + 2,
                         grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
+                            color: 'rgba(16, 185, 129, 0.1)'
                         },
                         ticks: {
                             font: {
                                 size: 11
+                            },
+                            color: '#10b981'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Hari Sukses',
+                            color: '#10b981',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
                             }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false,
+                            color: 'rgba(245, 158, 11, 0.1)'
+                        },
+                        ticks: {
+                            font: {
+                                size: 11
+                            },
+                            color: '#f59e0b',
+                            callback: function(value) {
+                                return 'Rp' + value + 'K';
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Penghematan (Ribuan)',
+                            color: '#f59e0b',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y2: {
+                        type: 'linear',
+                        display: false, // Hide this axis to avoid clutter, but keep for scaling
+                        position: 'right',
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            drawOnChartArea: false
                         }
                     }
                 },
@@ -253,7 +305,7 @@ function initializeChartWithFallback() {
                         borderWidth: 3
                     },
                     point: {
-                        radius: 6,
+                        radius: 5,
                         hoverRadius: 8,
                         borderWidth: 2
                     }
@@ -304,16 +356,31 @@ function getChartData(type) {
                 data: data.successDays,
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                fill: true,
-                yAxisID: 'y'
+                fill: false,
+                yAxisID: 'y',
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2
             },
             {
-                label: 'Penghematan (Rp)',
-                data: data.savings,
+                label: 'Penghematan (Ribuan)',
+                data: data.savings.map(val => val / 1000), // Convert to thousands for better scale
                 borderColor: '#f59e0b',
                 backgroundColor: 'rgba(245, 158, 11, 0.1)',
                 fill: false,
-                yAxisID: 'y'
+                yAxisID: 'y1',
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#f59e0b',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                borderDash: [5, 5] // Dashed line to differentiate
             },
             {
                 label: 'Health Score (%)',
@@ -321,7 +388,15 @@ function getChartData(type) {
                 borderColor: '#667eea',
                 backgroundColor: 'rgba(102, 126, 234, 0.1)',
                 fill: false,
-                yAxisID: 'y'
+                yAxisID: 'y2',
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#667eea',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                borderDash: [10, 5] // Different dash pattern
             }
         ]
     };
