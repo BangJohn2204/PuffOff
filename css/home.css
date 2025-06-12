@@ -1,423 +1,3 @@
-/* Reset dan Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f8fafc;
-    min-height: 100vh;
-    padding-bottom: 80px;
-    color: #1f2937;
-}
-
-.container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px 16px;
-}
-
-/* Enhanced Header */
-.header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 24px 20px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-    text-align: center;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-}
-
-.greeting {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-    opacity: 0.9;
-}
-
-.main-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.streak-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: 600;
-    backdrop-filter: blur(10px);
-}
-
-/* Emergency Button */
-.emergency-btn {
-    width: 100%;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 18px 24px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    position: relative;
-    overflow: hidden;
-}
-
-.emergency-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
-}
-
-.emergency-btn:active {
-    transform: scale(0.98);
-}
-
-/* Section Styles */
-.section {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-.section-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #1f2937;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.section-icon {
-    font-size: 1.5rem;
-    color: #667eea;
-}
-
-/* Avatar Section - Standing Human Figure */
-.avatar-section {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-    border: 3px solid #0ea5e9;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 25px 60px rgba(14, 165, 233, 0.4);
-}
-
-.avatar-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, rgba(59, 130, 246, 0.1) 0deg, rgba(139, 92, 246, 0.1) 120deg, rgba(16, 185, 129, 0.1) 240deg, rgba(59, 130, 246, 0.1) 360deg);
-    animation: rotate-background 30s linear infinite;
-    pointer-events: none;
-}
-
-.avatar-section::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.3) 100%);
-    pointer-events: none;
-    z-index: 1;
-}
-
-@keyframes rotate-background {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.avatar-container {
-    text-align: center;
-    position: relative;
-    z-index: 2;
-}
-
-.avatar-display {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
-    border-radius: 30px;
-    padding: 40px 30px;
-    margin-bottom: 25px;
-    box-shadow: 
-        inset 0 4px 20px rgba(0,0,0,0.1),
-        0 20px 50px rgba(14, 165, 233, 0.4),
-        0 0 100px rgba(102, 126, 234, 0.2);
-    position: relative;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    min-height: 400px;
-}
-
-.avatar-display::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(ellipse at 50% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 60%);
-    pointer-events: none;
-}
-
-/* Standing Human Figure */
-.avatar-body {
-    position: relative;
-    width: 180px;
-    height: 320px;
-    margin: 0 auto;
-    z-index: 1;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 15px 35px rgba(0,0,0,0.2));
-    animation: gentle-sway 4s ease-in-out infinite;
-}
-
-@keyframes gentle-sway {
-    0%, 100% { transform: translateX(0) rotate(0deg); }
-    25% { transform: translateX(2px) rotate(0.5deg); }
-    75% { transform: translateX(-2px) rotate(-0.5deg); }
-}
-
-/* Head */
-.avatar-head {
-    width: 60px;
-    height: 75px;
-    border-radius: 50% 50% 45% 45%;
-    background: 
-        radial-gradient(ellipse at 35% 25%, #fde68a, #fbbf24),
-        linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    margin: 0 auto 8px;
-    position: relative;
-    box-shadow: 
-        0 12px 30px rgba(251, 191, 36, 0.4),
-        inset 0 5px 15px rgba(255, 255, 255, 0.3);
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.9);
-    transition: all 0.6s ease;
-    animation: head-movement 6s ease-in-out infinite;
-}
-
-@keyframes head-movement {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-}
-
-/* Hair */
-.avatar-head::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 10%;
-    width: 80%;
-    height: 30px;
-    background: radial-gradient(ellipse at 50% 100%, #8b4513, #654321);
-    border-radius: 50% 50% 20% 20%;
-    z-index: 1;
-}
-
-/* Face Features */
-.face-features {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 60%;
-    z-index: 2;
-}
-
-.eyes {
-    display: flex;
-    justify-content: space-between;
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50%;
-    z-index: 3;
-}
-
-.eye {
-    width: 12px;
-    height: 12px;
-    background: radial-gradient(circle at center, #ffffff 0%, #f8fafc 100%);
-    border-radius: 50%;
-    position: relative;
-    box-shadow: 
-        inset 0 2px 4px rgba(0,0,0,0.15),
-        0 2px 6px rgba(0,0,0,0.1);
-    border: 1px solid rgba(0,0,0,0.1);
-    transition: all 0.4s ease;
-    animation: eye-blink 5s ease-in-out infinite;
-}
-
-@keyframes eye-blink {
-    0%, 90%, 100% { height: 12px; }
-    95% { height: 2px; }
-}
-
-.pupil {
-    width: 8px;
-    height: 8px;
-    background: radial-gradient(circle at 35% 25%, #4a5568, #1a202c);
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
-    animation: pupil-movement 8s ease-in-out infinite;
-}
-
-@keyframes pupil-movement {
-    0%, 100% { transform: translate(-50%, -50%); }
-    25% { transform: translate(-45%, -50%); }
-    75% { transform: translate(-55%, -50%); }
-}
-
-.pupil::before {
-    content: '';
-    position: absolute;
-    top: 20%;
-    left: 25%;
-    width: 2px;
-    height: 2px;
-    background: rgba(255,255,255,0.9);
-    border-radius: 50%;
-}
-
-/* Nose */
-.nose {
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3px;
-    height: 8px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.2));
-    border-radius: 2px;
-}
-
-/* Mouth */
-.mouth {
-    position: absolute;
-    bottom: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 8px;
-    border-radius: 0 0 16px 16px;
-    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3);
-    animation: mouth-movement 7s ease-in-out infinite;
-}
-
-@keyframes mouth-movement {
-    0%, 100% { transform: translateX(-50%) scaleY(1); }
-    50% { transform: translateX(-50%) scaleY(1.1); }
-}
-
-/* Mouth expressions */
-.mouth.very-sad {
-    background: linear-gradient(0deg, #ef4444 0%, #dc2626 100%);
-    border-radius: 16px 16px 0 0;
-    transform: translateX(-50%) rotate(180deg);
-    width: 20px;
-    height: 10px;
-}
-
-.mouth.sad {
-    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
-    border-radius: 8px;
-    height: 4px;
-    width: 18px;
-}
-
-.mouth.neutral {
-    background: linear-gradient(90deg, #eab308 0%, #ca8a04 100%);
-    border-radius: 2px;
-    height: 3px;
-    width: 14px;
-}
-
-.mouth.happy {
-    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-    border-radius: 0 0 12px 12px;
-    height: 6px;
-    width: 16px;
-}
-
-.mouth.very-happy {
-    background: linear-gradient(180deg, #059669 0%, #047857 100%);
-    border-radius: 0 0 20px 20px;
-    height: 10px;
-    width: 22px;
-}
-
-/* Health Aura */
-.health-aura {
-    position: absolute;
-    top: -20px;
-    left: -20px;
-    right: -20px;
-    bottom: -20px;
-    border-radius: 50%;
-    background: 
-        radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.2) 40%, transparent 70%);
-    animation: pulse-aura 3s ease-in-out infinite;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-}
-
-.health-aura.active {
-    opacity: 1;
-}
-
-@keyframes pulse-aura {
-    0%, 100% { 
-        transform: scale(1); 
-        opacity: 0.4; 
-    }
-    50% { 
-        transform: scale(1.2); 
-        opacity: 0.8; 
-    }
-}
-
-/* Neck */
-.avatar-neck {
-    width: 25px;
-    height: 20px;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    margin: 0 auto 5px;
-    border-radius: 8px;
-    box-shadow: 
-        0 4px 12px rgba(251, 191, 36, 0.3),
-        inset 0 2px 6px rgba(255, 255, 255, 0.2);
-    animation: neck-pulse 3s ease-in-out infinite;
-}
-
 @keyframes neck-pulse {
     0%, 100% { transform: scaleY(1); }
     50% { transform: scaleY(1.05); }
@@ -1783,3 +1363,636 @@ body {
     font-size: 1.2rem;
     padding: 4px;
     border-radius: 4px;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+}
+
+.notification-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.notification-content {
+    padding: 8px 20px 16px;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.notification-icon {
+    font-size: 1.1rem;
+}
+
+.notification-message {
+    color: #6b7280;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Toast Container */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+/* Bottom Navigation - Consistent with Profile.html */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 12px 0;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.nav-container {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #6b7280;
+    transition: all 0.3s ease;
+    padding: 8px 4px;
+    border-radius: 12px;
+    min-width: 50px;
+    position: relative;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #667eea;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.nav-item.active::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-8px);
+}
+
+.nav-item:hover {
+    background: #f8fafc;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.nav-item.active {
+    color: #667eea;
+    background: #f0f4ff;
+}
+
+.nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover i {
+    animation: navIconBounce 0.5s ease-in-out;
+}
+
+@keyframes navIconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.nav-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+    .container {
+        padding: 16px 12px;
+    }
+    
+    .main-title {
+        font-size: 1.8rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .milestone-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .milestone-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .milestone-title {
+        font-size: 1.2rem;
+    }
+    
+    .health-info {
+        padding: 16px;
+    }
+    
+    .avatar-controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .control-btn {
+        flex-direction: row;
+        padding: 12px 16px;
+        min-width: auto;
+    }
+    
+    .nav-item span {
+        display: none;
+    }
+    
+    .nav-item {
+        min-width: 40px;
+    }
+}
+
+@media (max-width: 360px) {
+    .nav-container {
+        padding: 0 8px;
+    }
+    
+    .nav-item {
+        padding: 6px 2px;
+    }
+    
+    .milestone-card {
+        padding: 16px;
+    }
+    
+    .avatar-display {
+        padding: 30px 20px;
+        min-height: 350px;
+    }
+    
+    .avatar-body {
+        width: 150px;
+        height: 280px;
+    }
+}/* Reset dan Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8fafc;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    color: #1f2937;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px 16px;
+}
+
+/* Enhanced Header */
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 24px 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.greeting {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.main-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+/* Emergency Button */
+.emergency-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 18px 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.emergency-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
+}
+
+.emergency-btn:active {
+    transform: scale(0.98);
+}
+
+/* Section Styles */
+.section {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+}
+
+/* Avatar Section - Standing Human Figure */
+.avatar-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    border: 3px solid #0ea5e9;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(14, 165, 233, 0.4);
+}
+
+.avatar-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, rgba(59, 130, 246, 0.1) 0deg, rgba(139, 92, 246, 0.1) 120deg, rgba(16, 185, 129, 0.1) 240deg, rgba(59, 130, 246, 0.1) 360deg);
+    animation: rotate-background 30s linear infinite;
+    pointer-events: none;
+}
+
+.avatar-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.3) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes rotate-background {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.avatar-container {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.avatar-display {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+    border-radius: 30px;
+    padding: 40px 30px;
+    margin-bottom: 25px;
+    box-shadow: 
+        inset 0 4px 20px rgba(0,0,0,0.1),
+        0 20px 50px rgba(14, 165, 233, 0.4),
+        0 0 100px rgba(102, 126, 234, 0.2);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    min-height: 400px;
+}
+
+.avatar-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at 50% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Standing Human Figure */
+.avatar-body {
+    position: relative;
+    width: 180px;
+    height: 320px;
+    margin: 0 auto;
+    z-index: 1;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 15px 35px rgba(0,0,0,0.2));
+    animation: gentle-sway 4s ease-in-out infinite;
+}
+
+@keyframes gentle-sway {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(2px) rotate(0.5deg); }
+    75% { transform: translateX(-2px) rotate(-0.5deg); }
+}
+
+/* Head */
+.avatar-head {
+    width: 60px;
+    height: 75px;
+    border-radius: 50% 50% 45% 45%;
+    background: 
+        radial-gradient(ellipse at 35% 25%, #fde68a, #fbbf24),
+        linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    margin: 0 auto 8px;
+    position: relative;
+    box-shadow: 
+        0 12px 30px rgba(251, 191, 36, 0.4),
+        inset 0 5px 15px rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    transition: all 0.6s ease;
+    animation: head-movement 6s ease-in-out infinite;
+}
+
+@keyframes head-movement {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Hair */
+.avatar-head::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 10%;
+    width: 80%;
+    height: 30px;
+    background: radial-gradient(ellipse at 50% 100%, #8b4513, #654321);
+    border-radius: 50% 50% 20% 20%;
+    z-index: 1;
+}
+
+/* Face Features */
+.face-features {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 60%;
+    z-index: 2;
+}
+
+.eyes {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    z-index: 3;
+}
+
+.eye {
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at center, #ffffff 0%, #f8fafc 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        inset 0 2px 4px rgba(0,0,0,0.15),
+        0 2px 6px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    animation: eye-blink 5s ease-in-out infinite;
+}
+
+@keyframes eye-blink {
+    0%, 90%, 100% { height: 12px; }
+    95% { height: 2px; }
+}
+
+.pupil {
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle at 35% 25%, #4a5568, #1a202c);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+    animation: pupil-movement 8s ease-in-out infinite;
+}
+
+@keyframes pupil-movement {
+    0%, 100% { transform: translate(-50%, -50%); }
+    25% { transform: translate(-45%, -50%); }
+    75% { transform: translate(-55%, -50%); }
+}
+
+.pupil::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    width: 2px;
+    height: 2px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+}
+
+/* Nose */
+.nose {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 8px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.2));
+    border-radius: 2px;
+}
+
+/* Mouth */
+.mouth {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 8px;
+    border-radius: 0 0 16px 16px;
+    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3);
+    animation: mouth-movement 7s ease-in-out infinite;
+}
+
+@keyframes mouth-movement {
+    0%, 100% { transform: translateX(-50%) scaleY(1); }
+    50% { transform: translateX(-50%) scaleY(1.1); }
+}
+
+/* Mouth expressions */
+.mouth.very-sad {
+    background: linear-gradient(0deg, #ef4444 0%, #dc2626 100%);
+    border-radius: 16px 16px 0 0;
+    transform: translateX(-50%) rotate(180deg);
+    width: 20px;
+    height: 10px;
+}
+
+.mouth.sad {
+    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+    border-radius: 8px;
+    height: 4px;
+    width: 18px;
+}
+
+.mouth.neutral {
+    background: linear-gradient(90deg, #eab308 0%, #ca8a04 100%);
+    border-radius: 2px;
+    height: 3px;
+    width: 14px;
+}
+
+.mouth.happy {
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+    border-radius: 0 0 12px 12px;
+    height: 6px;
+    width: 16px;
+}
+
+.mouth.very-happy {
+    background: linear-gradient(180deg, #059669 0%, #047857 100%);
+    border-radius: 0 0 20px 20px;
+    height: 10px;
+    width: 22px;
+}
+
+/* Health Aura */
+.health-aura {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.2) 40%, transparent 70%);
+    animation: pulse-aura 3s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.health-aura.active {
+    opacity: 1;
+}
+
+@keyframes pulse-aura {
+    0%, 100% { 
+        transform: scale(1); 
+        opacity: 0.4; 
+    }
+    50% { 
+        transform: scale(1.2); 
+        opacity: 0.8; 
+    }
+}
+
+/* Neck */
+.avatar-neck {
+    width: 25px;
+    height: 20px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    margin: 0 auto 5px;
+    border-radius: 8px;
+    box-shadow: 
+        0 4px 12px rgba(251, 191, 36, 0.3),
+        inset 0 2px 6px rgba(255, 255, 255, 0.2);
+    animation: neck-pulse 3s ease-in-out infinite;
+}
+
+@keyframes neck-pulse {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scale
