@@ -48,7 +48,22 @@ function initializePosts() {
             comments: 18,
             shares: 2,
             liked: false,
-            replies: []
+            replies: [
+                {
+                    id: 1,
+                    author: 'Dr. Maya',
+                    avatar: 'DM',
+                    time: '3 jam lalu',
+                    content: 'Coba teknik pernapasan 4-7-8. Tarik napas 4 detik, tahan 7 detik, buang 8 detik. Sangat efektif!'
+                },
+                {
+                    id: 2,
+                    author: 'Budi Santoso',
+                    avatar: 'BS',
+                    time: '2 jam lalu',
+                    content: 'Saya biasanya jalan-jalan sebentar atau minum air putih. Distraksi sederhana tapi manjur.'
+                }
+            ]
         },
         {
             id: 3,
@@ -62,7 +77,15 @@ function initializePosts() {
             comments: 31,
             shares: 15,
             liked: true,
-            replies: []
+            replies: [
+                {
+                    id: 1,
+                    author: 'Nina Sari',
+                    avatar: 'NS',
+                    time: '5 jam lalu',
+                    content: 'Wah terima kasih sharingnya! Langsung saya coba dan berhasil mengatasi craving tadi pagi.'
+                }
+            ]
         },
         {
             id: 4,
@@ -77,15 +100,46 @@ function initializePosts() {
             shares: 28,
             liked: false,
             replies: []
+        },
+        {
+            id: 5,
+            author: 'Tommy Wijaya',
+            avatar: 'TW',
+            time: '1 hari yang lalu',
+            category: 'success',
+            title: '🏆 Milestone 6 Bulan Tercapai!',
+            content: 'Tidak terasa sudah 6 bulan bebas rokok! Terima kasih komunitas PuffOff yang selalu supportive. Sekarang stamina jauh lebih baik dan tidur lebih nyenyak.',
+            likes: 203,
+            comments: 67,
+            shares: 45,
+            liked: false,
+            replies: []
+        },
+        {
+            id: 6,
+            author: 'Sinta Dewi',
+            avatar: 'SD',
+            time: '2 hari yang lalu',
+            category: 'tips',
+            title: '🍎 Camilan Sehat Pengganti Rokok',
+            content: 'Berbagi tips camilan sehat yang bisa membantu mengalihkan keinginan merokok: wortel baby, kacang almond, buah apel potong, dan permen mint tanpa gula.',
+            likes: 78,
+            comments: 29,
+            shares: 12,
+            liked: true,
+            replies: []
         }
     ];
 }
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚭 PuffOff Komunitas Loading...');
     initializePosts();
     renderPosts();
     setupEventListeners();
+    animateStats();
+    console.log('✅ Komunitas initialized successfully');
 });
 
 // Setup event listeners
@@ -111,6 +165,14 @@ function setupEventListeners() {
         if (e.key === 'Escape') {
             closeCreateModal();
         }
+    });
+
+    // Trending topics click
+    document.querySelectorAll('.trending-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const hashtag = this.querySelector('.trending-text').textContent;
+            showToast(`Mencari posts dengan ${hashtag}...`);
+        });
     });
 }
 
@@ -142,6 +204,16 @@ function switchTab(tabName) {
     
     // Filter and render posts
     renderPosts();
+    
+    // Show tab change notification
+    const tabNames = {
+        'trending': 'Trending',
+        'recent': 'Terbaru',
+        'motivasi': 'Motivasi',
+        'my-posts': 'Post Saya'
+    };
+    
+    showToast(`Menampilkan: ${tabNames[tabName]}`);
 }
 
 // Render posts based on current tab
@@ -169,11 +241,7 @@ function renderPosts() {
     
     // Render posts
     container.innerHTML = '';
-    filteredPosts.forEach(post => {
-        container.appendChild(createPostElement(post));
-    });
     
-    // Show empty state if no posts
     if (filteredPosts.length === 0 && currentTab === 'my-posts') {
         container.innerHTML = `
             <div class="empty-state">
@@ -182,7 +250,26 @@ function renderPosts() {
                 <p>Mulai berbagi cerita atau tips Anda dengan komunitas!</p>
             </div>
         `;
+    } else if (filteredPosts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <h3>Tidak ada post</h3>
+                <p>Belum ada post di kategori ini.</p>
+            </div>
+        `;
+    } else {
+        filteredPosts.forEach(post => {
+            container.appendChild(createPostElement(post));
+        });
     }
+    
+    // Animate posts appearance
+    setTimeout(() => {
+        container.querySelectorAll('.post-card').forEach((card, index) => {
+            card.style.animation = `postSlideIn 0.5s ease-out ${index * 0.1}s both`;
+        });
+    }, 100);
 }
 
 // Create post element
@@ -284,6 +371,7 @@ function toggleLike(button) {
         if (post.liked) {
             button.classList.add('liked');
             icon.className = 'fas fa-heart';
+            button.style.animation = 'likeHeartBeat 0.6s ease-in-out';
         } else {
             button.classList.remove('liked');
             icon.className = 'far fa-heart';
@@ -293,6 +381,11 @@ function toggleLike(button) {
         
         // Show toast
         showToast(post.liked ? 'Post disukai!' : 'Like dibatalkan');
+        
+        // Reset animation
+        setTimeout(() => {
+            button.style.animation = '';
+        }, 600);
     }
 }
 
@@ -303,8 +396,10 @@ function toggleReplies(button) {
     
     if (repliesSection.classList.contains('show')) {
         repliesSection.classList.remove('show');
+        repliesSection.style.display = 'none';
     } else {
         repliesSection.classList.add('show');
+        repliesSection.style.display = 'block';
         
         // Add reply form if not exists
         if (!repliesSection.querySelector('.new-reply-form')) {
@@ -318,6 +413,11 @@ function toggleReplies(button) {
                 </div>
             `;
             repliesSection.appendChild(replyForm);
+            
+            // Focus on textarea
+            setTimeout(() => {
+                replyForm.querySelector('.reply-input').focus();
+            }, 100);
         }
     }
 }
@@ -349,6 +449,7 @@ function submitReply(button) {
         // Create new reply element
         const newReplyElement = document.createElement('div');
         newReplyElement.className = 'reply-card';
+        newReplyElement.style.animation = 'replySlideIn 0.4s ease-out';
         newReplyElement.innerHTML = `
             <div class="reply-header">
                 <div class="reply-avatar">YU</div>
@@ -367,6 +468,13 @@ function submitReply(button) {
         const countSpan = commentBtn.querySelector('span');
         post.comments = parseInt(countSpan.textContent) + 1;
         countSpan.textContent = post.comments;
+        
+        // Update stats
+        updateCommunityStats();
+        
+    } else {
+        showToast('Balasan tidak boleh kosong!', 'warning');
+        textarea.focus();
     }
 }
 
@@ -374,7 +482,15 @@ function submitReply(button) {
 function cancelReply(button) {
     const form = button.closest('.new-reply-form');
     const textarea = form.querySelector('.reply-input');
-    textarea.value = '';
+    
+    if (textarea.value.trim()) {
+        if (confirm('Yakin ingin membatalkan balasan?')) {
+            textarea.value = '';
+            form.remove();
+        }
+    } else {
+        form.remove();
+    }
 }
 
 // Share post functionality
@@ -387,6 +503,12 @@ function sharePost(button) {
         post.shares++;
         const countSpan = button.querySelector('span');
         countSpan.textContent = post.shares;
+        
+        // Animation for share button
+        button.style.animation = 'btnClick 0.2s ease';
+        setTimeout(() => {
+            button.style.animation = '';
+        }, 200);
         
         // Try native share API, fallback to clipboard
         if (navigator.share) {
@@ -409,25 +531,43 @@ function sharePost(button) {
 // Copy post to clipboard
 function copyToClipboard(post) {
     const shareText = `${post.title}\n\n${post.content}\n\nLihat di PuffOff Community: ${window.location.href}`;
-    navigator.clipboard.writeText(shareText).then(() => {
-        showToast('Link berhasil disalin!');
-    }).catch(() => {
-        showToast('Gagal menyalin link', 'error');
-    });
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText).then(() => {
+            showToast('Link berhasil disalin!');
+        }).catch(() => {
+            showToast('Gagal menyalin link', 'error');
+        });
+    } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = shareText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast('Link berhasil disalin!');
+        } catch (err) {
+            showToast('Gagal menyalin link', 'error');
+        }
+        document.body.removeChild(textArea);
+    }
 }
 
 // Show more options
 function showMoreOptions(button) {
-    showToast('Fitur akan segera hadir!');
-}
-
-// Load more replies
-function loadMoreReplies(button) {
-    showToast('Memuat balasan lainnya...');
-    // Simulate loading
-    setTimeout(() => {
-        button.style.display = 'none';
-    }, 1000);
+    const options = [
+        'Laporkan Post',
+        'Sembunyikan Post',
+        'Blokir Pengguna',
+        'Salin Link'
+    ];
+    
+    const selectedOption = prompt(`Pilih opsi:\n${options.map((opt, i) => `${i + 1}. ${opt}`).join('\n')}\n\nMasukkan nomor (1-${options.length}):`);
+    
+    if (selectedOption && selectedOption >= 1 && selectedOption <= options.length) {
+        showToast(`${options[selectedOption - 1]} - Fitur akan segera hadir!`);
+    }
 }
 
 // Modal functions
@@ -436,6 +576,12 @@ function openCreateModal() {
     if (modal) {
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
+        
+        // Focus on first input
+        setTimeout(() => {
+            const firstInput = modal.querySelector('.form-input');
+            if (firstInput) firstInput.focus();
+        }, 100);
     }
 }
 
@@ -468,6 +614,10 @@ function selectCategory(chip) {
     // Select current
     chip.classList.add('selected');
     selectedCategory = chip.getAttribute('data-category');
+    
+    // Show feedback
+    const categoryText = chip.textContent.trim();
+    showToast(`Kategori terpilih: ${categoryText}`);
 }
 
 // Handle form submission
@@ -478,10 +628,29 @@ function handleCreatePost(e) {
     const content = document.getElementById('postContent').value.trim();
     const imageFile = document.getElementById('postImage').files[0];
     
-    if (!title || !content || !selectedCategory) {
-        showToast('Mohon lengkapi semua field!', 'error');
+    // Validation
+    if (!selectedCategory) {
+        showToast('Pilih kategori post terlebih dahulu!', 'warning');
         return;
     }
+    
+    if (!title) {
+        showToast('Judul post tidak boleh kosong!', 'warning');
+        document.getElementById('postTitle').focus();
+        return;
+    }
+    
+    if (!content) {
+        showToast('Isi post tidak boleh kosong!', 'warning');
+        document.getElementById('postContent').focus();
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('.submit-btn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memposting...';
+    submitBtn.disabled = true;
     
     // Create new post
     const newPost = {
@@ -504,11 +673,19 @@ function handleCreatePost(e) {
         const reader = new FileReader();
         reader.onload = function(e) {
             newPost.image = e.target.result;
-            addNewPost(newPost);
+            setTimeout(() => {
+                addNewPost(newPost);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 1000);
         };
         reader.readAsDataURL(imageFile);
     } else {
-        addNewPost(newPost);
+        setTimeout(() => {
+            addNewPost(newPost);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 1000);
     }
 }
 
@@ -516,14 +693,76 @@ function handleCreatePost(e) {
 function addNewPost(post) {
     posts.unshift(post);
     closeCreateModal();
+    
+    // Switch to recent tab to show new post
+    currentTab = 'recent';
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('.tab-btn[onclick*="recent"]').classList.add('active');
+    
+    // Hide trending section
+    const trendingSection = document.getElementById('trending-section');
+    if (trendingSection) {
+        trendingSection.style.display = 'none';
+    }
+    
     renderPosts();
-    showToast('Post berhasil dibuat!');
+    showToast('Post berhasil dibuat!', 'success');
     
     // Update stats
+    updateCommunityStats();
+    
+    // Scroll to top to see new post
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Update community stats
+function updateCommunityStats() {
     const postsToday = document.getElementById('posts-today');
     if (postsToday) {
-        postsToday.textContent = parseInt(postsToday.textContent) + 1;
+        const currentCount = parseInt(postsToday.textContent);
+        postsToday.textContent = currentCount + 1;
+        
+        // Animation
+        postsToday.style.animation = 'countUp 0.5s ease-out';
+        setTimeout(() => {
+            postsToday.style.animation = '';
+        }, 500);
     }
+}
+
+// Animate stats on load
+function animateStats() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach((stat, index) => {
+        const finalValue = stat.textContent;
+        stat.textContent = '0';
+        
+        setTimeout(() => {
+            animateValue(stat, 0, parseInt(finalValue.replace(/,/g, '')), 1000);
+        }, index * 200);
+    });
+}
+
+// Animate number counting
+function animateValue(element, start, end, duration) {
+    const startTime = Date.now();
+    const endTime = startTime + duration;
+    
+    function update() {
+        const now = Date.now();
+        const remaining = Math.max((endTime - now) / duration, 0);
+        const value = Math.round(end - (remaining * (end - start)));
+        
+        element.textContent = value.toLocaleString();
+        
+        if (value === end) {
+            element.style.color = '#667eea';
+        } else {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    update();
 }
 
 // Show toast notification
@@ -539,3 +778,102 @@ function showToast(message, type = 'success') {
         }, 3000);
     }
 }
+
+// Search functionality for trending topics
+function searchHashtag(hashtag) {
+    const searchTerm = hashtag.replace('#', '').toLowerCase();
+    const results = posts.filter(post => 
+        post.title.toLowerCase().includes(searchTerm) || 
+        post.content.toLowerCase().includes(searchTerm)
+    );
+    
+    if (results.length > 0) {
+        showToast(`Ditemukan ${results.length} post dengan ${hashtag}`);
+        // Could implement filtered view here
+    } else {
+        showToast(`Tidak ada post dengan ${hashtag}`, 'info');
+    }
+}
+
+// Auto-refresh stats periodically
+setInterval(() => {
+    const memberCount = document.getElementById('member-count');
+    const postsToday = document.getElementById('posts-today');
+    const successStories = document.getElementById('success-stories');
+    
+    if (memberCount && Math.random() < 0.1) { // 10% chance
+        const current = parseInt(memberCount.textContent.replace(/,/g, ''));
+        memberCount.textContent = (current + 1).toLocaleString();
+        memberCount.style.animation = 'countUp 0.5s ease-out';
+        setTimeout(() => memberCount.style.animation = '', 500);
+    }
+}, 30000); // Every 30 seconds
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + Enter to submit form in modal
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        const modal = document.getElementById('createModal');
+        if (modal && modal.classList.contains('show')) {
+            e.preventDefault();
+            const form = document.getElementById('createPostForm');
+            if (form) {
+                handleCreatePost(e);
+            }
+        }
+    }
+    
+    // ESC to close modal
+    if (e.key === 'Escape') {
+        closeCreateModal();
+    }
+    
+    // Quick tab switching
+    if (!e.target.matches('input, textarea')) {
+        switch(e.key) {
+            case '1':
+                e.preventDefault();
+                switchTab('trending');
+                break;
+            case '2':
+                e.preventDefault();
+                switchTab('recent');
+                break;
+            case '3':
+                e.preventDefault();
+                switchTab('motivasi');
+                break;
+            case '4':
+                e.preventDefault();
+                switchTab('my-posts');
+                break;
+        }
+    }
+});
+
+// Smooth scroll for trending topics
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.trending-item')) {
+        const item = e.target.closest('.trending-item');
+        item.style.animation = 'btnClick 0.2s ease';
+        setTimeout(() => {
+            item.style.animation = '';
+        }, 200);
+    }
+});
+
+// Enhanced error handling
+window.addEventListener('error', function(e) {
+    console.error('Community App Error:', e.error);
+    showToast('Terjadi kesalahan. Silakan refresh halaman.', 'error');
+});
+
+// Performance monitoring
+let loadStartTime = performance.now();
+window.addEventListener('load', function() {
+    const loadTime = performance.now() - loadStartTime;
+    console.log(`🚀 Komunitas loaded in ${Math.round(loadTime)}ms`);
+});
+
+console.log('🚭 PuffOff Komunitas Script Loaded');
+console.log('⌨️ Shortcuts: 1-4 (switch tabs), Ctrl+Enter (submit), ESC (close modal)');
