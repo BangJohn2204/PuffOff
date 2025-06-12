@@ -113,21 +113,24 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log('📊 Starting app initialization...');
     
-    updateStats();
-    loadAchievements();
-    updateHealthMetrics();
-    loadTimelineData();
-    setupEventListeners();
-    initializeSmartwatch();
-    checkForSavedConnection();
-    
-    // Initialize chart with multiple fallbacks
+    // Wait a bit for DOM to be fully ready
     setTimeout(() => {
-        console.log('🔄 Attempting to initialize chart...');
-        initializeChartWithFallback();
-    }, 500);
-    
-    console.log('✅ App initialized successfully');
+        updateStats();
+        loadAchievements();
+        updateHealthMetrics();
+        loadTimelineData();
+        setupEventListeners();
+        initializeSmartwatch();
+        checkForSavedConnection();
+        
+        // Initialize chart with multiple fallbacks
+        setTimeout(() => {
+            console.log('🔄 Attempting to initialize chart...');
+            initializeChartWithFallback();
+        }, 500);
+        
+        console.log('✅ App initialized successfully');
+    }, 200);
 }
 
 // ===========================================
@@ -405,10 +408,49 @@ function updateStats() {
     const cigarettesAvoidedEl = document.getElementById('cigarettesAvoided');
     const healthScoreEl = document.getElementById('healthScore');
     
-    if (smokeFreeEl) smokeFreeEl.textContent = progressData.smokeFreedays;
-    if (moneySavedEl) moneySavedEl.textContent = formatCurrency(progressData.moneySaved);
-    if (cigarettesAvoidedEl) cigarettesAvoidedEl.textContent = progressData.cigarettesAvoided;
-    if (healthScoreEl) healthScoreEl.textContent = progressData.healthScore + '%';
+    if (smokeFreeEl) {
+        smokeFreeEl.textContent = progressData.smokeFreedays;
+        console.log('✅ Updated smokeFreedays:', progressData.smokeFreedays);
+    } else {
+        console.error('❌ Element smokeFreedays not found');
+    }
+    
+    if (moneySavedEl) {
+        moneySavedEl.textContent = formatCurrency(progressData.moneySaved);
+        console.log('✅ Updated moneySaved:', formatCurrency(progressData.moneySaved));
+    } else {
+        console.error('❌ Element moneySaved not found');
+    }
+    
+    if (cigarettesAvoidedEl) {
+        cigarettesAvoidedEl.textContent = progressData.cigarettesAvoided;
+        console.log('✅ Updated cigarettesAvoided:', progressData.cigarettesAvoided);
+    } else {
+        console.error('❌ Element cigarettesAvoided not found');
+    }
+    
+    if (healthScoreEl) {
+        healthScoreEl.textContent = progressData.healthScore + '%';
+        console.log('✅ Updated healthScore:', progressData.healthScore + '%');
+    } else {
+        console.error('❌ Element healthScore not found');
+        // Try alternative IDs that might exist in HTML
+        const alternativeHealthScore = document.querySelector('[id*="health"], [class*="health-score"]');
+        if (alternativeHealthScore) {
+            alternativeHealthScore.textContent = progressData.healthScore + '%';
+            console.log('✅ Updated healthScore via alternative selector');
+        }
+    }
+    
+    // Also update any stat-value elements by their position
+    const statValues = document.querySelectorAll('.stat-value');
+    if (statValues.length >= 4) {
+        statValues[0].textContent = progressData.smokeFreedays;
+        statValues[1].textContent = formatCurrency(progressData.moneySaved);
+        statValues[2].textContent = progressData.cigarettesAvoided;
+        statValues[3].textContent = progressData.healthScore + '%';
+        console.log('✅ Updated all stats via stat-value class');
+    }
 }
 
 function animateValue(element, start, end, duration) {
@@ -433,12 +475,13 @@ function animateValue(element, start, end, duration) {
 }
 
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(amount).replace('IDR', 'Rp').replace(/\s/g, '');
+    if (amount >= 1000000) {
+        return 'Rp ' + Math.floor(amount / 1000000) + '.' + Math.floor((amount % 1000000) / 100000) + 'M';
+    } else if (amount >= 1000) {
+        return 'Rp ' + Math.floor(amount / 1000) + 'K';
+    } else {
+        return 'Rp ' + amount;
+    }
 }
 
 // ===========================================
