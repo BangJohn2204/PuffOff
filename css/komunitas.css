@@ -1279,6 +1279,12 @@ body {
     border-color: rgba(255,255,255,0.2);
 }
 
+/* Loading States */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
 /* ===========================================
    RESPONSIVE DESIGN
    =========================================== */
