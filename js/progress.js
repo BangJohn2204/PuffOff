@@ -113,12 +113,92 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log('📊 Starting app initialization...');
     
+    // Add inline CSS fallback for timeline to ensure it's visible
+    const timelineCSS = `
+        <style id="timeline-fallback-css">
+        .progress-timeline {
+            position: relative !important;
+            padding-left: 30px !important;
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        .timeline-item {
+            position: relative !important;
+            padding-bottom: 24px !important;
+            display: block !important;
+        }
+        
+        .timeline-item::before {
+            content: '' !important;
+            position: absolute !important;
+            left: -30px !important;
+            top: 0 !important;
+            width: 2px !important;
+            height: 100% !important;
+            background: #e5e7eb !important;
+        }
+        
+        .timeline-item:last-child::before {
+            display: none !important;
+        }
+        
+        .timeline-dot {
+            position: absolute !important;
+            left: -38px !important;
+            top: 4px !important;
+            width: 16px !important;
+            height: 16px !important;
+            border-radius: 50% !important;
+            background: #667eea !important;
+            border: 3px solid white !important;
+            box-shadow: 0 0 0 2px #667eea !important;
+        }
+        
+        .timeline-content {
+            background: #f8fafc !important;
+            padding: 16px !important;
+            border-radius: 12px !important;
+            border-left: 4px solid #667eea !important;
+            display: block !important;
+        }
+        
+        .timeline-title {
+            font-weight: 600 !important;
+            color: #1f2937 !important;
+            margin-bottom: 4px !important;
+        }
+        
+        .timeline-desc {
+            color: #6b7280 !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 8px !important;
+        }
+        
+        .timeline-time {
+            color: #9ca3af !important;
+            font-size: 0.8rem !important;
+        }
+        </style>
+    `;
+    
+    // Inject CSS if not already present
+    if (!document.getElementById('timeline-fallback-css')) {
+        document.head.insertAdjacentHTML('beforeend', timelineCSS);
+        console.log('✅ Timeline fallback CSS injected');
+    }
+    
     // Wait a bit for DOM to be fully ready
     setTimeout(() => {
         updateStats();
         loadAchievements();
         updateHealthMetrics();
-        loadTimelineData();
+        
+        // Load timeline with extra delay to ensure DOM is ready
+        setTimeout(() => {
+            loadTimelineData();
+        }, 200);
+        
         setupEventListeners();
         initializeSmartwatch();
         checkForSavedConnection();
