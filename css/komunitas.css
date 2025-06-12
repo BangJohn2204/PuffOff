@@ -1,5 +1,5 @@
 /* ===========================================
-   PuffOff Komunitas - Complete Enhanced CSS
+   PuffOff Komunitas - Complete Fixed CSS
    =========================================== */
 
 /* Reset dan Base Styles */
@@ -16,12 +16,14 @@ body {
     padding-bottom: 80px;
     color: #1f2937;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 .container {
     max-width: 500px;
     margin: 0 auto;
     padding: 20px 16px;
+    position: relative;
 }
 
 /* Enhanced Header with Animations */
@@ -841,38 +843,13 @@ body {
     cursor: pointer;
     box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
     transition: all 0.3s ease;
-    z-index: 1000;
+    z-index: 999;
     animation: floatingBounce 3s ease-in-out infinite;
-    position: relative;
 }
 
 @keyframes floatingBounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
-}
-
-.floating-create::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #10b981, #059669, #10b981);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.floating-create:hover::after {
-    opacity: 1;
-    animation: buttonGlow 1s ease-in-out infinite alternate;
-}
-
-@keyframes buttonGlow {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.05); }
 }
 
 .floating-create:hover {
@@ -1075,21 +1052,6 @@ body {
     overflow: hidden;
 }
 
-.submit-btn {
-    width: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 16px;
-    position: relative;
-    overflow: hidden;
-}
-
 .submit-btn::before {
     content: '';
     position: absolute;
@@ -1127,7 +1089,7 @@ body {
 }
 
 /* ===========================================
-   ENHANCED BOTTOM NAVIGATION - CONSISTENT
+   FIXED BOTTOM NAVIGATION - NO GREEN BAR
    =========================================== */
 
 .bottom-nav {
@@ -1141,6 +1103,14 @@ body {
     z-index: 1000;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
     backdrop-filter: blur(10px);
+    height: auto;
+    width: 100%;
+}
+
+/* Ensure no unwanted pseudo-elements */
+.bottom-nav::before,
+.bottom-nav::after {
+    display: none;
 }
 
 .nav-container {
@@ -1150,6 +1120,14 @@ body {
     justify-content: space-around;
     align-items: center;
     padding: 0 16px;
+    background: transparent;
+    height: auto;
+}
+
+/* Remove any unwanted backgrounds */
+.nav-container::before,
+.nav-container::after {
+    display: none;
 }
 
 .nav-item {
@@ -1163,8 +1141,10 @@ body {
     border-radius: 12px;
     min-width: 50px;
     position: relative;
+    background: transparent;
 }
 
+/* Active state indicator dot */
 .nav-item::before {
     content: '';
     position: absolute;
@@ -1938,11 +1918,6 @@ body {
     text-underline-offset: 4px;
 }
 
-/* Enhanced modal backdrop */
-.modal::backdrop {
-    backdrop-filter: blur(8px);
-}
-
 /* Smooth scrolling for the entire page */
 html {
     scroll-behavior: smooth;
@@ -1981,30 +1956,6 @@ html {
     ::-webkit-scrollbar-thumb:hover {
         background: #9ca3af;
     }
-}
-
-/* Ripple effect for buttons */
-.ripple {
-    position: relative;
-    overflow: hidden;
-}
-
-.ripple::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.ripple:active::after {
-    width: 300px;
-    height: 300px;
 }
 
 /* Enhanced form validation styles */
@@ -2081,21 +2032,6 @@ html {
     width: 100%;
 }
 
-/* Enhanced notification positioning for mobile */
-@media (max-width: 480px) {
-    .toast {
-        bottom: 100px;
-        top: auto;
-        right: 12px;
-        left: 12px;
-        transform: translateY(100px);
-    }
-    
-    .toast.show {
-        transform: translateY(0);
-    }
-}
-
 /* Special animations for interaction feedback */
 .btn-clicked {
     animation: btnClick 0.2s ease;
@@ -2122,4 +2058,28 @@ html {
 .focus-visible {
     outline: 2px solid #667eea;
     outline-offset: 2px;
+}
+
+/* Ripple effect for buttons */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+    width: 300px;
+    height: 300px;
 }
